@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#ffffff</color>
+    <color name="black">#040404</color>
+    <color name="transparent">#00000000</color>
+
+    <color name="background">#5572ce</color>
+    <color name="ungu">#ad75b2</color>
+    <color name="text">#244164</color>
+    <color name="blue">#5572ce</color>
+    <color name="hintColor">#c1c8d4</color>
+    <color name="line">#384d6b</color>
+
+    <color name="darkgray">#4c4c4b</color>
+    <color name="darkgray2">#0D4c4c4b</color>
+</resources>
