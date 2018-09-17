@@ -37,7 +37,7 @@ public class DetailProgramActivity extends AppCompatActivity implements View.OnC
         if(v.getId() == R.id.cancelBtn) {
             finish();
         } else if(v.getId() == R.id.updateBtn) {
-            Intent intent = new Intent(DetailProgramActivity.this, UploadProgramActivity.class);
+            Intent intent = new Intent(DetailProgramActivity.this, EditProgramActivity.class);
             startActivityForResult(intent, 1);
         }
     }
