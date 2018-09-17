@@ -27,19 +27,17 @@
                 android:orientation="vertical"
                 android:gravity="center"
                 android:paddingBottom="@dimen/_30sdp">
-                <!--ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_250sdp"
-                    android:src="@drawable/lapangan"
-                    android:layout_margin="@dimen/_10sdp"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/detail_program"
-                    android:textColor="@color/darkgray"
-                    android:layout_marginLeft="@dimen/_20sdp"
-                    android:layout_marginRight="@dimen/_20sdp"
-                    android:textSize="14sp"/-->
+                    android:text="Judul Program:"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Latar Belakang:"
+                    />
+
                 <Button
                     android:id="@+id/beforeBtn"
                     android:layout_width="match_parent"
