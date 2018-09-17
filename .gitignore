@@ -1,0 +1,7 @@
+Kaizen.iml
+app/app.iml
+local.properties
+
+.gradle/
+.idea/
+
