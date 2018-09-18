@@ -27,11 +27,11 @@
                 android:orientation="vertical"
                 android:gravity="center"
                 android:paddingBottom="@dimen/_30sdp">
-                <ImageView
+                <!--ImageView
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_250sdp"
                     android:src="@drawable/lapangan"
-                    android:layout_margin="@dimen/_10sdp"/>
+                    android:layout_margin="@dimen/_10sdp"/-->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
