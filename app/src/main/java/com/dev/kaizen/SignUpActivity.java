@@ -18,7 +18,6 @@ import com.dev.kaizen.base.BaseActivity;
 import com.dev.kaizen.base.CustomDialogClass2;
 import com.dev.kaizen.restful.AsyncTaskCompleteListener;
 import com.dev.kaizen.restful.CallWebService2;
-import com.dev.kaizen.restful.CallWebServiceTask;
 import com.dev.kaizen.util.Constant;
 import com.dev.kaizen.util.FontUtils;
 import com.dev.kaizen.util.GlobalVar;
@@ -27,10 +26,8 @@ import com.dev.kaizen.util.Utility;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URLEncoder;
-
-public class LoginActivity extends BaseActivity implements View.OnClickListener, AsyncTaskCompleteListener<Object> {
-    EditText usernameEdit, passwordEdit;
+public class SignUpActivity extends BaseActivity implements View.OnClickListener, AsyncTaskCompleteListener<Object> {
+    EditText usernameEdit, emailEdit, passwordEdit, confirmPasswordEdit;
     private String choice;
 
     @Override
@@ -42,7 +39,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         View v = null;
         if (v == null) {
             LayoutInflater vi = getLayoutInflater();
-            v = vi.inflate(R.layout.activity_login, null);
+            v = vi.inflate(R.layout.activity_sign_up, null);
             v.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         }
         layout.addView(v);
@@ -52,54 +49,73 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         btn.setOnClickListener(this);
 
         usernameEdit = (EditText) v.findViewById(R.id.usernameEdit);
+        emailEdit = (EditText) v.findViewById(R.id.emailEdit);
         passwordEdit = (EditText) v.findViewById(R.id.passwordEdit);
+        confirmPasswordEdit = (EditText) v.findViewById(R.id.confirmPasswordEdit);
     }
 
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.masukButton) {
-            //bypass
-//            Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
-//            startActivityForResult(intent, 1);
-
             if (usernameEdit.getText().toString().trim().equals("")) {
-                final CustomDialogClass2 cd = new CustomDialogClass2(LoginActivity.this);
+                final CustomDialogClass2 cd = new CustomDialogClass2(SignUpActivity.this);
                 cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 cd.show();
                 cd.setCanceledOnTouchOutside(false);
                 cd.header.setText("Pesan");
                 cd.isi.setText("Username masih kosong");
+            } else if (emailEdit.getText().toString().trim().equals("")) {
+                final CustomDialogClass2 cd = new CustomDialogClass2(SignUpActivity.this);
+                cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                cd.show();
+                cd.setCanceledOnTouchOutside(false);
+                cd.header.setText("Pesan");
+                cd.isi.setText("Email masih kosong");
             } else if (passwordEdit.getText().toString().trim().equals("")) {
-                final CustomDialogClass2 cd = new CustomDialogClass2(LoginActivity.this);
+                final CustomDialogClass2 cd = new CustomDialogClass2(SignUpActivity.this);
                 cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 cd.show();
                 cd.setCanceledOnTouchOutside(false);
                 cd.header.setText("Pesan");
                 cd.isi.setText("Password masih kosong");
+            } else if (confirmPasswordEdit.getText().toString().trim().equals("")) {
+                final CustomDialogClass2 cd = new CustomDialogClass2(SignUpActivity.this);
+                cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                cd.show();
+                cd.setCanceledOnTouchOutside(false);
+                cd.header.setText("Pesan");
+                cd.isi.setText("Konfirmasi Password masih kosong");
+            } else if (!passwordEdit.getText().toString().trim().equals(confirmPasswordEdit.getText().toString().trim())) {
+                final CustomDialogClass2 cd = new CustomDialogClass2(SignUpActivity.this);
+                cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                cd.show();
+                cd.setCanceledOnTouchOutside(false);
+                cd.header.setText("Pesan");
+                cd.isi.setText("Konfirmasi Password harus sama");
             } else {
                 choice = "Login";
                 StringBuilder url = new StringBuilder();
                 try {
-                    url.append(Constant.BASE_URL).append("authenticate");
+                    url.append(Constant.BASE_URL).append("register");
 
                     JSONObject json = new JSONObject();
-                    json.put("username", usernameEdit.getText().toString().trim().toLowerCase());
+                    json.put("login", usernameEdit.getText().toString().trim().toLowerCase());
+                    json.put("email", emailEdit.getText().toString().trim().toLowerCase());
                     json.put("password", passwordEdit.getText().toString().trim());
+                    json.put("langKey", "en");
 
                     if(Constant.SHOW_LOG) Log.d("test", "==== json req " + json.toString());
 
-                    final CallWebService2 task = new CallWebService2(LoginActivity.this, this);
+                    final CallWebService2 task = new CallWebService2(SignUpActivity.this, this);
                     task.execute(url.toString(), Constant.REST_POST, json);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         } else if(v.getId() == R.id.signUp) {
-            Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
-            startActivityForResult(intent, 1);
+
         } else if (v.getId() == R.id.forgotPassword) {
-            Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
-            startActivityForResult(intent, 1);
+
         }
 
     }
@@ -107,33 +123,20 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     @Override
     public void onTaskComplete(Object... params) {
         String result = (String) params[0];
-        if (Utility.cekValidResult(result, this)) {
-            if(Constant.SHOW_LOG) Log.d("tst", "========== response " + result);
-            if(choice.equals("Login")) {
-                try {
-                    JSONObject obj = new JSONObject(result);
-                    GlobalVar.getInstance().setIdToken(obj.getString("id_token"));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-//                this.getAccount();
-
-                Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
-                startActivityForResult(intent, 1);
+        try {
+            String msg = "Registrasi berhasil, silahkan login";
+            JSONObject obj = new JSONObject(result);
+            if (obj.getString("errorCode") != null) {
+                msg = "Registrasi gagal, silahkan cek lagi";
             }
-
-//            else if(choice.equals("Account")) {
-//                GlobalVar.getInstance().setAccount(result);
-//                this.getPrograms();
-//            } else if(choice.equals("Programs")) {
-//                GlobalVar.getInstance().setProgram(result);
-//                this.getProfile();
-//            } else if(choice.equals("Participants")) {
-//                GlobalVar.getInstance().setProfile(result);
-//                Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
-//                startActivityForResult(intent, 1);
-//            }
+            final CustomDialogClass2 cd = new CustomDialogClass2(SignUpActivity.this);
+            cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            cd.show();
+            cd.setCanceledOnTouchOutside(false);
+            cd.header.setText("Pesan");
+            cd.isi.setText(msg);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -148,7 +151,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
             if(Constant.SHOW_LOG) Log.d("test", "==== json req " + json.toString());
 
-            final CallWebService2 task = new CallWebService2(LoginActivity.this, this);
+            final CallWebService2 task = new CallWebService2(SignUpActivity.this, this);
             task.execute(url.toString(), Constant.REST_GET, json);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -166,7 +169,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
             if(Constant.SHOW_LOG) Log.d("test", "==== json req " + json.toString());
 
-            final CallWebService2 task = new CallWebService2(LoginActivity.this, this);
+            final CallWebService2 task = new CallWebService2(SignUpActivity.this, this);
             task.execute(url.toString(), Constant.REST_GET, json);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -184,7 +187,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
             if(Constant.SHOW_LOG) Log.d("test", "==== json req " + json.toString());
 
-            final CallWebService2 task = new CallWebService2(LoginActivity.this, this);
+            final CallWebService2 task = new CallWebService2(SignUpActivity.this, this);
             task.execute(url.toString(), Constant.REST_GET, json);
         } catch (JSONException e) {
             e.printStackTrace();
