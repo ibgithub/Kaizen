@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
-        android:text="SIGN IN"
+        android:text="SIGN UP"
         android:gravity="center"
         android:textColor="#DDE3F2"
         android:textSize="@dimen/_34sdp"
@@ -56,6 +56,25 @@
             android:layout_marginLeft="@dimen/_25sdp"
             android:layout_marginRight="@dimen/_25sdp"/>
         <EditText
+            android:id="@+id/emailEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:textColor="@color/text"
+            android:textColorHint="@color/hintColor"
+            android:textSize="16sp"
+            android:background="@color/transparent"
+            android:layout_marginLeft="@dimen/_25sdp"
+            android:layout_marginRight="@dimen/_25sdp"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:inputType="textCapWords" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_3sdp"
+            android:background="@color/line"
+            android:layout_marginLeft="@dimen/_25sdp"
+            android:layout_marginRight="@dimen/_25sdp"/>
+        <EditText
             android:id="@+id/passwordEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -66,7 +85,7 @@
             android:background="@color/transparent"
             android:layout_marginLeft="@dimen/_25sdp"
             android:layout_marginRight="@dimen/_25sdp"
-            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_15sdp"
             android:password="true"/>
         <View
             android:layout_width="match_parent"
@@ -74,22 +93,25 @@
             android:background="@color/line"
             android:layout_marginLeft="@dimen/_25sdp"
             android:layout_marginRight="@dimen/_25sdp"/>
-
-        <TextView
-            android:id="@+id/forgotPassword"
+        <EditText
+            android:id="@+id/confirmPasswordEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
-            android:text="Forgot Password"
-            android:gravity="right"
+            android:hint="Confirm Password"
+            android:textColor="@color/text"
+            android:textColorHint="@color/hintColor"
+            android:textSize="16sp"
+            android:background="@color/transparent"
+            android:layout_marginLeft="@dimen/_25sdp"
             android:layout_marginRight="@dimen/_25sdp"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:textColor="#EE8397"
-            android:textSize="@dimen/_11sdp"
-            android:textStyle="bold"
-            android:onClick="onClick"
-            android:clickable="true"
-            />
+            android:layout_marginTop="@dimen/_15sdp"
+            android:password="true"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_3sdp"
+            android:background="@color/line"
+            android:layout_marginLeft="@dimen/_25sdp"
+            android:layout_marginRight="@dimen/_25sdp"/>
 
         <Button
             android:id="@+id/masukButton"
@@ -100,25 +122,9 @@
             android:layout_marginRight="@dimen/_25sdp"
             android:layout_marginBottom="@dimen/_10sdp"
             android:layout_marginTop="@dimen/_10sdp"
-            android:text="LOGIN"
+            android:text="REGISTER"
             android:textSize="20sp"
             android:textColor="@color/white"/>
-
-        <TextView
-            android:id="@+id/signUp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:text="Sign Up"
-            android:gravity="center"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:layout_marginBottom="@dimen/_20sdp"
-            android:textColor="#8796C7"
-            android:textSize="@dimen/_11sdp"
-            android:textStyle="bold"
-            android:onClick="onClick"
-            android:clickable="true"
-            />
 
     </LinearLayout>
 
