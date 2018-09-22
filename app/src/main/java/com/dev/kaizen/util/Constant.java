@@ -22,6 +22,7 @@ public final class Constant {
 	public static final int FONT_BOLD = 3;
 
 	public static final String BASE_URL = "http://156.67.221.248:2082/kaizen/api/";
+	public static final String BASE_URL_CONTENT = "http://156.67.221.248:2082/kaizen/";
   	public static final Boolean SHOW_LOG = true;
 
 	public static final String ERROR_COD_SESSION_EXPIRED = "IB-1010";
