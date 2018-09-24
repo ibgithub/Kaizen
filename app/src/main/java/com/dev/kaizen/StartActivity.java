@@ -15,12 +15,14 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.dev.kaizen.base.BaseActivity;
+import com.facebook.drawee.backends.pipeline.Fresco;
 
 public class StartActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fresco.initialize(this);
         LinearLayout layout = (LinearLayout) findViewById(R.id.mainLinear);
 
         View v = null;
