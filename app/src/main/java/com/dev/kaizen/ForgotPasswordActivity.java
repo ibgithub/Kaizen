@@ -1,6 +1,5 @@
 package com.dev.kaizen;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -12,21 +11,27 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.dev.kaizen.base.BaseActivity;
 import com.dev.kaizen.base.CustomDialogClass2;
-import com.dev.kaizen.restful.AsyncTaskCompleteListener;
-import com.dev.kaizen.restful.CallWebService2;
 import com.dev.kaizen.util.Constant;
 import com.dev.kaizen.util.FontUtils;
-import com.dev.kaizen.util.GlobalVar;
-import com.dev.kaizen.util.Utility;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class ForgotPasswordActivity extends BaseActivity implements View.OnClickListener, AsyncTaskCompleteListener<Object> {
+import java.io.UnsupportedEncodingException;
+
+public class ForgotPasswordActivity extends BaseActivity implements View.OnClickListener {
     EditText emailUserEdit;
-    private String choice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +57,6 @@ public class ForgotPasswordActivity extends BaseActivity implements View.OnClick
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.resetButton) {
-            //bypass
-//            Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
-//            startActivityForResult(intent, 1);
 
             if (emailUserEdit.getText().toString().trim().equals("")) {
                 final CustomDialogClass2 cd = new CustomDialogClass2(ForgotPasswordActivity.this);
@@ -64,49 +66,72 @@ public class ForgotPasswordActivity extends BaseActivity implements View.OnClick
                 cd.header.setText("Pesan");
                 cd.isi.setText("Email masih kosong");
             } else {
-                choice = "Login";
-                StringBuilder url = new StringBuilder();
-                try {
-                    url.append(Constant.BASE_URL).append("reset-password/init");
 
-                    JSONObject json = new JSONObject();
-                    json.put("mail", emailUserEdit.getText().toString().trim().toLowerCase());
+                String url = Constant.BASE_URL + "account/reset-password/init";
 
-                    if(Constant.SHOW_LOG) Log.d("test", "==== json req " + json.toString());
+                RequestQueue queue = Volley.newRequestQueue(ForgotPasswordActivity.this);
 
-                    final CallWebService2 task = new CallWebService2(ForgotPasswordActivity.this, this);
-                    task.execute(url.toString(), Constant.REST_POST, json);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.i("VOLLEY", response);
+
+                        final CustomDialogClass2 cd = new CustomDialogClass2(ForgotPasswordActivity.this);
+                        cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        cd.show();
+                        cd.setCanceledOnTouchOutside(false);
+                        cd.header.setText("Pesan");
+                        cd.isi.setText("Silahkan cek email untuk reset Password");
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("VOLLEY", error.toString());
+                        NetworkResponse response = error.networkResponse;
+                        if (error instanceof ServerError && response != null) {
+                            try {
+                                String res = new String(response.data,
+                                        HttpHeaderParser.parseCharset(response.headers, "utf-8"));
+                                JSONObject obj = new JSONObject(res);
+                                Log.d("obj", "" + obj);
+
+                                final CustomDialogClass2 cd = new CustomDialogClass2(ForgotPasswordActivity.this);
+                                cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                cd.show();
+                                cd.setCanceledOnTouchOutside(false);
+                                cd.header.setText("Message");
+                                cd.isi.setText(obj.getString("title"));
+                            } catch (UnsupportedEncodingException e1) {
+                                e1.printStackTrace();
+                            } catch (JSONException e2) {
+                                e2.printStackTrace();
+                            }
+                        }
+                    }
+                })
+                {
+                    @Override
+                    public String getBodyContentType() {
+                        return "application/json; charset=utf-8";
+                    }
+
+                    @Override
+                    public byte[] getBody() {
+                        try {
+                            return emailUserEdit.getText().toString().trim().toLowerCase().getBytes("utf-8");
+                        } catch (UnsupportedEncodingException uee) {
+                            return null;
+                        }
+                    }
+
+                };
+// add it to the RequestQueue
+                queue.add(stringRequest);
+
             }
-        } else if(v.getId() == R.id.signUp) {
-
-        } else if (v.getId() == R.id.forgotPassword) {
-
         }
 
     }
 
-    @Override
-    public void onTaskComplete(Object... params) {
-        String result = (String) params[0];
-        try {
-            String msg = "Email Ganti Password sudah terkirim";
-            JSONObject obj = new JSONObject(result);
-            if (obj.getString("errorCode") != null) {
-                msg = "Ganti password gagal, silahkan cek lagi";
-            }
-            final CustomDialogClass2 cd = new CustomDialogClass2(ForgotPasswordActivity.this);
-            cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            cd.show();
-            cd.setCanceledOnTouchOutside(false);
-            cd.header.setText("Pesan");
-            cd.isi.setText(msg);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
 
 }
