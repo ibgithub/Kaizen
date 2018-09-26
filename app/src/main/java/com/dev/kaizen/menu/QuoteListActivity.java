@@ -104,8 +104,6 @@ public class QuoteListActivity extends Activity  {
 // add it to the RequestQueue
         queue.add(getRequest);
 
-
-
         btn_next.setOnClickListener(new OnClickListener() {
 
             public void onClick(View v) {

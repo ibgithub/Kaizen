@@ -1,7 +1,5 @@
 package com.dev.kaizen;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -14,11 +12,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.dev.kaizen.base.BaseActivity;
 import com.dev.kaizen.base.CustomDialogClass2;
-import com.dev.kaizen.restful.AsyncTaskCompleteListener;
-import com.dev.kaizen.restful.CallWebService2;
-import com.dev.kaizen.restful.CallWebServiceTask;
 import com.dev.kaizen.util.Constant;
 import com.dev.kaizen.util.FontUtils;
 import com.dev.kaizen.util.GlobalVar;
@@ -27,9 +32,9 @@ import com.dev.kaizen.util.Utility;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URLEncoder;
+import java.io.UnsupportedEncodingException;
 
-public class LoginActivity extends BaseActivity implements View.OnClickListener, AsyncTaskCompleteListener<Object> {
+public class LoginActivity extends BaseActivity implements View.OnClickListener {
     EditText usernameEdit, passwordEdit;
     private String choice;
 
@@ -77,22 +82,70 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 cd.header.setText("Pesan");
                 cd.isi.setText("Password masih kosong");
             } else {
-                choice = "Login";
-                StringBuilder url = new StringBuilder();
-                try {
-                    url.append(Constant.BASE_URL).append("authenticate");
+                String url = Constant.BASE_URL + "authenticate";
 
-                    JSONObject json = new JSONObject();
+                RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
+
+                // prepare the Request
+                JSONObject json = new JSONObject();
+                try {
                     json.put("username", usernameEdit.getText().toString().trim().toLowerCase());
                     json.put("password", passwordEdit.getText().toString().trim());
-
-                    if(Constant.SHOW_LOG) Log.d("test", "==== json req " + json.toString());
-
-                    final CallWebService2 task = new CallWebService2(LoginActivity.this, this);
-                    task.execute(url.toString(), Constant.REST_POST, json);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
+                JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.POST, url, json,
+                    new Response.Listener<JSONObject>()
+                    {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                GlobalVar.getInstance().setIdToken(response.getString("id_token"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
+                            startActivityForResult(intent, 1);
+                        }
+                    },
+                    new Response.ErrorListener()
+                    {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e("VOLLEY", error.toString());
+                            NetworkResponse response = error.networkResponse;
+                            if (error instanceof AuthFailureError && response != null) {
+                                try {
+                                    String res = new String(response.data,
+                                            HttpHeaderParser.parseCharset(response.headers, "utf-8"));
+                                    Log.e("res", "" + res);
+                                    JSONObject obj = new JSONObject(res);
+                                    Log.d("obj", "" + obj);
+
+                                    final CustomDialogClass2 cd = new CustomDialogClass2(LoginActivity.this);
+                                    cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                    cd.show();
+                                    cd.setCanceledOnTouchOutside(false);
+                                    cd.header.setText("Message");
+                                    String title = obj.getString("title");
+                                    String detail = obj.getString("detail");
+
+                                    cd.isi.setText(title + ": " + detail);
+                                } catch (UnsupportedEncodingException e1) {
+                                    e1.printStackTrace();
+                                } catch (JSONException e2) {
+                                    e2.printStackTrace();
+                                }
+                            } else if (error instanceof ServerError && response != null) {
+
+                            }
+                        }
+                    }
+                );
+                queue.add(postRequest);
+
             }
         } else if(v.getId() == R.id.signUp) {
             Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
@@ -103,40 +156,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         }
 
     }
-
-    @Override
-    public void onTaskComplete(Object... params) {
-        String result = (String) params[0];
-        if (Utility.cekValidResult(result, this)) {
-            if(Constant.SHOW_LOG) Log.d("tst", "========== response " + result);
-            if(choice.equals("Login")) {
-                try {
-                    JSONObject obj = new JSONObject(result);
-                    GlobalVar.getInstance().setIdToken(obj.getString("id_token"));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-//                this.getAccount();
-
-                Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
-                startActivityForResult(intent, 1);
-            }
-
-//            else if(choice.equals("Account")) {
-//                GlobalVar.getInstance().setAccount(result);
-//                this.getPrograms();
-//            } else if(choice.equals("Programs")) {
-//                GlobalVar.getInstance().setProgram(result);
-//                this.getProfile();
-//            } else if(choice.equals("Participants")) {
-//                GlobalVar.getInstance().setProfile(result);
-//                Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
-//                startActivityForResult(intent, 1);
-//            }
-        }
-    }
-
+/*
     private void getAccount () {
         choice = "Account";
         StringBuilder url = new StringBuilder();
@@ -190,4 +210,5 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             e.printStackTrace();
         }
     }
+*/
 }
