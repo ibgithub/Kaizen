@@ -1,9 +1,14 @@
 <resources>
     <string name="app_name">Kaizen</string>
     <string name="title_activity_menu">MenuActivity</string>
+    <string name="title_home">Home</string>
     <string name="title_timeline">Timeline</string>
     <string name="title_program">My Programs</string>
     <string name="title_profile">Profile</string>
+    <string name="title_more">More</string>
 
     <string name="detail_program">Nama Mentor: Andika Chandra\nDaftar Peserta:1. Adi Widya\n\t\t\t2.Budi Winata\n\t\t\t3. Citra\nNama SMK:SMK Negeri 1 Bekasi\nLokasi: Desa Sukamukti RT 10 RW 05\nLatar Belakang:\nLapngan yang kotor padahal banyak anak-anak main\nLama Program: 5 hari\nTotal Biaya: 300.000\nDaftar masalah yang ditemui:\n1. Tidak ada tempat sampah\n2. Tidak ada sapu\n3. Tidak ada arena bermain\nDaftar Tugas yang dilakukan:\n1. Beli tempat sampah\nHasil:\n1. Sampah berkurang\n2. Lapangan jadi bersih\n\n</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

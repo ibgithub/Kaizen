@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:contentInsetStart="@dimen/fab_margin"
+            android:background="@color/listBg">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <FrameLayout
+                    android:layout_width="@dimen/_50sdp"
+                    android:layout_height="match_parent" >
+                    <Button
+                        android:id="@+id/backBtn"
+                        android:layout_width="@dimen/_17sdp"
+                        android:layout_height="@dimen/_17sdp"
+                        android:layout_gravity="center_vertical|left"
+                        android:layout_marginLeft="@dimen/_8sdp"
+                        android:background="@drawable/prev"
+                        android:backgroundTint="@color/darkgray"
+                        android:visibility="invisible"/>
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/headertext"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:textColor="@color/darkgray"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:text="test tset"
+                    android:gravity="center"/>
+
+                <FrameLayout
+                    android:layout_width="@dimen/_50sdp"
+                    android:layout_height="match_parent" >
+                    <Button
+                        android:id="@+id/nextBtn"
+                        android:layout_width="@dimen/_17sdp"
+                        android:layout_height="@dimen/_17sdp"
+                        android:layout_gravity="center_vertical|right"
+                        android:layout_marginRight="@dimen/_8sdp"
+                        android:background="@drawable/next"
+                        android:visibility="invisible"
+                        android:backgroundTint="@color/darkgray"/>
+                </FrameLayout>
+            </LinearLayout>
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <FrameLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_marginBottom="@dimen/_80sdp"/>
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="?android:attr/windowBackground"
+        app:menu="@menu/navigation"
+        app:labelVisibilityMode="labeled"
+        app:itemIconTint="@drawable/bottom_selector"
+        app:itemTextColor="@drawable/bottom_selector"/>
+</android.support.design.widget.CoordinatorLayout>

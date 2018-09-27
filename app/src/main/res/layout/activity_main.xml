@@ -6,96 +6,116 @@
     android:layout_height="match_parent"
     android:background="@color/transparent"
     android:orientation="vertical"
-    android:layout_gravity="center"
-    android:gravity="center">
+    android:layout_gravity="top|center"
+    android:gravity="top|center">
 
-    <ImageView
-        android:layout_width="@dimen/_150sdp"
-        android:layout_height="@dimen/_70sdp"
-        android:layout_gravity="center"
-        android:background="@drawable/logo" />
+    <LinearLayout
+        android:id="@+id/topLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/_20sdp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_gravity="left|center"
+            android:gravity="left|center">
+            <TextView
+                android:id="@+id/welcomeText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Welcome"
+                android:gravity="left|center"
+                android:textColor="@color/blue"
+                android:textSize="24sp"
+                android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/descText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Astra Kaizen Program"
+                android:gravity="left|center"
+                android:textColor="@color/blue"
+                android:textSize="14sp"/>
+        </LinearLayout>
+        <Button
+            android:id="@+id/loginBtn"
+            android:layout_width="@dimen/_45sdp"
+            android:layout_height="@dimen/_45sdp"
+            android:text="LOGIN"
+            android:textSize="12sp"
+            android:textColor="@color/blue"
+            android:drawableTop="@drawable/login_ic"
+            android:background="@color/transparent"/>
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/sampleBtn"
-        android:layout_width="@dimen/_200sdp"
-        android:layout_height="@dimen/_40sdp"
-        android:background="@drawable/bg_blue"
-        android:layout_marginBottom="@dimen/_5sdp"
-        android:layout_marginTop="@dimen/_20sdp"
-        android:text="KAIZEN Sample"
-        android:textSize="20sp"
-        android:textColor="@color/white"
-        android:textAllCaps="false"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginLeft="@dimen/_20sdp"
+        android:layout_marginRight="@dimen/_20sdp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="1">
 
-    <Button
-        android:id="@+id/cornerBtn"
-        android:layout_width="@dimen/_200sdp"
-        android:layout_height="@dimen/_40sdp"
-        android:background="@drawable/bg_blue"
-        android:layout_marginBottom="@dimen/_5sdp"
-        android:layout_marginTop="@dimen/_5sdp"
-        android:text="Inspiring Corner"
-        android:textSize="20sp"
-        android:textColor="@color/white"
-        android:textAllCaps="false"/>
+            <ImageView
+                android:id="@+id/sampleBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/sample"
+                android:layout_weight="1" />
 
-    <Button
-        android:id="@+id/quotesBtn"
-        android:layout_width="@dimen/_200sdp"
-        android:layout_height="@dimen/_40sdp"
-        android:background="@drawable/bg_blue"
-        android:layout_marginBottom="@dimen/_5sdp"
-        android:layout_marginTop="@dimen/_5sdp"
-        android:text="KAIZEN Quotes"
-        android:textSize="20sp"
-        android:textColor="@color/white"
-        android:textAllCaps="false"/>
+            <ImageView
+                android:id="@+id/cornerBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/corner"
+                android:layout_weight="1"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="1">
 
-    <Button
-        android:id="@+id/toolsBtn"
-        android:layout_width="@dimen/_200sdp"
-        android:layout_height="@dimen/_40sdp"
-        android:background="@drawable/bg_blue"
-        android:layout_marginBottom="@dimen/_5sdp"
-        android:layout_marginTop="@dimen/_5sdp"
-        android:text="KAIZEN Tools"
-        android:textSize="20sp"
-        android:textColor="@color/white"
-        android:textAllCaps="false"/>
+            <ImageView
+                android:id="@+id/quotesBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/quotes"
+                android:layout_weight="1" />
 
-    <Button
-        android:id="@+id/tutorialBtn"
-        android:layout_width="@dimen/_200sdp"
-        android:layout_height="@dimen/_40sdp"
-        android:background="@drawable/bg_blue"
-        android:layout_marginBottom="@dimen/_5sdp"
-        android:layout_marginTop="@dimen/_5sdp"
-        android:text="Video Tutorial"
-        android:textSize="20sp"
-        android:textColor="@color/white"
-        android:textAllCaps="false"/>
+            <ImageView
+                android:id="@+id/toolsBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/tools"
+                android:layout_weight="1"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="1">
 
-    <Button
-        android:id="@+id/testimonialBtn"
-        android:layout_width="@dimen/_200sdp"
-        android:layout_height="@dimen/_40sdp"
-        android:background="@drawable/bg_blue"
-        android:layout_marginBottom="@dimen/_5sdp"
-        android:layout_marginTop="@dimen/_5sdp"
-        android:text="Testimonial"
-        android:textSize="20sp"
-        android:textColor="@color/white"
-        android:textAllCaps="false"/>
+            <ImageView
+                android:id="@+id/tutorialBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/tutorial"
+                android:layout_weight="1" />
 
-    <Button
-        android:id="@+id/programBtn"
-        android:layout_width="@dimen/_200sdp"
-        android:layout_height="@dimen/_40sdp"
-        android:background="@drawable/bg_blue"
-        android:layout_marginBottom="@dimen/_20sdp"
-        android:layout_marginTop="@dimen/_5sdp"
-        android:text="KGTS Program"
-        android:textSize="20sp"
-        android:textColor="@color/white"
-        android:textAllCaps="false"/>
+            <ImageView
+                android:id="@+id/testimonialBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/testimonial"
+                android:layout_weight="1"/>
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

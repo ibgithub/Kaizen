@@ -12,17 +12,18 @@ public final class Constant {
 	 */
     public static final String DENOM_FORMAT = "##0.#####";
 	public static final String DATE_FORMAT = "dd MM yyyy HH:mm:ss";
-	public static final String DATE_FORMAT_MUTASI = "dd-MMM-yyyy";;
+	public static final String DATE_FORMAT_MUTASI = "dd-MMM-yyyy";
 	public static final String DATE_FORMAT_MUTASI_DETAIL = "dd-MM-yyyy, HH:mm:ss";
 	public static final String PRINTED_DATE_FORMAT = "dd-MMM-yyyy HH:mm:ss";
 	public static final String DATE_TIME_FORMAT = "dd-MMM-yyyy HH:mm";
 
     public static final int FONT_PLAIN = 1;
-    public static final int FONT_ITALIC = 2;
+    public static final int FONT_SEMIBOLD = 2;
 	public static final int FONT_BOLD = 3;
 
 	public static final String BASE_URL = "http://156.67.221.248:2082/kaizen/api/";
-	public static final String BASE_URL_CONTENT = "http://156.67.221.248:2082/kaizen/";
+	public static final String BASE_PICT = "http://156.67.221.248:2082/kaizen/";
+
   	public static final Boolean SHOW_LOG = true;
 
 	public static final String ERROR_COD_SESSION_EXPIRED = "IB-1010";
