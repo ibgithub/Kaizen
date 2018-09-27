@@ -1,5 +1,8 @@
 package com.dev.kaizen;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -10,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -23,15 +27,18 @@ import com.android.volley.toolbox.Volley;
 import com.dev.kaizen.base.BaseActivity;
 import com.dev.kaizen.base.CustomDialogClass2;
 import com.dev.kaizen.restful.AsyncTaskCompleteListener;
+import com.dev.kaizen.restful.CallWebService2;
 import com.dev.kaizen.util.Constant;
 import com.dev.kaizen.util.FontUtils;
+import com.dev.kaizen.util.GlobalVar;
+import com.dev.kaizen.util.Utility;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 
-public class SignUpActivity extends BaseActivity implements View.OnClickListener, AsyncTaskCompleteListener<Object> {
+public class SignUpActivity extends BaseActivity implements View.OnClickListener {
     EditText usernameEdit, emailEdit, passwordEdit, confirmPasswordEdit;
 
     @Override
@@ -48,14 +55,29 @@ public class SignUpActivity extends BaseActivity implements View.OnClickListener
         }
         layout.addView(v);
 
+        bgImg.setImageResource(R.drawable.bg_down2);
+
+        TextView tv = (TextView) v.findViewById(R.id.signText);
+        tv.setTypeface(FontUtils.loadFontFromAssets(this, Constant.FONT_BOLD));
+
+        tv = (TextView) v.findViewById(R.id.kaizenText);
+        tv.setTypeface(FontUtils.loadFontFromAssets(this));
+
         Button btn = (Button) v.findViewById(R.id.masukButton);
-        btn.setTypeface(FontUtils.loadFontFromAssets(this));
+        btn.setTypeface(FontUtils.loadFontFromAssets(this, Constant.FONT_BOLD));
         btn.setOnClickListener(this);
 
         usernameEdit = (EditText) v.findViewById(R.id.usernameEdit);
+        usernameEdit.setTypeface(FontUtils.loadFontFromAssets(this));
+
         emailEdit = (EditText) v.findViewById(R.id.emailEdit);
+        emailEdit.setTypeface(FontUtils.loadFontFromAssets(this));
+
         passwordEdit = (EditText) v.findViewById(R.id.passwordEdit);
+        passwordEdit.setTypeface(FontUtils.loadFontFromAssets(this));
+
         confirmPasswordEdit = (EditText) v.findViewById(R.id.confirmPasswordEdit);
+        confirmPasswordEdit.setTypeface(FontUtils.loadFontFromAssets(this));
     }
 
     @Override
@@ -97,7 +119,6 @@ public class SignUpActivity extends BaseActivity implements View.OnClickListener
                 cd.header.setText("Pesan");
                 cd.isi.setText("Konfirmasi Password harus sama");
             } else {
-
                 String url = Constant.BASE_URL + "register";
 
                 RequestQueue queue = Volley.newRequestQueue(SignUpActivity.this);
@@ -159,36 +180,9 @@ public class SignUpActivity extends BaseActivity implements View.OnClickListener
                             }
                         }
                 )
-                ;
+                        ;
                 queue.add(postRequest);
-
             }
-        } else if(v.getId() == R.id.signUp) {
-
-        } else if (v.getId() == R.id.forgotPassword) {
-
-        }
-
-    }
-
-    @Override
-    public void onTaskComplete(Object... params) {
-        String result = (String) params[0];
-        try {
-            String msg = "Registrasi berhasil, silahkan login";
-            JSONObject obj = new JSONObject(result);
-            if (obj.getString("errorCode") != null) {
-                msg = "Registrasi gagal, silahkan cek lagi";
-            }
-            final CustomDialogClass2 cd = new CustomDialogClass2(SignUpActivity.this);
-            cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            cd.show();
-            cd.setCanceledOnTouchOutside(false);
-            cd.header.setText("Pesan");
-            cd.isi.setText(msg);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
-
 }

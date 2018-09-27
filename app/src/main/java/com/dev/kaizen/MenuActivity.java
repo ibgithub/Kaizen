@@ -26,11 +26,11 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.navigation_timeline:
-                    mTextMessage.setText(R.string.title_timeline);
-                    belumText.setVisibility(TextView.VISIBLE);
-                    mainLayout.setVisibility(LinearLayout.GONE);
-                    return true;
+//                case R.id.navigation_timeline:
+//                    mTextMessage.setText(R.string.title_timeline);
+//                    belumText.setVisibility(TextView.VISIBLE);
+//                    mainLayout.setVisibility(LinearLayout.GONE);
+//                    return true;
                 case R.id.navigation_program:
                     mTextMessage.setText(R.string.title_program);
                     belumText.setVisibility(TextView.GONE);

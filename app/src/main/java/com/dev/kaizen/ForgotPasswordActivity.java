@@ -1,5 +1,6 @@
 package com.dev.kaizen;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -22,8 +24,12 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.dev.kaizen.base.BaseActivity;
 import com.dev.kaizen.base.CustomDialogClass2;
+import com.dev.kaizen.restful.AsyncTaskCompleteListener;
+import com.dev.kaizen.restful.CallWebService2;
 import com.dev.kaizen.util.Constant;
 import com.dev.kaizen.util.FontUtils;
+import com.dev.kaizen.util.GlobalVar;
+import com.dev.kaizen.util.Utility;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,16 +53,26 @@ public class ForgotPasswordActivity extends BaseActivity implements View.OnClick
         }
         layout.addView(v);
 
+        TextView tv = (TextView) v.findViewById(R.id.signText);
+        tv.setTypeface(FontUtils.loadFontFromAssets(this, Constant.FONT_BOLD));
+
+        tv = (TextView) v.findViewById(R.id.kaizenText);
+        tv.setTypeface(FontUtils.loadFontFromAssets(this));
+
         Button btn = (Button) v.findViewById(R.id.resetButton);
-        btn.setTypeface(FontUtils.loadFontFromAssets(this));
+        btn.setTypeface(FontUtils.loadFontFromAssets(this, Constant.FONT_BOLD));
         btn.setOnClickListener(this);
 
         emailUserEdit = (EditText) v.findViewById(R.id.emailUserEdit);
+        emailUserEdit.setTypeface(FontUtils.loadFontFromAssets(this));
     }
 
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.resetButton) {
+            //bypass
+//            Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
+//            startActivityForResult(intent, 1);
 
             if (emailUserEdit.getText().toString().trim().equals("")) {
                 final CustomDialogClass2 cd = new CustomDialogClass2(ForgotPasswordActivity.this);
@@ -66,7 +82,6 @@ public class ForgotPasswordActivity extends BaseActivity implements View.OnClick
                 cd.header.setText("Pesan");
                 cd.isi.setText("Email masih kosong");
             } else {
-
                 String url = Constant.BASE_URL + "account/reset-password/init";
 
                 RequestQueue queue = Volley.newRequestQueue(ForgotPasswordActivity.this);
@@ -127,11 +142,7 @@ public class ForgotPasswordActivity extends BaseActivity implements View.OnClick
                 };
 // add it to the RequestQueue
                 queue.add(stringRequest);
-
             }
         }
-
     }
-
-
 }

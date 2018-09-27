@@ -8,9 +8,9 @@ import java.util.Hashtable;
 public class FontUtils {
 	
 	 // font file name
-    public static final String FONT_CUSTOM = "FuturaRegular.ttf";
-    public static final String FONT_CUSTOM_ITALIC = "FuturaItalic.ttf";
-    public static final String FONT_CUSTOM_BOLD = "FuturaBold.ttf";
+    public static final String FONT_CUSTOM = "Poppins-Regular.ttf";
+    public static final String FONT_CUSTOM_SEMIBOLD = "Poppins-SemiBold.ttf";
+    public static final String FONT_CUSTOM_BOLD = "Poppins-Bold.ttf";
 
     // store the opened typefaces(fonts)
     private static final Hashtable<String, Typeface> mCache = new Hashtable<String, Typeface>();
@@ -40,8 +40,8 @@ public class FontUtils {
     	if(Constant.FONT_BOLD == styleType){
     		fontName = FONT_CUSTOM_BOLD;
     	}
-        if(Constant.FONT_ITALIC == styleType){
-            fontName = FONT_CUSTOM_ITALIC;
+        if(Constant.FONT_SEMIBOLD == styleType){
+            fontName = FONT_CUSTOM_SEMIBOLD;
         }
         // make sure we load each font only once
         synchronized (mCache) {

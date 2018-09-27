@@ -11,6 +11,7 @@ public class GlobalVar implements Serializable {
 	private String account;
 	private String program;
 	private String profile;
+	private String grup;
 
 	static {
 		instance = new GlobalVar();
@@ -52,5 +53,13 @@ public class GlobalVar implements Serializable {
 
 	public void setProfile(String profile) {
 		this.profile = profile;
+	}
+
+	public String getGrup() {
+		return grup;
+	}
+
+	public void setGrup(String grup) {
+		this.grup = grup;
 	}
 }
