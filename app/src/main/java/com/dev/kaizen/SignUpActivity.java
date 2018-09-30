@@ -26,12 +26,9 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.dev.kaizen.base.BaseActivity;
 import com.dev.kaizen.base.CustomDialogClass2;
-import com.dev.kaizen.restful.AsyncTaskCompleteListener;
-import com.dev.kaizen.restful.CallWebService2;
 import com.dev.kaizen.util.Constant;
 import com.dev.kaizen.util.FontUtils;
 import com.dev.kaizen.util.GlobalVar;
-import com.dev.kaizen.util.Utility;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -149,14 +146,20 @@ public class SignUpActivity extends BaseActivity implements View.OnClickListener
                                 Log.e("VOLLEY", error.toString());
                                 NetworkResponse response = error.networkResponse;
                                 if (response == null) {
-                                    String msg = "Sukses mendaftar, silahkan login";
 
-                                    final CustomDialogClass2 cd = new CustomDialogClass2(SignUpActivity.this);
-                                    cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                                    cd.show();
-                                    cd.setCanceledOnTouchOutside(false);
-                                    cd.header.setText("Pesan");
-                                    cd.isi.setText(msg);
+                                    new AlertDialog.Builder(SignUpActivity.this)
+                                        .setTitle("Pesan")
+                                        .setMessage("Sukses mendaftar, silahkan login")
+                                        .setIcon(android.R.drawable.ic_dialog_alert)
+                                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int whichButton) {
+                                                GlobalVar.getInstance().setIdToken(null);
+
+                                                Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+                                                startActivityForResult(intent, 1);
+                                            }
+                                        })
+                                        .setNegativeButton(android.R.string.no, null).show();
 
                                 }else if (error instanceof ServerError && response != null) {
                                     try {
