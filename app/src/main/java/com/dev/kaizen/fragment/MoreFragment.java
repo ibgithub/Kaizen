@@ -8,7 +8,10 @@
 
 package com.dev.kaizen.fragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,10 +24,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.dev.kaizen.MainActivity;
 import com.dev.kaizen.R;
 import com.dev.kaizen.util.Constant;
 import com.dev.kaizen.util.FontUtils;
+import com.dev.kaizen.util.GlobalVar;
 
 
 public class MoreFragment extends Fragment implements View.OnClickListener{
@@ -65,6 +71,9 @@ public class MoreFragment extends Fragment implements View.OnClickListener{
         layout = (LinearLayout ) v.findViewById(R.id.contactLayout);
         layout.setOnClickListener(this);
 
+        layout = (LinearLayout ) v.findViewById(R.id.logoutLayout);
+        layout.setOnClickListener(this);
+
         return v;
     }
 
@@ -98,6 +107,23 @@ public class MoreFragment extends Fragment implements View.OnClickListener{
             fragmentTransaction.replace(R.id.content, fragment2);
             fragmentTransaction.addToBackStack("home");
             fragmentTransaction.commit();
+        } else if(v.getId() == R.id.logoutLayout) {
+
+            new AlertDialog.Builder(getActivity())
+                    .setTitle("Pesan")
+                    .setMessage("Apakah Anda yakin untuk Log Out?")
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            Toast.makeText(getActivity(), "Yaay", Toast.LENGTH_SHORT).show();
+                            GlobalVar.getInstance().setIdToken(null);
+
+                            Intent intent = new Intent(getActivity(), MainActivity.class);
+                            startActivityForResult(intent, 1);
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, null).show();
+
         }
     }
 }
