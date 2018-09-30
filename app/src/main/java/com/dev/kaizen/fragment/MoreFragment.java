@@ -24,7 +24,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.dev.kaizen.MainActivity;
 import com.dev.kaizen.R;
@@ -115,14 +114,18 @@ public class MoreFragment extends Fragment implements View.OnClickListener{
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
-                            Toast.makeText(getActivity(), "Yaay", Toast.LENGTH_SHORT).show();
                             GlobalVar.getInstance().setIdToken(null);
+                            GlobalVar.getInstance().setAccount(null);
+                            GlobalVar.getInstance().setProfile(null);
+                            GlobalVar.getInstance().setGrup(null);
+                            GlobalVar.getInstance().setProgram(null);
 
                             Intent intent = new Intent(getActivity(), MainActivity.class);
                             startActivityForResult(intent, 1);
                         }
                     })
-                    .setNegativeButton(android.R.string.no, null).show();
+                    .setNegativeButton(android.R.string.no, null)
+                    .show();
 
         }
     }
