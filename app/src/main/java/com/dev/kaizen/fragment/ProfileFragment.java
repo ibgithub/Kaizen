@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
@@ -61,13 +62,39 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_blank, container, false);
+        View v = inflater.inflate(R.layout.fragment_profile, container, false);
 
         Button backBtn = (Button) getActivity().findViewById(R.id.backBtn);
         backBtn.setVisibility(Button.INVISIBLE);
 
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
         toolbar.setVisibility(Toolbar.GONE);
+
+        TextView nameText = (TextView) v.findViewById(R.id.nameText);
+        TextView emailText = (TextView) v.findViewById(R.id.emailText);
+        TextView addressText = (TextView) v.findViewById(R.id.addressText);
+        TextView schoolText = (TextView) v.findViewById(R.id.schoolText);
+        TextView classText = (TextView) v.findViewById(R.id.classText);
+
+        Button updateBtn = (Button) v.findViewById(R.id.updateBtn);
+        updateBtn.setOnClickListener(this);
+
+        try {
+            JSONObject account = new JSONObject(GlobalVar.getInstance().getAccount());
+            nameText.setText(account.getString("firstName") + " " + account.getString("lastName"));
+            emailText.setText(account.getString("email"));
+
+            JSONObject profile = new JSONObject(GlobalVar.getInstance().getProfile());
+            addressText.setText(profile.getString("address"));
+            classText.setText(profile.getString("schoolClass"));
+
+            JSONObject school = profile.getJSONObject("school");
+            schoolText.setText(school.getString("schoolName"));
+
+        } catch (JSONException ex) {
+
+        }
+
 
         return v;
     }
