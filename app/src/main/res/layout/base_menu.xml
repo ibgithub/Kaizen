@@ -82,7 +82,6 @@
         android:layout_gravity="bottom"
         android:background="?android:attr/windowBackground"
         app:menu="@menu/navigation"
-        app:labelVisibilityMode="labeled"
         app:itemIconTint="@drawable/bottom_selector"
         app:itemTextColor="@drawable/bottom_selector"/>
 </android.support.design.widget.CoordinatorLayout>

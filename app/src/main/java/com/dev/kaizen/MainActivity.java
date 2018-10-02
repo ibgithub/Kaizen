@@ -47,6 +47,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         Button btn = (Button) v.findViewById(R.id.loginBtn);
         btn.setTypeface(FontUtils.loadFontFromAssets(this));
         btn.setOnClickListener(this);
+
+        btn = (Button) v.findViewById(R.id.youtubeBtn);
+        btn.setTypeface(FontUtils.loadFontFromAssets(this));
+        btn.setOnClickListener(this);
         
         ImageView imgV = (ImageView) v.findViewById(R.id.sampleBtn);
         imgV.setOnClickListener(this);
@@ -99,6 +103,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             intent.putExtra("menu", "tutorial");
             startActivityForResult(intent, 1);
         } else if(v.getId() == R.id.testimonialBtn) {
+            final CustomDialogClass2 cd = new CustomDialogClass2(MainActivity.this);
+            cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            cd.show();
+            cd.setCanceledOnTouchOutside(false);
+            cd.header.setText("Pesan");
+            cd.isi.setText("Menu belum tersedia");
+        } else if(v.getId() == R.id.youtubeBtn) {
             final CustomDialogClass2 cd = new CustomDialogClass2(MainActivity.this);
             cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             cd.show();

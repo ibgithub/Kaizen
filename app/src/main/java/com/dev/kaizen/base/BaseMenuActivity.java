@@ -29,6 +29,7 @@ import com.dev.kaizen.fragment.HomeFragment;
 import com.dev.kaizen.fragment.MoreFragment;
 import com.dev.kaizen.fragment.ProfileFragment;
 import com.dev.kaizen.fragment.ProgramFragment;
+import com.dev.kaizen.util.BottomNavigationViewHelper;
 import com.dev.kaizen.util.Constant;
 import com.dev.kaizen.util.GlobalVar;
 
@@ -118,6 +119,8 @@ public class BaseMenuActivity extends AppCompatActivity {
             transaction.commit();
             navigation.setSelectedItemId(check);
         }
+
+        BottomNavigationViewHelper.disableShiftMode(navigation);
     }
 
     @Override

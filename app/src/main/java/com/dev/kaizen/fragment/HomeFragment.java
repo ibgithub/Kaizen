@@ -72,8 +72,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
 
 //        welcomeText = (TextView) v.findViewById(R.id.welcomeText);
 
-        Button loginBtn = (Button) v.findViewById(R.id.loginBtn);
-        loginBtn.setVisibility(Button.GONE);
+        Button btn = (Button) v.findViewById(R.id.loginBtn);
+        btn.setVisibility(Button.GONE);
+
+        btn = (Button) v.findViewById(R.id.youtubeBtn);
+        btn.setVisibility(Button.GONE);
 
         ImageView imgV = (ImageView) v.findViewById(R.id.sampleBtn);
         imgV.setOnClickListener(this);
