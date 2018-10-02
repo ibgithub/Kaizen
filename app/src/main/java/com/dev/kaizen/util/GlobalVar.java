@@ -12,6 +12,9 @@ public class GlobalVar implements Serializable {
 	private String program;
 	private String profile;
 	private String grup;
+	private String provincies;
+	private String cities;
+	private String schools;
 
 	static {
 		instance = new GlobalVar();
@@ -62,4 +65,30 @@ public class GlobalVar implements Serializable {
 	public void setGrup(String grup) {
 		this.grup = grup;
 	}
+
+	public String getProvincies() {
+		return provincies;
+	}
+
+	public void setProvincies(String provincies) {
+		this.provincies = provincies;
+	}
+
+	public String getCities() {
+		return cities;
+	}
+
+	public void setCities(String cities) {
+		this.cities = cities;
+	}
+
+
+	public String getSchools() {
+		return schools;
+	}
+
+	public void setSchools(String schools) {
+		this.schools = schools;
+	}
+
 }
