@@ -19,9 +19,6 @@ import com.dev.kaizen.restful.CallWebService2;
 import com.dev.kaizen.util.Constant;
 import com.dev.kaizen.util.GlobalVar;
 import com.dev.kaizen.util.Utility;
-import com.zhihu.matisse.Matisse;
-import com.zhihu.matisse.MimeType;
-import com.zhihu.matisse.engine.impl.GlideEngine;
 
 import org.json.JSONException;
 import org.json.JSONObject;

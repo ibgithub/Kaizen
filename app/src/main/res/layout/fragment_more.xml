@@ -117,8 +117,8 @@
             android:orientation="horizontal"
             android:gravity="center">
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:background="@drawable/logout_icn"
                 android:backgroundTint="@color/darkgray"
                 android:layout_marginLeft="@dimen/_18sdp"

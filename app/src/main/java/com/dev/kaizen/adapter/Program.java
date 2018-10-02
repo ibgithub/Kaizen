@@ -1,6 +1,9 @@
 package com.dev.kaizen.adapter;
 
-public class Program {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Program implements Parcelable {
     private int id;
     private String programName, background, totalDays, totalBudget, problemList, taskList,
             resultList, urlPhotoBefore, urlPhotoAfter, urlVideo, notes, participantGroup;
@@ -130,4 +133,58 @@ public class Program {
     public void setParticipantGroup(String participantGroup) {
         this.participantGroup = participantGroup;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+//    int id, String programName, String background, String totalDays, String totalBudget,
+//    String problemList, String taskList, String resultList, String urlPhotoBefore,
+//    String urlPhotoAfter, String urlVideo, String notes, String participantGroup
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
+        dest.writeString(this.programName);
+        dest.writeString(this.background);
+        dest.writeString(this.totalDays);
+        dest.writeString(this.totalBudget);
+        dest.writeString(this.problemList);
+        dest.writeString(this.taskList);
+        dest.writeString(this.resultList);
+        dest.writeString(this.urlPhotoBefore);
+        dest.writeString(this.urlPhotoAfter);
+        dest.writeString(this.urlVideo);
+        dest.writeString(this.notes);
+        dest.writeString(this.participantGroup);
+    }
+
+    protected Program(Parcel in) {
+        this.id = in.readInt();
+        this.programName = in.readString();
+        this.background = in.readString();
+        this.totalDays = in.readString();
+        this.totalBudget = in.readString();
+        this.problemList = in.readString();
+        this.taskList = in.readString();
+        this.resultList = in.readString();
+        this.urlPhotoBefore = in.readString();
+        this.urlPhotoAfter = in.readString();
+        this.urlVideo = in.readString();
+        this.notes = in.readString();
+        this.participantGroup = in.readString();
+    }
+
+    public static final Parcelable.Creator<Program> CREATOR = new Parcelable.Creator<Program>() {
+        @Override
+        public Program createFromParcel(Parcel source) {
+            return new Program(source);
+        }
+
+        @Override
+        public Program[] newArray(int size) {
+            return new Program[size];
+        }
+    };
 }

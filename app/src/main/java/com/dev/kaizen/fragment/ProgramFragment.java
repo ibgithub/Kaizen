@@ -8,7 +8,10 @@
 
 package com.dev.kaizen.fragment;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -16,6 +19,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -44,6 +49,8 @@ import com.bumptech.glide.Glide;
 import com.dev.kaizen.R;
 import com.dev.kaizen.adapter.Program;
 import com.dev.kaizen.base.BaseMenuActivity;
+import com.dev.kaizen.base.CustomDialogClass2;
+import com.dev.kaizen.program.DetailProgramActivity;
 import com.dev.kaizen.util.Constant;
 import com.dev.kaizen.util.FontUtils;
 import com.dev.kaizen.util.GlobalVar;
@@ -132,6 +139,31 @@ public class ProgramFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
+//        final CustomDialogClass2 cd = new CustomDialogClass2(getActivity());
+//        cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//        cd.show();
+//        cd.setCanceledOnTouchOutside(false);
+//        cd.header.setText("Pesan");
+//        cd.isi.setText("Menu sedang dikerjakan");
+
+//        int itemPosition = recyclerView.getChildLayoutPosition(v);
+//        final Program item = programList.get(itemPosition);
+
+        Intent intent = new Intent(getActivity(), DetailProgramActivity.class);
+//        intent.putExtra("result", item);
+        startActivityForResult(intent, 1);
+
+//        Bundle bundle = new Bundle();
+//        bundle.putString("menu", "sample");
+//
+//        QuotesFragment fragment2 = new QuotesFragment();
+//        fragment2.setArguments(bundle);
+//
+//        FragmentManager fragmentManager = getFragmentManager();
+//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//        fragmentTransaction.replace(R.id.content, fragment2);
+//        fragmentTransaction.addToBackStack("home");
+//        fragmentTransaction.commit();
 
     }
 
@@ -266,7 +298,7 @@ public class ProgramFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.MyViewHolder> implements View.OnClickListener {
+    class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.MyViewHolder> {
         private List<Program> programList;
         private Context context1;
 
@@ -328,7 +360,7 @@ public class ProgramFragment extends Fragment implements View.OnClickListener{
         public ProgramAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.program_row, parent, false);
-            itemView.setOnClickListener(this);
+            itemView.setOnClickListener(ProgramFragment.this);
             return new ProgramAdapter.MyViewHolder(itemView);
         }
 
@@ -410,11 +442,6 @@ public class ProgramFragment extends Fragment implements View.OnClickListener{
 
         public HttpDataSource.Factory buildHttpDataSourceFactory(DefaultBandwidthMeter bandwidthMeter) {
             return new DefaultHttpDataSourceFactory(Util.getUserAgent(context1, "ExoPlayerDemo"), bandwidthMeter);
-        }
-
-        @Override
-        public void onClick(View v) {
-
         }
     }
 }

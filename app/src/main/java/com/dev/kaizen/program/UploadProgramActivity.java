@@ -23,10 +23,6 @@ import com.dev.kaizen.restful.CallWebServiceTask2;
 import com.dev.kaizen.util.Constant;
 import com.dev.kaizen.util.GlobalVar;
 import com.dev.kaizen.util.Utility;
-import com.zhihu.matisse.Matisse;
-import com.zhihu.matisse.MimeType;
-import com.zhihu.matisse.engine.impl.GlideEngine;
-import com.zhihu.matisse.filter.Filter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -72,55 +68,55 @@ public class UploadProgramActivity extends AppCompatActivity implements View.OnC
                 choice = "video";
             }
 
-            Matisse.from(UploadProgramActivity.this)
-                    .choose(MimeType.ofAll())
-                    .countable(true)
-                    .maxSelectable(1)
+//            Matisse.from(UploadProgramActivity.this)
+//                    .choose(MimeType.ofAll())
+//                    .countable(true)
+//                    .maxSelectable(1)
 //                    .addFilter(new GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))
 //                    .gridExpectedSize(getResources().getDimensionPixelSize(R.dimen.grid_expected_size))
-                    .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
-                    .thumbnailScale(0.85f)
-                    .imageEngine(new GlideEngine())
-                    .forResult(REQUEST_CODE_CHOOSE);
+//                    .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+//                    .thumbnailScale(0.85f)
+//                    .imageEngine(new GlideEngine())
+//                    .forResult(REQUEST_CODE_CHOOSE);
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
-            List<Uri> mSelected = Matisse.obtainResult(data);
-            Log.d("Matisse", "mSelected: " + mSelected + " ===== " + mSelected.get(0));
-            if(choice.equals("images") && !mSelected.toString().contains("/images/")) {
-                final CustomDialogClass2 cd = new CustomDialogClass2(UploadProgramActivity.this);
-                cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                cd.show();
-                cd.setCanceledOnTouchOutside(false);
-                cd.header.setText("Pesan");
-                cd.isi.setText("Foto yang terpilih invalid");
-            } else if(choice.equals("video") && !mSelected.toString().contains("/video/")) {
-                final CustomDialogClass2 cd = new CustomDialogClass2(UploadProgramActivity.this);
-                cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                cd.show();
-                cd.setCanceledOnTouchOutside(false);
-                cd.header.setText("Pesan");
-                cd.isi.setText("Video yang terpilih invalid");
-            } else {
-                StringBuilder url = new StringBuilder();
-                try {
-                    url.append(Constant.BASE_URL).append("fileUpload");
-
-                    JSONObject json = new JSONObject();
-                    json.put("Authorization", "Bearer " + GlobalVar.getInstance().getIdToken());
-                    json.put("file", mSelected.get(0));
-
-                    if(Constant.SHOW_LOG) Log.d("test", "==== json req " + json.toString());
-
-                    final CallWebService2 task = new CallWebService2(UploadProgramActivity.this, this);
-                    task.execute(url.toString(), Constant.REST_POST, json);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+//        if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
+//            List<Uri> mSelected = Matisse.obtainResult(data);
+//            Log.d("Matisse", "mSelected: " + mSelected + " ===== " + mSelected.get(0));
+//            if(choice.equals("images") && !mSelected.toString().contains("/images/")) {
+//                final CustomDialogClass2 cd = new CustomDialogClass2(UploadProgramActivity.this);
+//                cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//                cd.show();
+//                cd.setCanceledOnTouchOutside(false);
+//                cd.header.setText("Pesan");
+//                cd.isi.setText("Foto yang terpilih invalid");
+//            } else if(choice.equals("video") && !mSelected.toString().contains("/video/")) {
+//                final CustomDialogClass2 cd = new CustomDialogClass2(UploadProgramActivity.this);
+//                cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//                cd.show();
+//                cd.setCanceledOnTouchOutside(false);
+//                cd.header.setText("Pesan");
+//                cd.isi.setText("Video yang terpilih invalid");
+//            } else {
+//                StringBuilder url = new StringBuilder();
+//                try {
+//                    url.append(Constant.BASE_URL).append("fileUpload");
+//
+//                    JSONObject json = new JSONObject();
+//                    json.put("Authorization", "Bearer " + GlobalVar.getInstance().getIdToken());
+//                    json.put("file", mSelected.get(0));
+//
+//                    if(Constant.SHOW_LOG) Log.d("test", "==== json req " + json.toString());
+//
+//                    final CallWebService2 task = new CallWebService2(UploadProgramActivity.this, this);
+//                    task.execute(url.toString(), Constant.REST_POST, json);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
 
 //                JSONObject paramsObj = new JSONObject();
 //                try {
@@ -151,8 +147,8 @@ public class UploadProgramActivity extends AppCompatActivity implements View.OnC
 //                CallWebServiceTask2 callWeb = new CallWebServiceTask2(UploadProgramActivity.this, this, params);
 //                String url = Constant.BASE_URL + "fileUpload";
 //                callWeb.execute(url);
-            }
-        }
+//            }
+//        }
     }
 
     @Override

@@ -40,6 +40,17 @@
                 android:textColor="@color/blue"
                 android:textSize="14sp"/>
         </LinearLayout>
+
+        <Button
+            android:id="@+id/youtubeBtn"
+            android:layout_width="@dimen/_45sdp"
+            android:layout_height="@dimen/_45sdp"
+            android:text="Youtube"
+            android:textSize="12sp"
+            android:textColor="#ca3737"
+            android:drawableTop="@drawable/youtube_ic"
+            android:background="@color/transparent"/>
+
         <Button
             android:id="@+id/loginBtn"
             android:layout_width="@dimen/_45sdp"

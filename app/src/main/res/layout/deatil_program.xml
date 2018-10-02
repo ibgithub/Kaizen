@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/listBg">
+    <com.asura.library.views.PosterSlider
+        android:id="@+id/poster_slider"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        app:defaultIndicator="circle"
+        app:imageSlideInterval="5000"
+        app:layout_constraintTop_toTopOf="parent"
+        app:hideIndicators="true"
+        app:loopSlides="true" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/title"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/darkgray"
+        android:lineSpacingExtra="6sp"
+        android:text="Nama Program"/>
+
+    <Button
+        android:id="@+id/detailBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_40sdp"
+        android:text="Detail"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        android:background="@drawable/bg_blue"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:gravity="center"/>
+</LinearLayout>

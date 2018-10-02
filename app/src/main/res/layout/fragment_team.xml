@@ -9,7 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="true"
+        android:layout_above="@+id/updateTeamBtn">
         <TextView
             android:id="@+id/programText"
             android:layout_width="match_parent"
@@ -68,5 +69,6 @@
         android:text="Update Data"
         android:textSize="20sp"
         android:textColor="@color/white"
-        android:textAllCaps="false"/>
+        android:textAllCaps="false"
+        android:layout_alignParentBottom="true"/>
 </RelativeLayout>
