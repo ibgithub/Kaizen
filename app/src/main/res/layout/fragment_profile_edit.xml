@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ScrollView01"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="vertical">
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:orientation="vertical"
+        android:layout_height="fill_parent">
+
+        <TextView
+            android:id="@+id/profileLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Update My Profile"
+            android:textColor="@color/blue"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:paddingLeft="@dimen/_20sdp"
+            android:paddingRight="@dimen/_20sdp"
+            android:paddingTop="@dimen/_10sdp"
+            android:paddingBottom="@dimen/_20sdp"/>
+
+        <!--Put form controls here-->
+
+        <EditText
+            android:id="@+id/firstNameEdit"
+            android:layout_height="wrap_content"
+            android:hint="First Name"
+            android:layout_width="fill_parent"
+            android:paddingLeft="@dimen/_20sdp"
+            android:paddingRight="@dimen/_20sdp">
+        </EditText>
+
+        <EditText
+            android:id="@+id/lastNameEdit"
+            android:layout_height="wrap_content"
+            android:hint="First Name"
+            android:layout_width="fill_parent"
+            android:paddingLeft="@dimen/_20sdp"
+            android:paddingRight="@dimen/_20sdp">
+        </EditText>
+
+        <EditText
+            android:id="@+id/emailEdit"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:layout_width="fill_parent"
+            android:paddingLeft="@dimen/_20sdp"
+            android:paddingRight="@dimen/_20sdp">
+        </EditText>
+
+        <EditText
+            android:id="@+id/addressEdit"
+            android:layout_height="wrap_content"
+            android:hint="Address"
+            android:inputType="textMultiLine"
+            android:lines="5"
+            android:layout_width="fill_parent"
+            android:paddingLeft="@dimen/_20sdp"
+            android:paddingRight="@dimen/_20sdp">
+        </EditText>
+
+        <TextView
+            android:id="@+id/provinceLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="School Province"
+            android:textSize="10pt"
+            android:paddingLeft="@dimen/_20sdp"
+            android:paddingRight="@dimen/_20sdp">
+        </TextView>
+        <Spinner
+            android:id="@+id/provinceSpinner"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:paddingLeft="@dimen/_20sdp"
+            android:paddingRight="@dimen/_20sdp"
+            >
+        </Spinner>
+
+        <TextView
+            android:id="@+id/cityLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="School City"
+            android:textSize="10pt"
+            android:paddingLeft="@dimen/_20sdp"
+            android:paddingRight="@dimen/_20sdp">
+        </TextView>
+        <Spinner
+            android:id="@+id/citySpinner"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:paddingLeft="@dimen/_20sdp"
+            android:paddingRight="@dimen/_20sdp"
+            >
+        </Spinner>
+
+        <TextView
+            android:id="@+id/schoolLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="School Name"
+            android:textSize="10pt"
+            android:paddingLeft="@dimen/_20sdp"
+            android:paddingRight="@dimen/_20sdp">
+        </TextView>
+        <Spinner
+            android:id="@+id/schoolSpinner"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:paddingLeft="@dimen/_20sdp"
+            android:paddingRight="@dimen/_20sdp"
+            >
+        </Spinner>
+        <EditText
+            android:id="@+id/schoolEdit"
+            android:layout_height="wrap_content"
+            android:hint="School"
+            android:layout_width="fill_parent"
+            android:paddingLeft="@dimen/_20sdp"
+            android:paddingRight="@dimen/_20sdp">
+        </EditText>
+
+        <EditText
+            android:id="@+id/classEdit"
+            android:layout_height="wrap_content"
+            android:hint="Class"
+            android:layout_width="fill_parent"
+            android:paddingLeft="@dimen/_20sdp"
+            android:paddingRight="@dimen/_20sdp">
+        </EditText>
+
+        <Button
+            android:id="@+id/saveBtn"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:background="@drawable/bg_blue"
+            android:layout_margin="@dimen/_5sdp"
+            android:text="Save"
+            android:textSize="20sp"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:paddingTop="@dimen/_20sdp"/>
+
+    </LinearLayout>
+</ScrollView>

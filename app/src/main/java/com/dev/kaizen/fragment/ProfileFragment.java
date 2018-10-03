@@ -80,17 +80,20 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         updateBtn.setOnClickListener(this);
 
         try {
-            JSONObject account = new JSONObject(GlobalVar.getInstance().getAccount());
-            nameText.setText(account.getString("firstName") + " " + account.getString("lastName"));
-            emailText.setText(account.getString("email"));
+            if (GlobalVar.getInstance().getAccount() != null) {
+                JSONObject account = new JSONObject(GlobalVar.getInstance().getAccount());
+                nameText.setText(account.getString("firstName") + " " + account.getString("lastName"));
+                emailText.setText(account.getString("email"));
+            }
 
-            JSONObject profile = new JSONObject(GlobalVar.getInstance().getProfile());
-            addressText.setText(profile.getString("address"));
-            classText.setText(profile.getString("schoolClass"));
+            if (GlobalVar.getInstance().getProfile() != null) {
+                JSONObject profile = new JSONObject(GlobalVar.getInstance().getProfile());
+                addressText.setText(profile.getString("address"));
+                classText.setText(profile.getString("schoolClass"));
 
-            JSONObject school = profile.getJSONObject("school");
-            schoolText.setText(school.getString("schoolName"));
-
+                JSONObject school = profile.getJSONObject("school");
+                schoolText.setText(school.getString("schoolName"));
+            }
         } catch (JSONException ex) {
 
         }
@@ -101,6 +104,19 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
+        if (v.getId() == R.id.updateBtn) {
+            Bundle bundle = new Bundle();
+            bundle.putString("menu", "tutorial");
 
+            ProfileEditFragment fragment2 = new ProfileEditFragment();
+            fragment2.setArguments(bundle);
+
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.content, fragment2);
+            fragmentTransaction.addToBackStack("profile");
+            fragmentTransaction.commit();
+
+        }
     }
 }

@@ -120,6 +120,10 @@ public class MoreFragment extends Fragment implements View.OnClickListener{
                             GlobalVar.getInstance().setGrup(null);
                             GlobalVar.getInstance().setProgram(null);
 
+                            GlobalVar.getInstance().setProvincies(null);
+                            GlobalVar.getInstance().setCities(null);
+                            GlobalVar.getInstance().setSchools(null);
+
                             Intent intent = new Intent(getActivity(), MainActivity.class);
                             startActivityForResult(intent, 1);
                         }
