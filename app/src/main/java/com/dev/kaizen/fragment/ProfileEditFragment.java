@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -33,6 +34,7 @@ import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.dev.kaizen.R;
 import com.dev.kaizen.base.CustomDialogClass2;
 import com.dev.kaizen.util.Constant;
@@ -54,6 +56,13 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
     Spinner provinceSpinner;
     Spinner citySpinner;
     Spinner schoolSpinner;
+
+    EditText firstNameEdit;
+    EditText lastNameEdit;
+    EditText emailEdit;
+    EditText addressEdit;
+    EditText schoolEdit;
+    EditText classEdit;
 
     public static ProfileEditFragment newInstance() {
         ProfileEditFragment fragment = new ProfileEditFragment();
@@ -77,6 +86,35 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
         toolbar.setVisibility(Toolbar.GONE);
 
+        queue = Volley.newRequestQueue(getActivity());
+
+        firstNameEdit = (EditText) v.findViewById(R.id.firstNameEdit);
+        lastNameEdit = (EditText) v.findViewById(R.id.lastNameEdit);
+        emailEdit = (EditText) v.findViewById(R.id.emailEdit);
+        addressEdit = (EditText) v.findViewById(R.id.addressEdit);
+        schoolEdit = (EditText) v.findViewById(R.id.schoolEdit);
+        classEdit = (EditText) v.findViewById(R.id.classEdit);
+
+        try {
+            if (GlobalVar.getInstance().getAccount() != null) {
+                JSONObject account = new JSONObject(GlobalVar.getInstance().getAccount());
+                firstNameEdit.setText(account.getString("firstName"));
+                lastNameEdit.setText(account.getString("lastName"));
+                emailEdit.setText(account.getString("email"));
+            }
+
+            if (GlobalVar.getInstance().getProfile() != null) {
+                JSONObject profile = new JSONObject(GlobalVar.getInstance().getProfile());
+                addressEdit.setText(profile.getString("address"));
+                classEdit.setText(profile.getString("schoolClass"));
+
+                //JSONObject school = profile.getJSONObject("school");
+                //schoolText.setText(school.getString("schoolName"));
+            }
+        } catch (JSONException ex) {
+
+        }
+
         provinceSpinner = (Spinner) v.findViewById(R.id.provinceSpinner);
         citySpinner = (Spinner) v.findViewById(R.id.citySpinner);
         schoolSpinner = (Spinner) v.findViewById(R.id.schoolSpinner);
@@ -84,37 +122,72 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
         Button saveBtn = (Button) v.findViewById(R.id.saveBtn);
         saveBtn.setOnClickListener(this);
 
+        if (GlobalVar.getInstance().getProvincies() == null) getData("provinces");
+
         return v;
     }
 
-    private void getProvinces (Long userId) {
-        final String url = Constant.BASE_URL + "groupNamesByUserId/" + userId ;
+    private void spinnerData (final String type) {
+        String str = "";
+        if (type.equals("provinces")) {
+            str = GlobalVar.getInstance().getProvincies();
+        } else if (type.equals("cities")) {
+            str = GlobalVar.getInstance().getCities();
+        } else {
+            str = GlobalVar.getInstance().getSchools();
+        }
+        try {
+            JSONArray responseArr = new JSONArray(str);
+
+            ArrayList<String> sort = new ArrayList<String>();
+
+            for (int i = 0; i < responseArr.length(); i++) {
+                JSONObject jsonobject = responseArr.getJSONObject(i);
+
+                if (type.equals("provinces")) {
+                    sort.add(jsonobject.getString("provinceName"));
+                } else if (type.equals("cities")) {
+                    sort.add(jsonobject.getString("cityName"));
+                } else {
+                    sort.add(jsonobject.getString("schoolName"));
+                }
+
+            }
+            ArrayAdapter<String> sd = new ArrayAdapter<String>(getView().getContext(),
+                    android.R.layout.simple_list_item_1,
+                    sort);
+            if (type.equals("provinces")) {
+                provinceSpinner.setAdapter(sd);
+            } else if (type.equals("cities")) {
+                citySpinner.setAdapter(sd);
+            } else {
+                schoolSpinner.setAdapter(sd);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getData (final String type) {
+        final String url = Constant.BASE_URL + type;
 
         JsonArrayRequest getRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>()
                 {
                     @Override
                     public void onResponse(JSONArray response) {
-                        // display response
                         Log.d("Response", response.toString());
-
-                        try {
-                            JSONArray responseArr = new JSONArray(response.toString());
-
-                            ArrayList<String> sort = new ArrayList<String>();
-
-                            for (int i = 0; i < responseArr.length(); i++) {
-                                JSONObject jsonobject = responseArr.getJSONObject(i);
-                                sort.add(jsonobject.getString("fullName"));
-                            }
-                            ArrayAdapter<String> sd = new ArrayAdapter<String>(getView().getContext(),
-                                    android.R.layout.simple_list_item_1,
-                                    sort);
-                            listMember.setAdapter(sd);
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                        if (type.equals("provinces")) {
+                            GlobalVar.getInstance().setProvincies(response.toString());
+                        } else if (type.equals("cities")) {
+                            GlobalVar.getInstance().setCities(response.toString());
+                        } else {
+                            GlobalVar.getInstance().setSchools(response.toString());
                         }
+                        spinnerData(type);
+
+                        if (GlobalVar.getInstance().getCities() == null) getData("cities");
+                        if (GlobalVar.getInstance().getSchools() == null) getData("schools");
                     }
                 },
                 new Response.ErrorListener()
@@ -128,15 +201,6 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
                                         HttpHeaderParser.parseCharset(response.headers, "utf-8"));
                                 JSONObject obj = new JSONObject(res);
                                 Log.d("obj", "" + obj);
-
-                                final CustomDialogClass2 cd = new CustomDialogClass2(getActivity());
-                                cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                                cd.show();
-                                cd.setCanceledOnTouchOutside(false);
-                                cd.header.setText(obj.getString("title"));
-                                cd.isi.setText("Anda belum memiliki Tim, silahkan membuat Tim Baru");
-
-                                updateTeamBtn.setText("Create Team");
                             } catch (UnsupportedEncodingException e1) {
                                 e1.printStackTrace();
                             } catch (JSONException e2) {

@@ -55,7 +55,7 @@
         <EditText
             android:id="@+id/addressEdit"
             android:layout_height="wrap_content"
-            android:hint="address"
+            android:hint="Address"
             android:inputType="textMultiLine"
             android:lines="5"
             android:layout_width="fill_parent"
