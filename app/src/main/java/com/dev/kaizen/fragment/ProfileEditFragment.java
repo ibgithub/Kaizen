@@ -9,11 +9,10 @@
 package com.dev.kaizen.fragment;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,8 +35,8 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.dev.kaizen.R;
-import com.dev.kaizen.base.CustomDialogClass2;
 import com.dev.kaizen.util.Constant;
+import com.dev.kaizen.util.FontUtils;
 import com.dev.kaizen.util.GlobalVar;
 
 import org.json.JSONArray;
@@ -52,17 +51,17 @@ import java.util.Map;
 
 public class ProfileEditFragment extends Fragment implements View.OnClickListener{
     private Context context;
-    RequestQueue queue;
-    Spinner provinceSpinner;
-    Spinner citySpinner;
-    Spinner schoolSpinner;
+    private RequestQueue queue;
+    private Spinner provinceSpinner;
+    private Spinner citySpinner;
+    private Spinner schoolSpinner;
 
-    EditText firstNameEdit;
-    EditText lastNameEdit;
-    EditText emailEdit;
-    EditText addressEdit;
-    EditText schoolEdit;
-    EditText classEdit;
+    private EditText firstNameEdit;
+    private EditText lastNameEdit;
+    private EditText emailEdit;
+    private EditText addressEdit;
+    private EditText schoolEdit;
+    private EditText classEdit;
 
     public static ProfileEditFragment newInstance() {
         ProfileEditFragment fragment = new ProfileEditFragment();
@@ -80,11 +79,16 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_profile_edit, container, false);
 
+        TextView headertext = (TextView) getActivity().findViewById(R.id.headertext);
+        headertext.setText("Edit Profile");
+        headertext.setTypeface(FontUtils.loadFontFromAssets(context, Constant.FONT_SEMIBOLD));
+
         Button backBtn = (Button) getActivity().findViewById(R.id.backBtn);
-        backBtn.setVisibility(Button.INVISIBLE);
+        backBtn.setVisibility(Button.VISIBLE);
+        backBtn.setOnClickListener(this);
 
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
-        toolbar.setVisibility(Toolbar.GONE);
+        toolbar.setVisibility(Toolbar.VISIBLE);
 
         queue = Volley.newRequestQueue(getActivity());
 
@@ -224,6 +228,8 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-
+        if(v.getId() == R.id.backBtn) {
+            getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
     }
 }

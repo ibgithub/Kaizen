@@ -8,12 +8,8 @@
 
 package com.dev.kaizen.fragment;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,21 +32,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.dev.kaizen.R;
 import com.dev.kaizen.adapter.Program;
-import com.dev.kaizen.base.BaseMenuActivity;
-import com.dev.kaizen.base.CustomDialogClass2;
-import com.dev.kaizen.program.DetailProgramActivity;
 import com.dev.kaizen.util.Constant;
 import com.dev.kaizen.util.FontUtils;
 import com.dev.kaizen.util.GlobalVar;
@@ -84,14 +74,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ProgramFragment extends Fragment implements View.OnClickListener{
+
+public class ProgramFragment extends Fragment implements View.OnClickListener {
     private Context context;
     private RecyclerView recyclerView;
     private ProgramAdapter mAdapter;
@@ -133,38 +124,22 @@ public class ProgramFragment extends Fragment implements View.OnClickListener{
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
-        
+
+        CircleImageView addBtn =(CircleImageView) v.findViewById(R.id.addBtn);
+        addBtn.setOnClickListener(this);
+
         return v;
     }
 
     @Override
     public void onClick(View v) {
-//        final CustomDialogClass2 cd = new CustomDialogClass2(getActivity());
-//        cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-//        cd.show();
-//        cd.setCanceledOnTouchOutside(false);
-//        cd.header.setText("Pesan");
-//        cd.isi.setText("Menu sedang dikerjakan");
+        AddProgramFragment fragment2 = new AddProgramFragment();
 
-//        int itemPosition = recyclerView.getChildLayoutPosition(v);
-//        final Program item = programList.get(itemPosition);
-
-        Intent intent = new Intent(getActivity(), DetailProgramActivity.class);
-//        intent.putExtra("result", item);
-        startActivityForResult(intent, 1);
-
-//        Bundle bundle = new Bundle();
-//        bundle.putString("menu", "sample");
-//
-//        QuotesFragment fragment2 = new QuotesFragment();
-//        fragment2.setArguments(bundle);
-//
-//        FragmentManager fragmentManager = getFragmentManager();
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.replace(R.id.content, fragment2);
-//        fragmentTransaction.addToBackStack("home");
-//        fragmentTransaction.commit();
-
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.content, fragment2);
+        fragmentTransaction.addToBackStack("program");
+        fragmentTransaction.commit();
     }
 
     private void getGroups() {
@@ -247,7 +222,8 @@ public class ProgramFragment extends Fragment implements View.OnClickListener{
                                     jsonobject.getString("urlPhotoAfter"),
                                     jsonobject.getString("urlVideo"),
                                     jsonobject.getString("notes"),
-                                    jsonobject.getJSONObject("participantGroup").toString());
+                                    jsonobject.getJSONObject("participantGroup").toString(),
+                                    (jsonobject.has("memberList"))?jsonobject.getString("memberList"):null);
                             programList.add(program);
                         }
 
@@ -298,7 +274,7 @@ public class ProgramFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.MyViewHolder> {
+    class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.MyViewHolder> implements View.OnClickListener {
         private List<Program> programList;
         private Context context1;
 
@@ -314,6 +290,8 @@ public class ProgramFragment extends Fragment implements View.OnClickListener{
             public TextView title;
 
             private SimpleExoPlayerView exoPlayerView;
+
+            private Button detailBtn;
 
             public MyViewHolder(View view) {
                 super(view);
@@ -348,6 +326,8 @@ public class ProgramFragment extends Fragment implements View.OnClickListener{
                 exoPlayerView.requestFocus();
 
                 player.setPlayWhenReady(false);
+
+                detailBtn = (Button) view.findViewById(R.id.detailBtn);
             }
         }
 
@@ -360,7 +340,7 @@ public class ProgramFragment extends Fragment implements View.OnClickListener{
         public ProgramAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.program_row, parent, false);
-            itemView.setOnClickListener(ProgramFragment.this);
+//            itemView.setOnClickListener(ProgramFragment.this);
             return new ProgramAdapter.MyViewHolder(itemView);
         }
 
@@ -379,14 +359,14 @@ public class ProgramFragment extends Fragment implements View.OnClickListener{
 
             if(!quotes.getUrlPhotoBefore().equals("null")) {
                 Glide.with(context1)
-                        .load(quotes.getUrlPhotoBefore())
+                        .load(Constant.BASE_PICT + "fileUpload" + quotes.getUrlPhotoBefore())
                         //.placeholder(R.drawable.ic_cloud_off_red)
                         .into(holder.fotoBefore);
             }
 
             if(!quotes.getUrlPhotoAfter().equals("null")) {
                 Glide.with(context1)
-                        .load(quotes.getUrlPhotoAfter())
+                        .load(Constant.BASE_PICT + "fileUpload" + quotes.getUrlPhotoAfter())
                         //.placeholder(R.drawable.ic_cloud_off_red)
                         .into(holder.fotoAfter);
             }
@@ -399,6 +379,9 @@ public class ProgramFragment extends Fragment implements View.OnClickListener{
             if(holder.title.getText().equals("null")) {
                 holder.title.setVisibility(TextView.GONE);
             }
+
+            holder.detailBtn.setOnClickListener(this);
+            holder.detailBtn.setTag(position);
         }
 
         @Override
@@ -442,6 +425,33 @@ public class ProgramFragment extends Fragment implements View.OnClickListener{
 
         public HttpDataSource.Factory buildHttpDataSourceFactory(DefaultBandwidthMeter bandwidthMeter) {
             return new DefaultHttpDataSourceFactory(Util.getUserAgent(context1, "ExoPlayerDemo"), bandwidthMeter);
+        }
+
+        @Override
+        public void onClick(View view) {
+            int position = Integer.valueOf(view.getTag().toString());
+
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("item", getItem(position));
+
+            DetailProgramFragment fragment2 = new DetailProgramFragment();
+            fragment2.setArguments(bundle);
+
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.content, fragment2);
+            fragmentTransaction.addToBackStack("program");
+            fragmentTransaction.commit();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        if(mAdapter.player != null) {
+            mAdapter.player.stop();
+            mAdapter.player.seekTo(0);
         }
     }
 }

@@ -134,6 +134,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                                     e.printStackTrace();
                                 }
 
+                                usernameEdit.setText("");
+                                passwordEdit.setText("");
+
                                 Intent intent = new Intent(LoginActivity.this, BaseMenuActivity.class);
                                 startActivityForResult(intent, 1);
                             }

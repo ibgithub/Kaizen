@@ -1,20 +1,24 @@
 package com.dev.kaizen.adapter;
 
-public class Quotes {
-    private int id;
-    private String title, tagline, urlPhoto, description, urlVideo;
+import org.json.JSONObject;
 
-    public Quotes() {
+public class Team {
+    private int id;
+    private String fullName, schoolClass, address;
+    private JSONObject user, school;
+
+    public Team() {
 
     }
 
-    public Quotes(int id, String title, String tagline, String urlPhoto, String description, String urlVideo) {
+    public Team(int id, String fullName, String schoolClass, String address,
+                JSONObject user, JSONObject school) {
         this.id = id;
-        this.title = title;
-        this.tagline = tagline;
-        this.urlPhoto = urlPhoto;
-        this.description = description;
-        this.urlVideo = urlVideo;
+        this.fullName = fullName;
+        this.schoolClass = schoolClass;
+        this.address = address;
+        this.user = user;
+        this.school = school;
     }
 
     public int getId() {
@@ -25,43 +29,43 @@ public class Quotes {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
-    public String getTagline() {
-        return tagline;
+    public String getSchoolClass() {
+        return schoolClass;
     }
 
-    public void setTagline(String tagline) {
-        this.tagline = tagline;
+    public void setSchoolClass(String schoolClass) {
+        this.schoolClass = schoolClass;
     }
 
-    public String getUrlPhoto() {
-        return urlPhoto;
+    public String getAddress() {
+        return address;
     }
 
-    public void setUrlPhoto(String urlPhoto) {
-        this.urlPhoto = urlPhoto;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
-    public String getDescription() {
-        return description;
+    public JSONObject getUser() {
+        return user;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setUser(JSONObject user) {
+        this.user = user;
     }
 
-    public String getUrlVideo() {
-        return urlVideo;
+    public JSONObject getSchool() {
+        return school;
     }
 
-    public void setUrlVideo(String urlVideo) {
-        this.urlVideo = urlVideo;
+    public void setSchool(JSONObject school) {
+        this.school = school;
     }
 }

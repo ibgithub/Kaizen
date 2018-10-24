@@ -10,141 +10,193 @@
         android:orientation="vertical"
         android:layout_height="fill_parent">
 
-        <TextView
-            android:id="@+id/profileLabel"
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Update My Profile"
-            android:textColor="@color/blue"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:paddingLeft="@dimen/_20sdp"
-            android:paddingRight="@dimen/_20sdp"
-            android:paddingTop="@dimen/_10sdp"
-            android:paddingBottom="@dimen/_20sdp"/>
+            android:theme="@style/TextLabel"
+            android:id="@+id/firstLayout"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginRight="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_10sdp">
 
-        <!--Put form controls here-->
-
-        <EditText
-            android:id="@+id/firstNameEdit"
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nama Depan"
+                android:inputType="textCapSentences"
+                android:id="@+id/firstNameEdit"
+                android:imeOptions="actionNext"/>
+        </android.support.design.widget.TextInputLayout>
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="First Name"
-            android:layout_width="fill_parent"
-            android:paddingLeft="@dimen/_20sdp"
-            android:paddingRight="@dimen/_20sdp">
-        </EditText>
+            android:theme="@style/TextLabel"
+            android:id="@+id/lastLayout"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginRight="@dimen/_10sdp">
 
-        <EditText
-            android:id="@+id/lastNameEdit"
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nama Belakang"
+                android:inputType="textCapSentences"
+                android:id="@+id/lastNameEdit"
+                android:imeOptions="actionNext"/>
+        </android.support.design.widget.TextInputLayout>
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="First Name"
-            android:layout_width="fill_parent"
-            android:paddingLeft="@dimen/_20sdp"
-            android:paddingRight="@dimen/_20sdp">
-        </EditText>
+            android:theme="@style/TextLabel"
+            android:id="@+id/emailLayout"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginRight="@dimen/_10sdp">
 
-        <EditText
-            android:id="@+id/emailEdit"
-            android:layout_height="wrap_content"
-            android:hint="Email"
-            android:layout_width="fill_parent"
-            android:paddingLeft="@dimen/_20sdp"
-            android:paddingRight="@dimen/_20sdp">
-        </EditText>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                android:id="@+id/emailEdit"
+                android:imeOptions="actionNext"/>
+        </android.support.design.widget.TextInputLayout>
 
-        <EditText
-            android:id="@+id/addressEdit"
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Address"
-            android:inputType="textMultiLine"
-            android:lines="5"
-            android:layout_width="fill_parent"
-            android:paddingLeft="@dimen/_20sdp"
-            android:paddingRight="@dimen/_20sdp">
-        </EditText>
+            android:theme="@style/TextLabel"
+            android:id="@+id/alamatLayout"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginRight="@dimen/_10sdp">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Alamat"
+                android:inputType="textCapSentences|textImeMultiLine"
+                android:maxLines="5"
+                android:id="@+id/addressEdit"
+                android:imeOptions="actionNext"/>
+        </android.support.design.widget.TextInputLayout>
 
         <TextView
-            android:id="@+id/provinceLabel"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="School Province"
-            android:textSize="10pt"
-            android:paddingLeft="@dimen/_20sdp"
-            android:paddingRight="@dimen/_20sdp">
-        </TextView>
-        <Spinner
+            android:textSize="12sp"
+            android:text="Provinsi Sekolah"
+            android:textColor="@color/darkgray"
+            android:layout_marginLeft="@dimen/_12sdp"
+            android:layout_marginRight="@dimen/_12sdp"/>
+
+        <android.support.v7.widget.AppCompatSpinner
             android:id="@+id/provinceSpinner"
-            android:layout_height="wrap_content"
-            android:layout_width="fill_parent"
-            android:paddingLeft="@dimen/_20sdp"
-            android:paddingRight="@dimen/_20sdp"
-            >
-        </Spinner>
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:layout_marginLeft="@dimen/_12sdp"
+            android:layout_marginRight="@dimen/_12sdp"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="@color/darkgray"
+            android:layout_marginLeft="@dimen/_12sdp"
+            android:layout_marginRight="@dimen/_12sdp"
+            android:layout_marginBottom="@dimen/_10sdp"/>
 
         <TextView
-            android:id="@+id/cityLabel"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="School City"
-            android:textSize="10pt"
-            android:paddingLeft="@dimen/_20sdp"
-            android:paddingRight="@dimen/_20sdp">
-        </TextView>
-        <Spinner
+            android:textSize="12sp"
+            android:text="Kota Sekolah"
+            android:textColor="@color/darkgray"
+            android:layout_marginLeft="@dimen/_12sdp"
+            android:layout_marginRight="@dimen/_12sdp"/>
+
+        <android.support.v7.widget.AppCompatSpinner
             android:id="@+id/citySpinner"
-            android:layout_height="wrap_content"
-            android:layout_width="fill_parent"
-            android:paddingLeft="@dimen/_20sdp"
-            android:paddingRight="@dimen/_20sdp"
-            >
-        </Spinner>
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:layout_marginLeft="@dimen/_12sdp"
+            android:layout_marginRight="@dimen/_12sdp"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="@color/darkgray"
+            android:layout_marginLeft="@dimen/_12sdp"
+            android:layout_marginRight="@dimen/_12sdp"
+            android:layout_marginBottom="@dimen/_10sdp"/>
 
         <TextView
-            android:id="@+id/schoolLabel"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="School Name"
-            android:textSize="10pt"
-            android:paddingLeft="@dimen/_20sdp"
-            android:paddingRight="@dimen/_20sdp">
-        </TextView>
-        <Spinner
-            android:id="@+id/schoolSpinner"
-            android:layout_height="wrap_content"
-            android:layout_width="fill_parent"
-            android:paddingLeft="@dimen/_20sdp"
-            android:paddingRight="@dimen/_20sdp"
-            >
-        </Spinner>
-        <EditText
-            android:id="@+id/schoolEdit"
-            android:layout_height="wrap_content"
-            android:hint="School"
-            android:layout_width="fill_parent"
-            android:paddingLeft="@dimen/_20sdp"
-            android:paddingRight="@dimen/_20sdp">
-        </EditText>
+            android:textSize="12sp"
+            android:text="Nama Sekolah"
+            android:textColor="@color/darkgray"
+            android:layout_marginLeft="@dimen/_12sdp"
+            android:layout_marginRight="@dimen/_12sdp"/>
 
-        <EditText
-            android:id="@+id/classEdit"
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/schoolSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:layout_marginLeft="@dimen/_12sdp"
+            android:layout_marginRight="@dimen/_12sdp"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="@color/darkgray"
+            android:layout_marginLeft="@dimen/_12sdp"
+            android:layout_marginRight="@dimen/_12sdp"/>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Class"
-            android:layout_width="fill_parent"
-            android:paddingLeft="@dimen/_20sdp"
-            android:paddingRight="@dimen/_20sdp">
-        </EditText>
+            android:theme="@style/TextLabel"
+            android:id="@+id/sekolahLayout"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginRight="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_10sdp">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nama Sekolah"
+                android:inputType="textCapSentences"
+                android:id="@+id/schoolEdit"
+                android:imeOptions="actionNext"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/TextLabel"
+            android:id="@+id/kelasLayout"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginRight="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_10sdp">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Kelas"
+                android:inputType="textCapSentences"
+                android:id="@+id/classEdit"
+                android:imeOptions="actionNext"/>
+        </android.support.design.widget.TextInputLayout>
 
         <Button
             android:id="@+id/saveBtn"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_40sdp"
             android:background="@drawable/bg_blue"
-            android:layout_margin="@dimen/_5sdp"
-            android:text="Save"
+            android:layout_margin="@dimen/_10sdp"
+            android:text="Simpan"
             android:textSize="20sp"
-            android:textColor="@color/white"
-            android:textAllCaps="false"
-            android:paddingTop="@dimen/_20sdp"/>
+            android:textColor="@color/white"/>
 
     </LinearLayout>
 </ScrollView>

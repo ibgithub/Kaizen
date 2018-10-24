@@ -12,27 +12,16 @@
         android:fitsSystemWindows="true"
         android:layout_above="@+id/updateTeamBtn">
         <TextView
-            android:id="@+id/programText"
+            android:id="@+id/schoolText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="My Team"
             android:textColor="@color/blue"
-            android:textSize="24sp"
+            android:textSize="20sp"
             android:textStyle="bold"
             android:paddingLeft="@dimen/_10sdp"
             android:paddingRight="@dimen/_10sdp"
             android:paddingTop="@dimen/_10sdp"/>
-
-        <TextView
-            android:id="@+id/schoolText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Nama Sekolah"
-            android:textColor="@color/blue"
-            android:textStyle="bold"
-            android:paddingLeft="@dimen/_10sdp"
-            android:paddingRight="@dimen/_10sdp"
-            android:paddingTop="@dimen/_20sdp"/>
 
         <TextView
             android:id="@+id/teamMember"
@@ -43,32 +32,33 @@
             android:textStyle="bold"
             android:paddingLeft="@dimen/_10sdp"
             android:paddingRight="@dimen/_10sdp"
-            android:paddingTop="@dimen/_20sdp"/>
+            android:paddingTop="@dimen/_10sdp"
+            android:textSize="14sp"/>
 
-        <ListView
-            android:id="@+id/listMember"
-            android:divider="#000"
-            android:cacheColorHint="#00000000"
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:overScrollMode="never"
+            android:id="@+id/rvList"
+            android:background="@color/listBg"
             android:layout_weight="1"
-            android:fadingEdge="none"
-            android:textColor="@color/blue"
-            android:paddingLeft="@dimen/_10sdp"
-            android:paddingRight="@dimen/_10sdp"/>
-
-
+            android:padding="@dimen/_10sdp"/>
     </LinearLayout>
 
-    <Button
-        android:id="@+id/updateTeamBtn"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_40sdp"
-        android:background="@drawable/bg_blue"
-        android:layout_margin="@dimen/_5sdp"
-        android:text="Update Data"
-        android:textSize="20sp"
-        android:textColor="@color/white"
-        android:textAllCaps="false"
-        android:layout_alignParentBottom="true"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:layout_alignParentBottom="true">
+        <Button
+            android:id="@+id/updateTeamBtn"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:background="@drawable/bg_blue"
+            android:layout_margin="@dimen/_10sdp"
+            android:text="Update Data"
+            android:textSize="20sp"
+            android:textColor="@color/white"/>
+    </LinearLayout>
 </RelativeLayout>

@@ -82,7 +82,6 @@ public class GlobalVar implements Serializable {
 		this.cities = cities;
 	}
 
-
 	public String getSchools() {
 		return schools;
 	}
@@ -90,5 +89,4 @@ public class GlobalVar implements Serializable {
 	public void setSchools(String schools) {
 		this.schools = schools;
 	}
-
 }

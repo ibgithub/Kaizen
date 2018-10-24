@@ -323,7 +323,7 @@
                         android:layout_marginRight="@dimen/_10sdp"
                         android:layout_marginTop="@dimen/_10sdp"/>
                     <TextView
-                        android:id="@+id/daftarText"
+                        android:id="@+id/tugasText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Program Lapangan Bersih"

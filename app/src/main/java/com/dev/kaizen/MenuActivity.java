@@ -1,5 +1,8 @@
 package com.dev.kaizen;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,6 +18,7 @@ import android.widget.TextView;
 
 import com.dev.kaizen.program.DetailProgramActivity;
 import com.dev.kaizen.util.FontUtils;
+import com.dev.kaizen.util.GlobalVar;
 
 public class MenuActivity extends AppCompatActivity implements View.OnClickListener {
     private TextView mTextMessage, belumText;
@@ -87,5 +91,10 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
             Intent intent = new Intent(MenuActivity.this, DetailProgramActivity.class);
             startActivityForResult(intent, 1);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }

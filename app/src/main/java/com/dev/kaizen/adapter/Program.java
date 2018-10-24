@@ -6,7 +6,8 @@ import android.os.Parcelable;
 public class Program implements Parcelable {
     private int id;
     private String programName, background, totalDays, totalBudget, problemList, taskList,
-            resultList, urlPhotoBefore, urlPhotoAfter, urlVideo, notes, participantGroup;
+            resultList, urlPhotoBefore, urlPhotoAfter, urlVideo, notes, participantGroup,
+            memberList;
 
     public Program() {
 
@@ -14,7 +15,8 @@ public class Program implements Parcelable {
 
     public Program(int id, String programName, String background, String totalDays, String totalBudget,
                    String problemList, String taskList, String resultList, String urlPhotoBefore,
-                   String urlPhotoAfter, String urlVideo, String notes, String participantGroup) {
+                   String urlPhotoAfter, String urlVideo, String notes, String participantGroup,
+                   String memberList) {
         this.id = id;
         this.programName = programName;
         this.background = background;
@@ -28,6 +30,7 @@ public class Program implements Parcelable {
         this.urlVideo = urlVideo;
         this.notes = notes;
         this.participantGroup = participantGroup;
+        this.memberList = memberList;
     }
 
     public int getId() {
@@ -134,6 +137,14 @@ public class Program implements Parcelable {
         this.participantGroup = participantGroup;
     }
 
+    public String getMemberList() {
+        return memberList;
+    }
+
+    public void setMemberList(String memberList) {
+        this.memberList = memberList;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -158,6 +169,7 @@ public class Program implements Parcelable {
         dest.writeString(this.urlVideo);
         dest.writeString(this.notes);
         dest.writeString(this.participantGroup);
+        dest.writeString(this.memberList);
     }
 
     protected Program(Parcel in) {
@@ -174,6 +186,7 @@ public class Program implements Parcelable {
         this.urlVideo = in.readString();
         this.notes = in.readString();
         this.participantGroup = in.readString();
+        this.memberList = in.readString();
     }
 
     public static final Parcelable.Creator<Program> CREATOR = new Parcelable.Creator<Program>() {

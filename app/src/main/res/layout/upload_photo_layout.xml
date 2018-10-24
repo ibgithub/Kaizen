@@ -13,7 +13,8 @@
         android:gravity="center"
         android:background="@color/blue"
         android:textColor="@color/white"
-        android:textSize="18sp"/>
+        android:textSize="18sp"
+        android:visibility="gone"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -32,14 +33,15 @@
                 <ImageView
                     android:id="@+id/imageUpload"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_height="@dimen/_250sdp"
                     app:srcCompat="@drawable/no_image" />
 
                 <Button
                     android:id="@+id/buttonChoose"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Select" />
+                    android:text="Select"
+                    android:layout_marginTop="@dimen/_10sdp"/>
 
                 <Button
                     android:id="@+id/buttonUpload"
