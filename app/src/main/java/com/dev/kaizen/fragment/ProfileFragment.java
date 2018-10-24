@@ -101,6 +101,19 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
+        if (v.getId() == R.id.updateBtn) {
+            Bundle bundle = new Bundle();
+            bundle.putString("menu", "tutorial");
 
+            ProfileEditFragment fragment2 = new ProfileEditFragment();
+            fragment2.setArguments(bundle);
+
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.content, fragment2);
+            fragmentTransaction.addToBackStack("profile");
+            fragmentTransaction.commit();
+
+        }
     }
 }

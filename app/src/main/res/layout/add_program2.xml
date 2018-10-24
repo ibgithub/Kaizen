@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
     <ImageView
         android:layout_width="@dimen/_175sdp"
@@ -15,149 +17,77 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <android.support.design.widget.TextInputLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:theme="@style/TextLabel"
-                android:id="@+id/namaLayout"
-                android:layout_marginLeft="@dimen/_10sdp"
-                android:layout_marginRight="@dimen/_10sdp"
-                android:layout_marginTop="@dimen/_10sdp">
-
-                <EditText
+                android:layout_height="@dimen/_200sdp"
+                android:layout_weight="1"
+                android:layout_marginLeft="@dimen/_20sdp"
+                android:layout_marginRight="@dimen/_20sdp">
+                <ImageView
+                    android:id="@+id/fotoBefore"
                     android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/ic_bgfoto"/>
+                <TextView
+                    android:id="@+id/beforeText"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="Nama Program"
-                    android:inputType="textCapSentences"
-                    android:id="@+id/nama"
-                    android:imeOptions="actionNext"/>
-            </android.support.design.widget.TextInputLayout>
-            <android.support.design.widget.TextInputLayout
+                    android:text="Before"
+                    android:textColor="@color/blue"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:padding="@dimen/_5sdp"
+                    android:background="@drawable/bg_white"
+                    android:layout_margin="@dimen/_20sdp"
+                    android:layout_alignParentBottom="true"/>
+            </RelativeLayout>
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:theme="@style/TextLabel"
-                android:id="@+id/latarLayout"
-                android:layout_marginLeft="@dimen/_10sdp"
-                android:layout_marginRight="@dimen/_10sdp">
-
-                <EditText
+                android:layout_height="@dimen/_200sdp"
+                android:layout_weight="1"
+                android:layout_margin="@dimen/_20sdp">
+                <ImageView
+                    android:id="@+id/fotoAfter"
                     android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/ic_bgfoto"/>
+                <TextView
+                    android:id="@+id/afterText"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="Latar Belakang"
-                    android:inputType="textCapSentences"
-                    android:id="@+id/latar"
-                    android:imeOptions="actionNext" />
-            </android.support.design.widget.TextInputLayout>
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
+                    android:text="After"
+                    android:textColor="@color/blue"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:padding="@dimen/_5sdp"
+                    android:background="@drawable/bg_white"
+                    android:layout_margin="@dimen/_20sdp"
+                    android:layout_alignParentBottom="true"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:theme="@style/TextLabel"
-                android:id="@+id/lamaLayout"
-                android:layout_marginLeft="@dimen/_10sdp"
-                android:layout_marginRight="@dimen/_10sdp"
-                android:layout_marginTop="@dimen/_10sdp">
-
-                <EditText
+                android:orientation="vertical">
+                <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+                    android:id="@+id/exoPlayerView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Lama Program"
-                    android:inputType="number"
-                    android:id="@+id/lama"
-                    android:imeOptions="actionNext"/>
-            </android.support.design.widget.TextInputLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_12sdp"
-                android:layout_marginRight="@dimen/_12sdp"
-                android:text="Daftar Masalah yang Ditemui"
-                android:textColor="@color/darkgray"
-                android:textSize="12sp"/>
-            <android.support.v7.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:overScrollMode="never"
-                android:id="@+id/rvMasalah"
-                android:layout_marginLeft="@dimen/_12sdp"
-                android:layout_marginRight="@dimen/_12sdp"/>
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_12sdp"
-                android:layout_marginRight="@dimen/_12sdp"
-                android:text="+ Tambahkan daftar masalah"
-                android:textColor="@color/blue"
-                android:textSize="12sp"
-                android:textAllCaps="false"
-                android:background="@color/transparent"
-                android:layout_gravity="left"
-                android:gravity="left"/>
-
-            <!-- daftar tugas-->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_12sdp"
-                android:layout_marginRight="@dimen/_12sdp"
-                android:text="Daftar Tugas yang Dilakukan"
-                android:textColor="@color/darkgray"
-                android:textSize="12sp"/>
-            <android.support.v7.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:overScrollMode="never"
-                android:id="@+id/rvTugas"
-                android:layout_marginLeft="@dimen/_12sdp"
-                android:layout_marginRight="@dimen/_12sdp"/>
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_12sdp"
-                android:layout_marginRight="@dimen/_12sdp"
-                android:text="+ Tambahkan daftar tugas"
-                android:textColor="@color/blue"
-                android:textSize="12sp"
-                android:textAllCaps="false"
-                android:background="@color/transparent"
-                android:layout_gravity="left"
-                android:gravity="left"/>
-
-            <!-- hasil-->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_12sdp"
-                android:layout_marginRight="@dimen/_12sdp"
-                android:text="Hasil"
-                android:textColor="@color/darkgray"
-                android:textSize="12sp"/>
-            <android.support.v7.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:overScrollMode="never"
-                android:id="@+id/rvHasil"
-                android:layout_marginLeft="@dimen/_12sdp"
-                android:layout_marginRight="@dimen/_12sdp"/>
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_12sdp"
-                android:layout_marginRight="@dimen/_12sdp"
-                android:text="+ Tambahkan hasil"
-                android:textColor="@color/blue"
-                android:textSize="12sp"
-                android:textAllCaps="false"
-                android:background="@color/transparent"
-                android:layout_gravity="left"
-                android:gravity="left"/>
+                    android:layout_height="@dimen/_170sdp"
+                    app:controller_layout_id="@layout/custom_controls"
+                    android:background="@drawable/ic_bgvideo"
+                    android:layout_marginLeft="@dimen/_20sdp"
+                    android:layout_marginRight="@dimen/_20sdp"/>
+                <ImageView
+                    android:id="@+id/videoView"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_170sdp" />
+            </RelativeLayout>
             <Button
                 android:id="@+id/nextBtn"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
                 android:background="@drawable/bg_blue"
-                android:layout_margin="@dimen/_10sdp"
-                android:text="Selanjutnya"
+                android:layout_margin="@dimen/_20sdp"
+                android:text="Simpan"
                 android:textSize="20sp"
                 android:textColor="@color/white"/>
         </LinearLayout>

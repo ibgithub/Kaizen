@@ -13,15 +13,19 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -96,15 +100,21 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         imgV = (ImageView) v.findViewById(R.id.testimonialBtn);
         imgV.setOnClickListener(this);
 
-//        TextView headertext = (TextView) getActivity().findViewById(R.id.headertext);
-//        headertext.setText("Home");
-//        headertext.setTypeface(FontUtils.loadFontFromAssets(context, Constant.FONT_SEMIBOLD));
+        TextView headertext = (TextView) getActivity().findViewById(R.id.headertext);
+        headertext.setText("Home");
+        headertext.setTypeface(FontUtils.loadFontFromAssets(context, Constant.FONT_SEMIBOLD));
 
         Button backBtn = (Button) getActivity().findViewById(R.id.backBtn);
         backBtn.setVisibility(Button.INVISIBLE);
 
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
-        toolbar.setVisibility(Toolbar.GONE);
+        toolbar.setVisibility(Toolbar.VISIBLE);
+
+//        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
+//        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+//        AppBarLayout appBar = (AppBarLayout) getActivity().findViewById(R.id.appBar);
+//        appBar.setVisibility(AppBarLayout.GONE);
 
         welcomeText = (TextView) v.findViewById(R.id.welcomeText);
         if(GlobalVar.getInstance().getAccount() == null) {
@@ -115,6 +125,16 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
 
         return v;
     }
+
+//    @Override
+//    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+//        super.onViewCreated(view, savedInstanceState);
+//
+//        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+//        toolbar.setVisibility(Toolbar.GONE);
+//
+//        view.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+//    }
 
     @Override
     public void onClick(View v) {

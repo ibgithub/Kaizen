@@ -14,18 +14,25 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -42,14 +49,42 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.dev.kaizen.ForgotPasswordActivity;
 import com.dev.kaizen.MainActivity;
 import com.dev.kaizen.R;
+import com.dev.kaizen.adapter.Team;
 import com.dev.kaizen.adapter.Quotes;
 import com.dev.kaizen.base.CustomDialogClass2;
 import com.dev.kaizen.menu.QuotesListActivity;
 import com.dev.kaizen.util.Constant;
+import com.dev.kaizen.util.FontUtils;
 import com.dev.kaizen.util.GlobalVar;
+import com.google.android.exoplayer2.C;
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.LoadControl;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.dash.DashMediaSource;
+import com.google.android.exoplayer2.source.dash.DefaultDashChunkSource;
+import com.google.android.exoplayer2.source.hls.HlsMediaSource;
+import com.google.android.exoplayer2.source.smoothstreaming.DefaultSsChunkSource;
+import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource;
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelection;
+import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.google.android.exoplayer2.upstream.BandwidthMeter;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.exoplayer2.upstream.HttpDataSource;
+import com.google.android.exoplayer2.util.Util;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -58,6 +93,7 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -65,9 +101,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MyTeamFragment extends Fragment implements View.OnClickListener{
     private Context context;
-    RequestQueue queue;
-    ListView listMember;
-    Button updateTeamBtn;
+    private RequestQueue queue;
+    
+    private RecyclerView recyclerView;
+    private TeamAdapter mAdapter;
+    private List<Team> teamList = new ArrayList<>();
+    
+    private Button updateTeamBtn;
 
     public static MyTeamFragment newInstance() {
         MyTeamFragment fragment = new MyTeamFragment();
@@ -85,15 +125,27 @@ public class MyTeamFragment extends Fragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_team, container, false);
 
+        TextView headertext = (TextView) getActivity().findViewById(R.id.headertext);
+        headertext.setText("My Team");
+        headertext.setTypeface(FontUtils.loadFontFromAssets(context, Constant.FONT_SEMIBOLD));
+
         Button backBtn = (Button) getActivity().findViewById(R.id.backBtn);
-        backBtn.setVisibility(Button.INVISIBLE);
+        backBtn.setVisibility(Button.VISIBLE);
+        backBtn.setOnClickListener(this);
 
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
-        toolbar.setVisibility(Toolbar.GONE);
+        toolbar.setVisibility(Toolbar.VISIBLE);
 
         TextView schoolText = (TextView) v.findViewById(R.id.schoolText);
-        listMember = (ListView) v.findViewById(R.id.listMember);
 
+        recyclerView = (RecyclerView) v.findViewById(R.id.rvList);
+
+        mAdapter = new TeamAdapter(teamList, context);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(mAdapter);
+        
         updateTeamBtn = (Button) v.findViewById(R.id.updateTeamBtn);
         updateTeamBtn.setOnClickListener(this);
 
@@ -143,18 +195,19 @@ public class MyTeamFragment extends Fragment implements View.OnClickListener{
 
                         try {
                             JSONArray responseArr = new JSONArray(response.toString());
-
-                            ArrayList<String> sort = new ArrayList<String>();
-
                             for (int i = 0; i < responseArr.length(); i++) {
-                                JSONObject jsonobject = responseArr.getJSONObject(i);
-                                sort.add(jsonobject.getString("fullName"));
-                            }
-                            ArrayAdapter<String> sd = new ArrayAdapter<String>(getView().getContext(),
-                                    android.R.layout.simple_list_item_1,
-                                    sort);
-                            listMember.setAdapter(sd);
+                                JSONObject obj = responseArr.getJSONObject(i);
 
+                                Team team = new Team(obj.getInt("id"),
+                                        obj.getString("fullName"),
+                                        obj.getString("schoolClass"),
+                                        obj.getString("address"),
+                                        obj.getJSONObject("user"),
+                                        obj.getJSONObject("school"));
+
+                                teamList.add(team);
+                            }
+                            mAdapter.notifyDataSetChanged();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -205,6 +258,63 @@ public class MyTeamFragment extends Fragment implements View.OnClickListener{
     public void onClick(View v) {
         if(v.getId() == R.id.updateBtn) {
 
+        } else if(v.getId() == R.id.backBtn) {
+            getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+    }
+
+    class TeamAdapter extends RecyclerView.Adapter<TeamAdapter.MyViewHolder> {
+        private List<Team> teamList;
+        private Context context1;
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+            public ImageView iconImg;
+            public TextView namaText, alamatText, emailText;
+
+            public MyViewHolder(View view) {
+                super(view);
+
+                iconImg = (ImageView) view.findViewById(R.id.iconImg);
+                namaText = (TextView) view.findViewById(R.id.namaText);
+                alamatText = (TextView) view.findViewById(R.id.alamatText);
+                emailText = (TextView) view.findViewById(R.id.emailText);
+            }
+        }
+
+        public TeamAdapter(List<Team> teamList, Context context1) {
+            this.teamList = teamList;
+            this.context1 = context1;
+        }
+
+        @Override
+        public TeamAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.row_team, parent, false);
+//            itemView.setOnClickListener(this);
+            return new TeamAdapter.MyViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(TeamAdapter.MyViewHolder holder, int position) {
+            Team team = teamList.get(position);
+            holder.namaText.setText(team.getFullName());
+            holder.alamatText.setText(team.getAddress());
+
+            JSONObject obj = team.getUser();
+            try {
+                holder.emailText.setText(obj.getString("email"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            return teamList.size();
+        }
+
+        public Team getItem(int position) {
+            return teamList.get(position);
         }
     }
 }

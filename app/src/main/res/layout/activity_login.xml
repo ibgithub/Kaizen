@@ -70,6 +70,8 @@
         android:paddingLeft="@dimen/_30sdp"
         android:paddingBottom="@dimen/_8sdp"
         android:drawablePadding="@dimen/_12sdp"
+        android:singleLine="true"
+        android:imeOptions="actionDone"
         android:password="true"/>
 
     <TextView

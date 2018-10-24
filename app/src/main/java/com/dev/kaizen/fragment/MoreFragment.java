@@ -8,6 +8,7 @@
 
 package com.dev.kaizen.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -107,26 +108,51 @@ public class MoreFragment extends Fragment implements View.OnClickListener{
             fragmentTransaction.addToBackStack("home");
             fragmentTransaction.commit();
         } else if(v.getId() == R.id.logoutLayout) {
-
-            new AlertDialog.Builder(getActivity())
-                    .setTitle("Pesan")
-                    .setMessage("Apakah Anda yakin untuk Log Out?")
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            GlobalVar.getInstance().setIdToken(null);
-                            GlobalVar.getInstance().setAccount(null);
-                            GlobalVar.getInstance().setProfile(null);
-                            GlobalVar.getInstance().setGrup(null);
-                            GlobalVar.getInstance().setProgram(null);
-
-                            Intent intent = new Intent(getActivity(), MainActivity.class);
-                            startActivityForResult(intent, 1);
-                        }
-                    })
-                    .setNegativeButton(android.R.string.no, null)
-                    .show();
-
+            this.logout();
         }
+    }
+
+    private void logout() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage("Apakah Anda yakin untuk keluar?");
+        builder.setPositiveButton("Ya", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                GlobalVar.getInstance().setIdToken(null);
+                GlobalVar.getInstance().setAccount(null);
+                GlobalVar.getInstance().setProfile(null);
+                GlobalVar.getInstance().setGrup(null);
+                GlobalVar.getInstance().setProgram(null);
+
+                GlobalVar.getInstance().setProvincies(null);
+                GlobalVar.getInstance().setCities(null);
+                GlobalVar.getInstance().setSchools(null);
+
+                Intent resultData = new Intent();
+                resultData.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                resultData.putExtra("wantLogin", "true");
+                getActivity().setResult(Activity.RESULT_OK, resultData);
+                getActivity().finish();
+            }
+        });
+        builder.setNegativeButton("Tidak", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        final AlertDialog dialog = builder.create();
+
+        //2. now setup to change color of the button
+        dialog.setOnShowListener( new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface arg0) {
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.darkgray));
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.darkgray));
+            }
+        });
+
+        dialog.show();
     }
 }

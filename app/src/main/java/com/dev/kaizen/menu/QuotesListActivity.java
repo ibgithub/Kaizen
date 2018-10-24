@@ -333,4 +333,14 @@ public class QuotesListActivity extends BasePageActivity {
             return new DefaultHttpDataSourceFactory(Util.getUserAgent(context, "ExoPlayerDemo"), bandwidthMeter);
         }
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if(mAdapter.player != null) {
+            mAdapter.player.stop();
+            mAdapter.player.seekTo(0);
+        }
+    }
 }

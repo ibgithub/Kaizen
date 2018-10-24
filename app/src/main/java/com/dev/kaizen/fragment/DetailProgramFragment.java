@@ -6,7 +6,7 @@
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
 
-package com.dev.kaizen.program;
+package com.dev.kaizen.fragment;
 
 import android.content.Context;
 import android.net.Uri;
@@ -14,8 +14,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
-import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +29,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.asura.library.posters.Poster;
@@ -38,12 +37,10 @@ import com.asura.library.posters.RemoteVideo;
 import com.asura.library.views.PosterSlider;
 import com.dev.kaizen.R;
 import com.dev.kaizen.adapter.Program;
-import com.dev.kaizen.adapter.Quotes;
 import com.dev.kaizen.util.Constant;
 import com.dev.kaizen.util.FontUtils;
 import com.dev.kaizen.util.GlobalVar;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -251,111 +248,18 @@ public class DetailProgramFragment extends Fragment implements View.OnClickListe
     public void onClick(View v) {
         if(v.getId() == R.id.backBtn) {
             getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        }
-    }
+        } else if(v.getId() == R.id.nextBtn) {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("item", getArguments().getParcelable("item"));
 
-    private void getProvinces() {
-        //http://156.67.221.248:2082/kaizen/api/provinces
-        //http://156.67.221.248:2082/kaizen/api/cities
-        //http://156.67.221.248:2082/kaizen/api/schools
+            AddProgramFragment fragment2 = new AddProgramFragment();
+            fragment2.setArguments(bundle);
 
-        try {
-            JSONObject obj = new JSONObject(GlobalVar.getInstance().getGrup());
-            String url = Constant.BASE_URL + "provinces";
-            RequestQueue queue = Volley.newRequestQueue(context);
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    Log.i("province", response);
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.e("province err", error.toString());
-                }
-            })
-            {
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String, String> map = new HashMap<String, String>();
-                    map.put("Authorization", "Bearer " + GlobalVar.getInstance().getIdToken());
-                    Log.d("mapheader", map.toString());
-                    return map;
-                }
-            };
-            queue.add(stringRequest);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void getCities() {
-        //http://156.67.221.248:2082/kaizen/api/provinces
-        //http://156.67.221.248:2082/kaizen/api/cities
-        //http://156.67.221.248:2082/kaizen/api/schools
-
-        try {
-            JSONObject obj = new JSONObject(GlobalVar.getInstance().getGrup());
-            String url = Constant.BASE_URL + "cities";
-            RequestQueue queue = Volley.newRequestQueue(context);
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    Log.i("cities", response);
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.e("cities err", error.toString());
-                }
-            })
-            {
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String, String> map = new HashMap<String, String>();
-                    map.put("Authorization", "Bearer " + GlobalVar.getInstance().getIdToken());
-                    Log.d("mapheader", map.toString());
-                    return map;
-                }
-            };
-            queue.add(stringRequest);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void getSchools() {
-        //http://156.67.221.248:2082/kaizen/api/provinces
-        //http://156.67.221.248:2082/kaizen/api/cities
-        //http://156.67.221.248:2082/kaizen/api/schools
-
-        try {
-            JSONObject obj = new JSONObject(GlobalVar.getInstance().getGrup());
-            String url = Constant.BASE_URL + "schools";
-            RequestQueue queue = Volley.newRequestQueue(context);
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    Log.i("schools", response);
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.e("schools err", error.toString());
-                }
-            })
-            {
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String, String> map = new HashMap<String, String>();
-                    map.put("Authorization", "Bearer " + GlobalVar.getInstance().getIdToken());
-                    Log.d("mapheader", map.toString());
-                    return map;
-                }
-            };
-            queue.add(stringRequest);
-        } catch (JSONException e) {
-            e.printStackTrace();
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.content, fragment2);
+            fragmentTransaction.addToBackStack("detail");
+            fragmentTransaction.commit();
         }
     }
 

@@ -3,7 +3,7 @@
     android:orientation="horizontal" 
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#e6e6e6">
+    android:background="@color/transparent">
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -21,7 +21,7 @@
                 android:id="@+id/iconImg"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/ic_person"
+                android:src="@drawable/ic_account_circle_black_24dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"/>
             <LinearLayout
@@ -30,19 +30,11 @@
                 android:orientation="vertical"
                 android:layout_gravity="center">
                 <TextView
-                    android:id="@+id/kodeText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Kode Customer"
-                    android:textColor="@color/black"
-                    android:gravity="left"
-                    android:textSize="12sp"/>
-                <TextView
                     android:id="@+id/namaText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Nama Customer"
-                    android:textColor="@color/black"
+                    android:text="Nama User"
+                    android:textColor="@color/darkgray"
                     android:gravity="left"
                     android:textStyle="bold"
                     android:textSize="16sp"/>
@@ -50,8 +42,8 @@
                     android:id="@+id/alamatText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Alamat Customer"
-                    android:textColor="@color/black"
+                    android:text="Alamat User"
+                    android:textColor="@color/darkgray"
                     android:gravity="left"
                     android:textSize="14sp"/>
                 <LinearLayout
@@ -60,21 +52,12 @@
                     android:orientation="horizontal"
                     android:layout_marginRight="20dp">
                     <TextView
-                        android:id="@+id/nomerText"
+                        android:id="@+id/emailText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="No Telepon"
-                        android:textColor="@color/black"
+                        android:text="Email"
+                        android:textColor="@color/darkgray"
                         android:gravity="left"
-                        android:textSize="12sp"
-                        android:layout_weight="1"/>
-                    <TextView
-                        android:id="@+id/statusText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Status"
-                        android:textColor="@color/blue"
-                        android:gravity="right"
                         android:textSize="12sp"
                         android:layout_weight="1"/>
                 </LinearLayout>
