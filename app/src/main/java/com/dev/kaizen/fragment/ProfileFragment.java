@@ -47,6 +47,7 @@ import java.util.Map;
 
 public class ProfileFragment extends Fragment implements View.OnClickListener{
     private Context context;
+    private TextView nameText, emailText, addressText, schoolText, classText;
 
     public static ProfileFragment newInstance() {
         ProfileFragment fragment = new ProfileFragment();
@@ -70,34 +71,16 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
         toolbar.setVisibility(Toolbar.GONE);
 
-        TextView nameText = (TextView) v.findViewById(R.id.nameText);
-        TextView emailText = (TextView) v.findViewById(R.id.emailText);
-        TextView addressText = (TextView) v.findViewById(R.id.addressText);
-        TextView schoolText = (TextView) v.findViewById(R.id.schoolText);
-        TextView classText = (TextView) v.findViewById(R.id.classText);
+        nameText = (TextView) v.findViewById(R.id.nameText);
+        emailText = (TextView) v.findViewById(R.id.emailText);
+        addressText = (TextView) v.findViewById(R.id.addressText);
+        schoolText = (TextView) v.findViewById(R.id.schoolText);
+        classText = (TextView) v.findViewById(R.id.classText);
 
         Button updateBtn = (Button) v.findViewById(R.id.updateBtn);
         updateBtn.setOnClickListener(this);
 
-        try {
-            if (GlobalVar.getInstance().getAccount() != null) {
-                JSONObject account = new JSONObject(GlobalVar.getInstance().getAccount());
-                nameText.setText(account.getString("firstName") + " " + account.getString("lastName"));
-                emailText.setText(account.getString("email"));
-            }
-
-            if (GlobalVar.getInstance().getProfile() != null) {
-                JSONObject profile = new JSONObject(GlobalVar.getInstance().getProfile());
-                addressText.setText(profile.getString("address"));
-                classText.setText(profile.getString("schoolClass"));
-
-                JSONObject school = profile.getJSONObject("school");
-                schoolText.setText(school.getString("schoolName"));
-            }
-        } catch (JSONException ex) {
-
-        }
-
+        setValue();
 
         return v;
     }
@@ -118,5 +101,138 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
             fragmentTransaction.commit();
 
         }
+    }
+
+    private void setValue() {
+        try {
+            if(GlobalVar.getInstance().getProfile() == null) {
+                getParticipant();
+            } else {
+//                JSONObject account = new JSONObject(GlobalVar.getInstance().getAccount());
+//                nameText.setText(account.getString("firstName") + " " + account.getString("lastName"));
+//                emailText.setText(account.getString("email"));
+
+                JSONObject profile = new JSONObject(GlobalVar.getInstance().getProfile());
+                addressText.setText(profile.getString("address"));
+                classText.setText(profile.getString("schoolClass"));
+
+                JSONObject user = profile.getJSONObject("user");
+                nameText.setText(user.getString("firstName") + " " + user.getString("lastName"));
+                emailText.setText(user.getString("email"));
+
+                JSONObject school = profile.getJSONObject("school");
+                schoolText.setText(school.getString("schoolName"));
+            }
+        } catch (JSONException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+//    private void getAccount() {
+//        String url = Constant.BASE_URL + "account";
+//        RequestQueue queue = Volley.newRequestQueue(context);
+//        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response) {
+//                Log.i("VOLLEY", response);
+//                GlobalVar.getInstance().setAccount(response);
+//                getParticipant();
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Log.e("VOLLEY", error.toString());
+////                NetworkResponse response = error.networkResponse;
+////                if (error instanceof ServerError && response != null) {
+////                    try {
+////                        String res = new String(response.data,
+////                                HttpHeaderParser.parseCharset(response.headers, "utf-8"));
+////                        JSONObject obj = new JSONObject(res);
+////                        Log.d("obj", "" + obj);
+////
+////                        final CustomDialogClass2 cd = new CustomDialogClass2(context);
+////                        cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+////                        cd.show();
+////                        cd.setCanceledOnTouchOutside(false);
+////                        cd.header.setText("Message");
+////                        cd.isi.setText(obj.getString("title"));
+////                    } catch (UnsupportedEncodingException e1) {
+////                        e1.printStackTrace();
+////                    } catch (JSONException e2) {
+////                        e2.printStackTrace();
+////                    }
+////                }
+//            }
+//        })
+//        {
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put("Authorization", "Bearer " + GlobalVar.getInstance().getIdToken());
+//                Log.d("mapheader", map.toString());
+//                return map;
+//            }
+//        };
+//        queue.add(stringRequest);
+//    }
+
+    private void getParticipant() {
+        try {
+            JSONObject obj = new JSONObject(GlobalVar.getInstance().getAccount());
+            String url = Constant.BASE_URL + "participantsByUserId/" + obj.getString("id");
+            RequestQueue queue = Volley.newRequestQueue(context);
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Log.i("VOLLEY", response);
+                    GlobalVar.getInstance().setProfile(response);
+
+                    setValue();
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("VOLLEY", error.toString());
+//                    NetworkResponse response = error.networkResponse;
+//                    if (error instanceof ServerError && response != null) {
+//                        try {
+//                            String res = new String(response.data,
+//                                    HttpHeaderParser.parseCharset(response.headers, "utf-8"));
+//                            JSONObject obj = new JSONObject(res);
+//                            Log.d("obj", "" + obj);
+//
+//                            final CustomDialogClass2 cd = new CustomDialogClass2(context);
+//                            cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//                            cd.show();
+//                            cd.setCanceledOnTouchOutside(false);
+//                            cd.header.setText("Message");
+//                            cd.isi.setText(obj.getString("title"));
+//                        } catch (UnsupportedEncodingException e1) {
+//                            e1.printStackTrace();
+//                        } catch (JSONException e2) {
+//                            e2.printStackTrace();
+//                        }
+//                    }
+                }
+            })
+            {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> map = new HashMap<String, String>();
+                    map.put("Authorization", "Bearer " + GlobalVar.getInstance().getIdToken());
+                    Log.d("mapheader", map.toString());
+                    return map;
+                }
+            };
+            queue.add(stringRequest);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setValue();
     }
 }
