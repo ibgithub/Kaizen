@@ -9,6 +9,8 @@
 package com.dev.kaizen.fragment;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -25,10 +27,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.asura.library.posters.Poster;
@@ -37,13 +43,16 @@ import com.asura.library.posters.RemoteVideo;
 import com.asura.library.views.PosterSlider;
 import com.dev.kaizen.R;
 import com.dev.kaizen.adapter.Program;
+import com.dev.kaizen.base.CustomDialogClass2;
 import com.dev.kaizen.util.Constant;
 import com.dev.kaizen.util.FontUtils;
 import com.dev.kaizen.util.GlobalVar;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -128,23 +137,17 @@ public class DetailProgramFragment extends Fragment implements View.OnClickListe
                 ll.setVisibility(LinearLayout.GONE);
             }
 
-            ll = (LinearLayout) v.findViewById(R.id.memberLayout);
-            if(program.getMemberList() != null) {
-                if(!program.getMemberList().equals("null")) {
-                    tv = (TextView) v.findViewById(R.id.memberText);
-                    tv.setTypeface(FontUtils.loadFontFromAssets(context));
-
-                    String[] namaMember = program.getMemberList().split("|");
-                    StringBuilder member = new StringBuilder();
-                    for(int i=0; i<namaMember.length; i++) {
-                        member.append("- " + namaMember[i]);
-                        if(i != namaMember.length-1) {
-                            member.append("\n");
-                        }
+            tv = (TextView) v.findViewById(R.id.memberText);
+            List<String> members = GlobalVar.getInstance().getTeamMembers();
+            if(members != null && members.size() > 0) {
+                StringBuilder member = new StringBuilder();
+                for(int i=0; i< members.size(); i++) {
+                    member.append("- " + members.get(i));
+                    if(i != members.size()-1) {
+                        member.append("\n");
                     }
-                } else {
-                    ll.setVisibility(LinearLayout.GONE);
                 }
+                tv.setText(member);
             } else {
                 ll.setVisibility(LinearLayout.GONE);
             }
@@ -156,10 +159,10 @@ public class DetailProgramFragment extends Fragment implements View.OnClickListe
             tv.setTypeface(FontUtils.loadFontFromAssets(context));
             tv.setText(school.getString("schoolName"));
 
-            tv = (TextView) v.findViewById(R.id.lokasiText);
+            /*tv = (TextView) v.findViewById(R.id.lokasiText);
             tv.setTypeface(FontUtils.loadFontFromAssets(context));
             tv.setText(school.getString("address"));
-
+            */
             ll = (LinearLayout) v.findViewById(R.id.backgroundLayout);
             if(!program.getBackground().equals("null")) {
                 tv = (TextView) v.findViewById(R.id.backgroundText);
@@ -192,7 +195,7 @@ public class DetailProgramFragment extends Fragment implements View.OnClickListe
                 tv = (TextView) v.findViewById(R.id.masalahText);
                 tv.setTypeface(FontUtils.loadFontFromAssets(context));
 
-                String[] listMasalah = program.getProblemList().split("|");
+                String[] listMasalah = program.getProblemList().split("\\|");
                 StringBuilder masalah = new StringBuilder();
                 for(int i=0; i<listMasalah.length; i++) {
                     masalah.append("- " + listMasalah[i]);
@@ -200,6 +203,7 @@ public class DetailProgramFragment extends Fragment implements View.OnClickListe
                         masalah.append("\n");
                     }
                 }
+                tv.setText(masalah);
             } else {
                 ll.setVisibility(LinearLayout.GONE);
             }
@@ -209,7 +213,7 @@ public class DetailProgramFragment extends Fragment implements View.OnClickListe
                 tv = (TextView) v.findViewById(R.id.tugasText);
                 tv.setTypeface(FontUtils.loadFontFromAssets(context));
 
-                String[] listTugas = program.getTaskList().split("|");
+                String[] listTugas = program.getTaskList().split("\\|");
                 StringBuilder tugas = new StringBuilder();
                 for(int i=0; i<listTugas.length; i++) {
                     tugas.append("- " + listTugas[i]);
@@ -217,6 +221,7 @@ public class DetailProgramFragment extends Fragment implements View.OnClickListe
                         tugas.append("\n");
                     }
                 }
+                tv.setText(tugas);
             } else {
                 ll.setVisibility(LinearLayout.GONE);
             }
@@ -226,7 +231,7 @@ public class DetailProgramFragment extends Fragment implements View.OnClickListe
                 tv = (TextView) v.findViewById(R.id.hasilText);
                 tv.setTypeface(FontUtils.loadFontFromAssets(context));
 
-                String[] listHasil = program.getResultList().split("|");
+                String[] listHasil = program.getResultList().split("\\|");
                 StringBuilder hasil = new StringBuilder();
                 for(int i=0; i<listHasil.length; i++) {
                     hasil.append("- " + listHasil[i]);
@@ -234,6 +239,7 @@ public class DetailProgramFragment extends Fragment implements View.OnClickListe
                         hasil.append("\n");
                     }
                 }
+                tv.setText(hasil);
             } else {
                 ll.setVisibility(LinearLayout.GONE);
             }

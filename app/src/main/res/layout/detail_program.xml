@@ -146,7 +146,7 @@
                         android:layout_height="1dp"
                         android:background="@color/darkgray2"/>
                 </LinearLayout>
-                <LinearLayout
+                <!--LinearLayout
                     android:id="@+id/lokasiLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -177,7 +177,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@color/darkgray2"/>
-                </LinearLayout>
+                </LinearLayout-->
                 <LinearLayout
                     android:id="@+id/backgroundLayout"
                     android:layout_width="match_parent"
@@ -218,7 +218,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Lama Program"
+                        android:text="Lama Program (Dalam Hari)"
                         android:textColor="@color/darkgray"
                         android:textStyle="bold"
                         android:gravity="left|center"
