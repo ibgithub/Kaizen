@@ -1,6 +1,7 @@
 package com.dev.kaizen.util;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class GlobalVar implements Serializable {
 	private static final long serialVersionUID = 4209785791151665560L;
@@ -15,6 +16,7 @@ public class GlobalVar implements Serializable {
 	private String provincies;
 	private String cities;
 	private String schools;
+	private List<String> teamMembers;
 
 	static {
 		instance = new GlobalVar();
@@ -88,5 +90,13 @@ public class GlobalVar implements Serializable {
 
 	public void setSchools(String schools) {
 		this.schools = schools;
+	}
+
+	public List<String> getTeamMembers() {
+		return teamMembers;
+	}
+
+	public void setTeamMembers(List<String> teamMembers) {
+		this.teamMembers = teamMembers;
 	}
 }

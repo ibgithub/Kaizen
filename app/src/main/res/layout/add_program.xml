@@ -59,7 +59,7 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Lama Program"
+                    android:hint="Lama Program (Dalam Hari)"
                     android:inputType="number"
                     android:id="@+id/lama"
                     android:imeOptions="actionNext"/>

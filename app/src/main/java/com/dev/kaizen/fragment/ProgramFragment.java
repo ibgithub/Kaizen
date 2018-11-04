@@ -10,6 +10,8 @@ package com.dev.kaizen.fragment;
 
 import android.content.Context;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,15 +34,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.dev.kaizen.R;
 import com.dev.kaizen.adapter.Program;
+import com.dev.kaizen.base.CustomDialogClass2;
 import com.dev.kaizen.util.Constant;
 import com.dev.kaizen.util.FontUtils;
 import com.dev.kaizen.util.GlobalVar;
@@ -74,6 +81,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -199,6 +207,7 @@ public class ProgramFragment extends Fragment implements View.OnClickListener {
         try {
             JSONObject obj = new JSONObject(GlobalVar.getInstance().getGrup());
             String url = Constant.BASE_URL + "programsByGroupId/" + obj.getString("id");
+
             RequestQueue queue = Volley.newRequestQueue(context);
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
@@ -228,6 +237,7 @@ public class ProgramFragment extends Fragment implements View.OnClickListener {
                         }
 
                         mAdapter.notifyDataSetChanged();
+                        getTeamMembers();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -269,6 +279,76 @@ public class ProgramFragment extends Fragment implements View.OnClickListener {
                 }
             };
             queue.add(stringRequest);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    void getTeamMembers () {
+        try {
+            JSONObject obj = new JSONObject(GlobalVar.getInstance().getAccount());
+            final Long userId = Long.parseLong(obj.getString("id"));
+            String url = Constant.BASE_URL + "groupNamesByUserId/" + userId ;
+            final List<String> teamMembers = new ArrayList<String>();
+            RequestQueue queue = Volley.newRequestQueue(context);
+            JsonArrayRequest getRequest = new JsonArrayRequest(Request.Method.GET, url, null,
+                    new Response.Listener<JSONArray>()
+                    {
+                        @Override
+                        public void onResponse(JSONArray response) {
+                            // display response
+                            Log.d("Response", response.toString());
+
+                            try {
+                                JSONArray responseArr = new JSONArray(response.toString());
+                                for (int i = 0; i < responseArr.length(); i++) {
+                                    JSONObject obj = responseArr.getJSONObject(i);
+
+                                    teamMembers.add(obj.getString("fullName"));
+                                }
+                                GlobalVar.getInstance().setTeamMembers(teamMembers);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    },
+                    new Response.ErrorListener()
+                    {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            NetworkResponse response = error.networkResponse;
+                            if (error instanceof ServerError && response != null) {
+                                try {
+                                    String res = new String(response.data,
+                                            HttpHeaderParser.parseCharset(response.headers, "utf-8"));
+                                    JSONObject obj = new JSONObject(res);
+                                    Log.d("obj", "" + obj);
+
+                                    final CustomDialogClass2 cd = new CustomDialogClass2(getActivity());
+                                    cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                    cd.show();
+                                    cd.setCanceledOnTouchOutside(false);
+                                    cd.header.setText(obj.getString("title"));
+                                    cd.isi.setText("Anda belum memiliki Tim, silahkan membuat Tim Baru");
+                                } catch (UnsupportedEncodingException e1) {
+                                    e1.printStackTrace();
+                                } catch (JSONException e2) {
+                                    e2.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+            ){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> map = new HashMap<String, String>();
+                    map.put("Authorization", "Bearer " + GlobalVar.getInstance().getIdToken());
+                    return map;
+                }
+            };
+            // add it to the RequestQueue
+            queue.add(getRequest);
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
