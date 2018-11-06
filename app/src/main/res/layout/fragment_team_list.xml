@@ -9,8 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:fitsSystemWindows="true"
-        android:layout_above="@+id/teamBtn">
+        android:fitsSystemWindows="true">
         <TextView
             android:id="@+id/schoolText"
             android:layout_width="match_parent"
@@ -24,22 +23,10 @@
             android:paddingTop="@dimen/_10sdp"/>
 
         <TextView
-            android:id="@+id/descText"
+            android:id="@+id/teamMember"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text=""
-            android:textColor="@color/blue"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:paddingLeft="@dimen/_10sdp"
-            android:paddingRight="@dimen/_10sdp"
-            android:paddingTop="@dimen/_10sdp"/>
-
-        <TextView
-            android:id="@+id/teamMemberTxt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Team Members:"
+            android:text="Team List:"
             android:textColor="@color/blue"
             android:textStyle="bold"
             android:paddingLeft="@dimen/_10sdp"
@@ -58,29 +45,18 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/teamBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginBottom="@dimen/_10sdp"
         android:layout_alignParentBottom="true">
         <Button
-            android:id="@+id/updateTeamBtn"
+            android:id="@+id/createTeamBtn"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_40sdp"
             android:background="@drawable/bg_blue"
             android:layout_margin="@dimen/_10sdp"
-            android:text="Update"
-            android:textSize="20sp"
-            android:textColor="@color/white"/>
-
-        <Button
-            android:id="@+id/leaveTeamBtn"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_40sdp"
-            android:background="@drawable/bg_blue"
-            android:layout_margin="@dimen/_10sdp"
-            android:text="Leave Team"
+            android:text="Create Team"
             android:textSize="20sp"
             android:textColor="@color/white"/>
     </LinearLayout>

@@ -9,8 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:fitsSystemWindows="true"
-        android:layout_above="@+id/teamBtn">
+        android:fitsSystemWindows="true">
         <TextView
             android:id="@+id/schoolText"
             android:layout_width="match_parent"
@@ -23,42 +22,25 @@
             android:paddingRight="@dimen/_10sdp"
             android:paddingTop="@dimen/_10sdp"/>
 
-        <TextView
-            android:id="@+id/descText"
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text=""
-            android:textColor="@color/blue"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:paddingLeft="@dimen/_10sdp"
-            android:paddingRight="@dimen/_10sdp"
-            android:paddingTop="@dimen/_10sdp"/>
+            android:theme="@style/TextLabel"
+            android:id="@+id/descLayout"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginRight="@dimen/_10sdp">
 
-        <TextView
-            android:id="@+id/teamMemberTxt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Team Members:"
-            android:textColor="@color/blue"
-            android:textStyle="bold"
-            android:paddingLeft="@dimen/_10sdp"
-            android:paddingRight="@dimen/_10sdp"
-            android:paddingTop="@dimen/_10sdp"
-            android:textSize="14sp"/>
-
-        <android.support.v7.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:overScrollMode="never"
-            android:id="@+id/rvList"
-            android:background="@color/listBg"
-            android:layout_weight="1"
-            android:padding="@dimen/_10sdp"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nama Tim"
+                android:inputType="textEmailAddress"
+                android:id="@+id/descEdit"
+                android:imeOptions="actionNext"/>
+        </android.support.design.widget.TextInputLayout>
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/teamBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -75,12 +57,12 @@
             android:textColor="@color/white"/>
 
         <Button
-            android:id="@+id/leaveTeamBtn"
+            android:id="@+id/cancelBtn"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_40sdp"
             android:background="@drawable/bg_blue"
             android:layout_margin="@dimen/_10sdp"
-            android:text="Leave Team"
+            android:text="Cancel"
             android:textSize="20sp"
             android:textColor="@color/white"/>
     </LinearLayout>

@@ -95,7 +95,8 @@ public class ProgramFragment extends Fragment implements View.OnClickListener {
     private RecyclerView recyclerView;
     private ProgramAdapter mAdapter;
     private List<Program> programList = new ArrayList<>();
-    
+    private boolean isNoTeam;
+
     public static ProgramFragment newInstance() {
         ProgramFragment fragment = new ProgramFragment();
         return fragment;
@@ -141,13 +142,22 @@ public class ProgramFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        AddProgramFragment fragment2 = new AddProgramFragment();
+        if (isNoTeam) {
+            final CustomDialogClass2 cd = new CustomDialogClass2(getActivity());
+            cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            cd.show();
+            cd.setCanceledOnTouchOutside(false);
+            cd.header.setText("Belum Punya Tim");
+            cd.isi.setText("Anda belum memiliki Tim, silahkan membuat Tim terlebih dulu");
+        } else {
+            AddProgramFragment fragment2 = new AddProgramFragment();
 
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.content, fragment2);
-        fragmentTransaction.addToBackStack("program");
-        fragmentTransaction.commit();
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.content, fragment2);
+            fragmentTransaction.addToBackStack("program");
+            fragmentTransaction.commit();
+        }
     }
 
     private void getGroups() {
@@ -158,34 +168,37 @@ public class ProgramFragment extends Fragment implements View.OnClickListener {
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    Log.i("VOLLEY", response);
+                    Log.i("VOLLEY1", response);
                     GlobalVar.getInstance().setGrup(response);
+                    isNoTeam = false;
                     getProgram();
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.e("VOLLEY", error.toString());
-//                    NetworkResponse response = error.networkResponse;
-//                    if (error instanceof ServerError && response != null) {
-//                        try {
-//                            String res = new String(response.data,
-//                                    HttpHeaderParser.parseCharset(response.headers, "utf-8"));
-//                            JSONObject obj = new JSONObject(res);
-//                            Log.d("obj", "" + obj);
-//
-//                            final CustomDialogClass2 cd = new CustomDialogClass2(context);
+                    Log.e("VOLLEY2", error.toString());
+                    NetworkResponse response = error.networkResponse;
+                    if (error instanceof ServerError && response != null) {
+                        try {
+                            String res = new String(response.data,
+                                    HttpHeaderParser.parseCharset(response.headers, "utf-8"));
+                            JSONObject obj = new JSONObject(res);
+                            Log.d("obj", "" + obj);
+                            isNoTeam = true;
+
+//                            final CustomDialogClass2 cd = new CustomDialogClass2(getActivity());
 //                            cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 //                            cd.show();
 //                            cd.setCanceledOnTouchOutside(false);
-//                            cd.header.setText("Message");
-//                            cd.isi.setText(obj.getString("title"));
-//                        } catch (UnsupportedEncodingException e1) {
-//                            e1.printStackTrace();
-//                        } catch (JSONException e2) {
-//                            e2.printStackTrace();
-//                        }
-//                    }
+//                            cd.header.setText(obj.getString("title"));
+//                            cd.isi.setText("Anda belum memiliki Tim, silahkan membuat Tim Baru");
+
+                        } catch (UnsupportedEncodingException e1) {
+                            e1.printStackTrace();
+                        } catch (JSONException e2) {
+                            e2.printStackTrace();
+                        }
+                    }
                 }
             })
             {
@@ -212,7 +225,7 @@ public class ProgramFragment extends Fragment implements View.OnClickListener {
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    Log.i("VOLLEY", response);
+                    Log.i("VOLLEY3", response);
 
                     try {
                         JSONArray responseArr = new JSONArray(response.toString());
@@ -245,7 +258,7 @@ public class ProgramFragment extends Fragment implements View.OnClickListener {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.e("VOLLEY", error.toString());
+                    Log.e("VOLLEY4", error.toString());
 
 //                    NetworkResponse response = error.networkResponse;
 //                    if (error instanceof ServerError && response != null) {
