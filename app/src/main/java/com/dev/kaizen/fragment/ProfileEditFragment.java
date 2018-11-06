@@ -400,18 +400,27 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
 
         // prepare the Request
         try {
-            JSONObject json = new JSONObject(GlobalVar.getInstance().getProfile());
+            JSONObject json = new JSONObject();
+            JSONObject userJson = new JSONObject();
 
-            JSONObject userJson = json.getJSONObject("user");
-            userJson.put("firstName", firstNameEdit.getText().toString().trim());
-            userJson.put("lastName", lastNameEdit.getText().toString().trim());
-            userJson.put("email", emailEdit.getText().toString().trim());
+            if ( GlobalVar.getInstance().getAccount() != null ) {
+                userJson = new JSONObject(GlobalVar.getInstance().getAccount());
+            }
+            if ( GlobalVar.getInstance().getProfile() != null ) {
+                json = new JSONObject(GlobalVar.getInstance().getProfile());
+
+                userJson = json.getJSONObject("user");
+            }
 
             json.put("fullName", firstNameEdit.getText().toString().trim() + " " + lastNameEdit.getText().toString().trim());
             json.put("schoolClass", classEdit.getText().toString().trim());
             json.put("address", addressEdit.getText().toString().trim());
 
-//            json.remove("school");
+            userJson.put("firstName", firstNameEdit.getText().toString().trim());
+            userJson.put("lastName", lastNameEdit.getText().toString().trim());
+            userJson.put("email", emailEdit.getText().toString().trim());
+
+            json.put("user", userJson);
 
             JSONObject schoolObj = new JSONObject();
             if(!isTambah) {
@@ -425,55 +434,56 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
                 kotaObj.put("id", selectedKota.getInt("id"));
                 schoolObj.put("city", kotaObj);
             }
+
             json.put("school", schoolObj);
 
-            Log.d("getprofile", GlobalVar.getInstance().getProfile());
             Log.d("json", json.toString());
 
             JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.PUT, url, json,
-                    new Response.Listener<JSONObject>()
-                    {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            Log.d("response put user", response.toString());
-                            GlobalVar.getInstance().setProfile(response.toString());
-                            Toast.makeText(getContext(), "Data berhasil disimpan", Toast.LENGTH_LONG).show();
-                            getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                        }
-                    },
-                    new Response.ErrorListener()
-                    {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.e("VOLLEY", error.toString());
-                            NetworkResponse response = error.networkResponse;
-                            if (error instanceof AuthFailureError && response != null) {
-                                try {
-                                    String res = new String(response.data,
-                                            HttpHeaderParser.parseCharset(response.headers, "utf-8"));
-                                    Log.e("res", "" + res);
-                                    JSONObject obj = new JSONObject(res);
-                                    Log.d("obj", "" + obj);
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("response put user", response.toString());
+                        GlobalVar.getInstance().setProfile(response.toString());
 
-                                    final CustomDialogClass2 cd = new CustomDialogClass2(getActivity());
-                                    cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                                    cd.show();
-                                    cd.setCanceledOnTouchOutside(false);
-                                    cd.header.setText("Message");
-                                    String title = obj.getString("title");
-                                    String detail = obj.getString("detail");
+                        Toast.makeText(getContext(), "Data berhasil disimpan", Toast.LENGTH_LONG).show();
+                        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("VOLLEY", error.toString());
+                        NetworkResponse response = error.networkResponse;
+                        if (error instanceof AuthFailureError && response != null) {
+                            try {
+                                String res = new String(response.data,
+                                        HttpHeaderParser.parseCharset(response.headers, "utf-8"));
+                                Log.e("res", "" + res);
+                                JSONObject obj = new JSONObject(res);
+                                Log.d("obj", "" + obj);
 
-                                    cd.isi.setText(title + ": " + detail);
-                                } catch (UnsupportedEncodingException e1) {
-                                    e1.printStackTrace();
-                                } catch (JSONException e2) {
-                                    e2.printStackTrace();
-                                }
-                            } else if (error instanceof ServerError && response != null) {
+                                final CustomDialogClass2 cd = new CustomDialogClass2(getActivity());
+                                cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                cd.show();
+                                cd.setCanceledOnTouchOutside(false);
+                                cd.header.setText("Message");
+                                String title = obj.getString("title");
+                                String detail = obj.getString("detail");
 
+                                cd.isi.setText(title + ": " + detail);
+                            } catch (UnsupportedEncodingException e1) {
+                                e1.printStackTrace();
+                            } catch (JSONException e2) {
+                                e2.printStackTrace();
                             }
+                        } else if (error instanceof ServerError && response != null) {
+
                         }
                     }
+                }
             )
             {
                 @Override
