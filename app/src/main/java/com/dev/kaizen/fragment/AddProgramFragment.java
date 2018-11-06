@@ -255,6 +255,9 @@ public class AddProgramFragment extends Fragment implements View.OnClickListener
 
                     if(program != null) {
                         json.put("id", program.getId());
+                        json.put("urlPhotoBefore", program.getUrlPhotoBefore());
+                        json.put("urlPhotoAfter", program.getUrlPhotoAfter());
+                        json.put("urlVideo", program.getUrlVideo());
                     }
 
                     String sgroup = GlobalVar.getInstance().getGrup();
@@ -280,6 +283,7 @@ public class AddProgramFragment extends Fragment implements View.OnClickListener
 
                                 Bundle bundle = new Bundle();
                                 bundle.putString("response", response.toString());
+                                bundle.putParcelable("item", program);  //yg dicek di halaman selanjutnya hanya foto dan video
 
                                 AddProgram2Fragment fragment2 = new AddProgram2Fragment();
                                 fragment2.setArguments(bundle);
