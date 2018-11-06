@@ -250,7 +250,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Total Biaya"
+                        android:text="Total Biaya (Dalam Rupiah)"
                         android:textColor="@color/darkgray"
                         android:textStyle="bold"
                         android:gravity="left|center"
