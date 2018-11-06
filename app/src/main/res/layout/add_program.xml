@@ -75,7 +75,7 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Total Biaya"
+                    android:hint="Total Biaya (Dalam Rupiah)"
                     android:inputType="number"
                     android:id="@+id/biaya"
                     android:imeOptions="actionNext"/>

@@ -200,8 +200,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
 
     public void setWelcome() {
         try {
-            JSONObject obj = new JSONObject(GlobalVar.getInstance().getProfile());
-            welcomeText.setText("Welcome, " + obj.getString("fullName"));
+            if ( GlobalVar.getInstance().getProfile() != null ) {
+                JSONObject obj = new JSONObject(GlobalVar.getInstance().getProfile());
+                welcomeText.setText("Welcome, " + obj.getString("fullName"));
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -22,12 +22,12 @@ public final class Constant {
 	public static final int FONT_BOLD = 3;
 
 	//dev
-//	public static final String BASE_URL = "http://156.67.221.248:2082/kaizen/api/";
-//	public static final String BASE_PICT = "http://156.67.221.248:2082/kaizen/";
+	public static final String BASE_URL = "http://156.67.221.248/kaizen/api/";
+	public static final String BASE_PICT = "http://156.67.221.248/kaizen/";
 
 	//prod
-	public static final String BASE_URL = "http://kgts-indonesia.com/kaizen/api/";
-	public static final String BASE_PICT = "http://kgts-indonesia.com/kaizen/";
+//	public static final String BASE_URL = "http://kgts-indonesia.com/kaizen/api/";
+//	public static final String BASE_PICT = "http://kgts-indonesia.com/kaizen/";
 
   	public static final Boolean SHOW_LOG = true;
 

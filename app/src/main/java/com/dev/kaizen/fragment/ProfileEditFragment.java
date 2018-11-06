@@ -131,8 +131,12 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
         try {
             if (GlobalVar.getInstance().getAccount() != null) {
                 JSONObject account = new JSONObject(GlobalVar.getInstance().getAccount());
-                firstNameEdit.setText(account.getString("firstName"));
-                lastNameEdit.setText(account.getString("lastName"));
+                if (account.getString("firstName") != null && !account.getString("firstName").equals("null")) {
+                    firstNameEdit.setText(account.getString("firstName"));
+                }
+                if (account.getString("lastName") != null && !account.getString("lastName").equals("null")) {
+                    lastNameEdit.setText(account.getString("lastName"));
+                }
                 emailEdit.setText(account.getString("email"));
             }
 
