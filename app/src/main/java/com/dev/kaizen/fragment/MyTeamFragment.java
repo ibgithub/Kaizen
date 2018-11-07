@@ -56,6 +56,7 @@ import com.dev.kaizen.ForgotPasswordActivity;
 import com.dev.kaizen.LoginActivity;
 import com.dev.kaizen.MainActivity;
 import com.dev.kaizen.R;
+import com.dev.kaizen.adapter.GroupTeam;
 import com.dev.kaizen.adapter.Team;
 import com.dev.kaizen.adapter.Quotes;
 import com.dev.kaizen.base.BaseMenuActivity;
@@ -117,6 +118,7 @@ public class MyTeamFragment extends Fragment implements View.OnClickListener{
     private Long userId;
     private TextView descText;
     private TextView teamMemberTxt;
+    private GroupTeam groupTeam;
 
     public static MyTeamFragment newInstance() {
         MyTeamFragment fragment = new MyTeamFragment();
@@ -208,8 +210,12 @@ public class MyTeamFragment extends Fragment implements View.OnClickListener{
                 public void onResponse(String response) {
                     Log.i("VOLLEY1", response);
                     try {
-                        JSONObject team = new JSONObject(response);
-                        descText.setText((team.getString("desc").equals("null"))? "":team.getString("desc"));
+                        JSONObject group = new JSONObject(response);
+                        descText.setText((group.getString("desc").equals("null"))? "":group.getString("desc"));
+
+                        groupTeam = new GroupTeam(group.getInt("id"),
+                                group.getString("desc"),
+                                group.getString("mentorName"));
                     } catch (JSONException e2) {
                         e2.printStackTrace();
                     }
@@ -301,11 +307,24 @@ public class MyTeamFragment extends Fragment implements View.OnClickListener{
                                 cd.setCanceledOnTouchOutside(false);
                                 cd.header.setText(obj.getString("title"));
                                 cd.isi.setText("Anda belum memiliki Tim, silahkan membuat Tim Baru");
+                                Bundle bundle = new Bundle();
+                                if (!isNoTeam) { //update team
+                                    bundle.putParcelable("item", groupTeam);
+                                }
+
+                                MyTeamListFragment fragment2 = new MyTeamListFragment();
+                                fragment2.setArguments(bundle);
 
                                 isNoTeam = true;
-                                updateTeamBtn.setText("Create Team");
-                                leaveTeamBtn.setVisibility(View.INVISIBLE);
-                                teamMemberTxt.setVisibility(View.INVISIBLE);
+                                FragmentManager fragmentManager = getFragmentManager();
+                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                fragmentTransaction.replace(R.id.content, fragment2);
+                                fragmentTransaction.addToBackStack("profile");  //diganti apa ya?
+                                fragmentTransaction.commit();
+
+//                                updateTeamBtn.setText("Create Team");
+//                                leaveTeamBtn.setVisibility(View.INVISIBLE);
+//                                teamMemberTxt.setVisibility(View.INVISIBLE);
                             } catch (UnsupportedEncodingException e1) {
                                 e1.printStackTrace();
                             } catch (JSONException e2) {
@@ -332,11 +351,19 @@ public class MyTeamFragment extends Fragment implements View.OnClickListener{
         if (v.getId() == R.id.leaveTeamBtn) {
 
         }else if (v.getId() == R.id.updateTeamBtn) {
-            if (isNoTeam) { //create team
-
-            } else {    //update team
-
+            Bundle bundle = new Bundle();
+            if (!isNoTeam) { //update team
+                bundle.putParcelable("item", groupTeam);
             }
+
+            MyTeamEditFragment fragment2 = new MyTeamEditFragment();
+            fragment2.setArguments(bundle);
+
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.content, fragment2);
+            fragmentTransaction.addToBackStack("profile");  //diganti apa ya?
+            fragmentTransaction.commit();
         } else if(v.getId() == R.id.backBtn) {
             getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
