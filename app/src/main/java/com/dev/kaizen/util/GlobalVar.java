@@ -13,9 +13,11 @@ public class GlobalVar implements Serializable {
 	private String program;
 	private String profile;
 	private String grup;
+  
 //	private String provincies;
 //	private String cities;
 //	private String schools;
+  
 	private List<String> teamMembers;
 
 	static {
@@ -91,6 +93,14 @@ public class GlobalVar implements Serializable {
 //	public void setSchools(String schools) {
 //		this.schools = schools;
 //	}
+
+	public List<String> getTeamMembers() {
+		return teamMembers;
+	}
+
+	public void setTeamMembers(List<String> teamMembers) {
+		this.teamMembers = teamMembers;
+	}
 
 	public List<String> getTeamMembers() {
 		return teamMembers;

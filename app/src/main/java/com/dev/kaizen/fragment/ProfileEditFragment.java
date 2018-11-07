@@ -500,55 +500,55 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
                 kotaObj.put("id", selectedKota.getInt("id"));
                 schoolObj.put("city", kotaObj);
             }
+
             json.put("school", schoolObj);
 
             Log.d("json", json.toString());
 
             JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.PUT, url, json,
-                    new Response.Listener<JSONObject>()
-                    {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            Log.d("response put user", response.toString());
-                            GlobalVar.getInstance().setProfile(response.toString());
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("response put user", response.toString());
+                        GlobalVar.getInstance().setProfile(response.toString());
 
-                            Toast.makeText(getContext(), "Data berhasil disimpan", Toast.LENGTH_LONG).show();
-                            getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                        }
-                    },
-                    new Response.ErrorListener()
-                    {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.e("VOLLEY", error.toString());
-                            NetworkResponse response = error.networkResponse;
-                            if (error instanceof AuthFailureError && response != null) {
-                                try {
-                                    String res = new String(response.data,
-                                            HttpHeaderParser.parseCharset(response.headers, "utf-8"));
-                                    Log.e("res", "" + res);
-                                    JSONObject obj = new JSONObject(res);
-                                    Log.d("obj", "" + obj);
+                        Toast.makeText(getContext(), "Data berhasil disimpan", Toast.LENGTH_LONG).show();
+                        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("VOLLEY", error.toString());
+                        NetworkResponse response = error.networkResponse;
+                        if (error instanceof AuthFailureError && response != null) {
+                            try {
+                                String res = new String(response.data,
+                                        HttpHeaderParser.parseCharset(response.headers, "utf-8"));
+                                Log.e("res", "" + res);
+                                JSONObject obj = new JSONObject(res);
+                                Log.d("obj", "" + obj);
 
-                                    final CustomDialogClass2 cd = new CustomDialogClass2(getActivity());
-                                    cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                                    cd.show();
-                                    cd.setCanceledOnTouchOutside(false);
-                                    cd.header.setText("Message");
-                                    String title = obj.getString("title");
-                                    String detail = obj.getString("detail");
-
-                                    cd.isi.setText(title + ": " + detail);
-                                } catch (UnsupportedEncodingException e1) {
-                                    e1.printStackTrace();
-                                } catch (JSONException e2) {
-                                    e2.printStackTrace();
-                                }
-                            } else if (error instanceof ServerError && response != null) {
-
+                                final CustomDialogClass2 cd = new CustomDialogClass2(getActivity());
+                                cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                cd.show();
+                                cd.setCanceledOnTouchOutside(false);
+                                cd.header.setText("Message");
+                                String title = obj.getString("title");
+                                String detail = obj.getString("detail");
+                                cd.isi.setText(title + ": " + detail);
+                            } catch (UnsupportedEncodingException e1) {
+                                e1.printStackTrace();
+                            } catch (JSONException e2) {
+                                e2.printStackTrace();
                             }
+                        } else if (error instanceof ServerError && response != null) {
+
                         }
                     }
+                }
             )
             {
                 @Override

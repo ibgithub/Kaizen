@@ -51,7 +51,6 @@ import com.bumptech.glide.Glide;
 import com.dev.kaizen.R;
 import com.dev.kaizen.adapter.Program;
 import com.dev.kaizen.base.CustomDialogClass2;
-import com.dev.kaizen.menu.QuotesListActivity;
 import com.dev.kaizen.util.Constant;
 import com.dev.kaizen.util.FontUtils;
 import com.dev.kaizen.util.GlobalVar;
@@ -236,7 +235,7 @@ public class ProgramFragment extends Fragment implements View.OnClickListener {
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    Log.i("VOLLEY", response);
+                    Log.i("VOLLEY3", response);
 
                     try {
                         JSONArray responseArr = new JSONArray(response.toString());
@@ -269,7 +268,7 @@ public class ProgramFragment extends Fragment implements View.OnClickListener {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.e("VOLLEY", error.toString());
+                    Log.e("VOLLEY4", error.toString());
 
 //                    NetworkResponse response = error.networkResponse;
 //                    if (error instanceof ServerError && response != null) {

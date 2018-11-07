@@ -222,7 +222,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     private void getAccount() {
