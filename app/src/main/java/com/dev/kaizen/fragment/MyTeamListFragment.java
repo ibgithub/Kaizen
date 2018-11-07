@@ -68,8 +68,7 @@ public class MyTeamListFragment extends Fragment implements View.OnClickListener
     private List<Team> teamList = new ArrayList<>();
     private boolean isNoTeam;
 
-    private Button updateTeamBtn;
-    private Button leaveTeamBtn;
+    private Button createTeamBtn;
 
     private Long userId;
 
@@ -87,7 +86,7 @@ public class MyTeamListFragment extends Fragment implements View.OnClickListener
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_team, container, false);
+        View v = inflater.inflate(R.layout.fragment_team_list, container, false);
 
         TextView headertext = (TextView) getActivity().findViewById(R.id.headertext);
         headertext.setText("My Team");
@@ -101,7 +100,6 @@ public class MyTeamListFragment extends Fragment implements View.OnClickListener
         toolbar.setVisibility(Toolbar.VISIBLE);
 
         TextView schoolText = (TextView) v.findViewById(R.id.schoolText);
-        TextView descText = (TextView) v.findViewById(R.id.descText);
 
         recyclerView = (RecyclerView) v.findViewById(R.id.rvList);
 
@@ -111,11 +109,8 @@ public class MyTeamListFragment extends Fragment implements View.OnClickListener
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
-        updateTeamBtn = (Button) v.findViewById(R.id.updateTeamBtn);
-        updateTeamBtn.setOnClickListener(this);
-
-        leaveTeamBtn = (Button) v.findViewById(R.id.leaveTeamBtn);
-        leaveTeamBtn.setOnClickListener(this);
+        createTeamBtn = (Button) v.findViewById(R.id.createTeamBtn);
+        createTeamBtn.setOnClickListener(this);
 
         queue = Volley.newRequestQueue(getActivity());
 
@@ -136,7 +131,6 @@ public class MyTeamListFragment extends Fragment implements View.OnClickListener
                 JSONObject profile = new JSONObject(GlobalVar.getInstance().getProfile());
                 JSONObject school = profile.getJSONObject("school");
                 schoolText.setText(school.getString("schoolName"));
-                descText.setText(school.getString("desc"));
 
                 JSONObject account = new JSONObject(GlobalVar.getInstance().getAccount());
                 Log.d("userId", "" + account.getLong("id"));
@@ -204,7 +198,7 @@ public class MyTeamListFragment extends Fragment implements View.OnClickListener
                                 cd.isi.setText("Anda belum memiliki Tim, silahkan membuat Tim Baru");
 
                                 isNoTeam = true;
-                                updateTeamBtn.setText("Create Team");
+                                createTeamBtn.setText("Create Team");
                             } catch (UnsupportedEncodingException e1) {
                                 e1.printStackTrace();
                             } catch (JSONException e2) {
@@ -246,7 +240,7 @@ public class MyTeamListFragment extends Fragment implements View.OnClickListener
                         @Override
                         public void onResponse(JSONObject response) {
                             Toast.makeText(getContext(), "Data berhasil disimpan", Toast.LENGTH_LONG).show();
-                            updateTeamBtn.setText("Update Team");
+                            createTeamBtn.setText("Update Team");
                             getParticipants();
                         }
                     },
