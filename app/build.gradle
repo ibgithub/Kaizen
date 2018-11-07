@@ -7,7 +7,7 @@ android {
         applicationId "com.dev.kaizen"
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 20181030
+        versionCode 20181106
         versionName "1.0"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -27,16 +27,16 @@ android {
     buildTypes {
         release {
 //            shrinkResources true
-            debuggable false
-            minifyEnabled true
-//            useProguard false
+//            debuggable false
+            minifyEnabled false
+            useProguard true
             proguardFiles 'proguard.cfg'
         }
         debug {
 //            shrinkResources false
-            debuggable true
+//            debuggable true
             minifyEnabled false
-//            useProguard false
+            useProguard false
             proguardFiles 'proguard.cfg'
         }
     }
@@ -47,6 +47,11 @@ android {
     }
 
     useLibrary 'org.apache.http.legacy'
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
 }
 
 dependencies {

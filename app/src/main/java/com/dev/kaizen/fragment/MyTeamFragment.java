@@ -209,7 +209,7 @@ public class MyTeamFragment extends Fragment implements View.OnClickListener{
                     Log.i("VOLLEY1", response);
                     try {
                         JSONObject team = new JSONObject(response);
-                        descText.setText(team.getString("desc"));
+                        descText.setText((team.getString("desc").equals("null"))? "":team.getString("desc"));
                     } catch (JSONException e2) {
                         e2.printStackTrace();
                     }

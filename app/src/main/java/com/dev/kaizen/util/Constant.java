@@ -25,9 +25,6 @@ public final class Constant {
 //	public static final String BASE_URL = "http://156.67.221.248/kaizen/api/";
 //	public static final String BASE_PICT = "http://156.67.221.248/kaizen/";
 
-//	public static final String BASE_URL = "http://192.168.56.1:8080/api/";
-//	public static final String BASE_PICT = "http://192.168.56.1:8080/";
-
 	//prod
 	public static final String BASE_URL = "http://kgts-indonesia.com/kaizen/api/";
 	public static final String BASE_PICT = "http://kgts-indonesia.com/kaizen/";
