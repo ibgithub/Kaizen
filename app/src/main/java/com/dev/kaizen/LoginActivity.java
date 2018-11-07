@@ -1,6 +1,7 @@
 package com.dev.kaizen;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -110,6 +111,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 cd.header.setText("Pesan");
                 cd.isi.setText("Password masih kosong");
             } else {
+                final ProgressDialog dialog = new ProgressDialog(LoginActivity.this);
+                dialog.setMessage("Login...");
+                dialog.show();
+
                 String url = Constant.BASE_URL + "authenticate";
 
                 RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
@@ -176,6 +181,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         }
                 );
                 queue.add(postRequest);
+                queue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<String>() {
+                    @Override
+                    public void onRequestFinished(Request<String> request) {
+                        if (dialog !=  null && dialog.isShowing())
+                            dialog.dismiss();
+                    }
+                });
             }
         } else if(v.getId() == R.id.signUp) {
             Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);

@@ -225,71 +225,84 @@ public class AddProgram2Fragment extends Fragment implements View.OnClickListene
         if(v.getId() == R.id.backBtn) {
             getFragmentManager().popBackStackImmediate();
         } else if(v.getId() == R.id.uploadPhotoBeforeBtn) {
-            String path = getPath(filePathBefore);
+            if(filePathBefore == null) {
+                Toast.makeText(getContext(), "Silahkan pilih foto sebelum program", Toast.LENGTH_LONG);
+            } else {
+                String path = getPath(filePathBefore);
 
-            try {
-                String uploadId = UUID.randomUUID().toString();
+                try {
+                    String uploadId = UUID.randomUUID().toString();
 
-                JSONObject account = new JSONObject(GlobalVar.getInstance().getAccount());
+                    JSONObject account = new JSONObject(GlobalVar.getInstance().getAccount());
 
-                new MultipartUploadRequest(getContext(), uploadId, UPLOAD_URL)
-                        .addHeader("Authorization", "Bearer " + GlobalVar.getInstance().getIdToken())
-                        .addFileToUpload(path, "file")
-                        .addParameter("login", account.getString("login")) //username ketika login
-                        .addParameter("programId", ""+program.getId())  //programId
-                        .addParameter("uploadType", "PHOTO_BEFORE") //PHOTO_BEFORE|PHOTO_AFTER|VIDEO
-                        .setNotificationConfig(new UploadNotificationConfig())
-                        .setMaxRetries(2)
-                        .startUpload(); //Starting the upload
-            } catch (Exception exc) {
-                Toast.makeText(getContext(), exc.getMessage(), Toast.LENGTH_SHORT).show();
+                    new MultipartUploadRequest(getContext(), uploadId, UPLOAD_URL)
+                            .addHeader("Authorization", "Bearer " + GlobalVar.getInstance().getIdToken())
+                            .addFileToUpload(path, "file")
+                            .addParameter("login", account.getString("login")) //username ketika login
+                            .addParameter("programId", ""+program.getId())  //programId
+                            .addParameter("uploadType", "PHOTO_BEFORE") //PHOTO_BEFORE|PHOTO_AFTER|VIDEO
+                            .setNotificationConfig(new UploadNotificationConfig())
+                            .setMaxRetries(2)
+                            .startUpload(); //Starting the upload
+                } catch (Exception exc) {
+                    Toast.makeText(getContext(), exc.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+                //getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                Toast.makeText(getContext(), "Foto sebelum program berhasil disimpan", Toast.LENGTH_LONG);
             }
-            //getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            Toast.makeText(getContext(), "Foto sebelum program berhasil disimpan", Toast.LENGTH_LONG);
         } else if(v.getId() == R.id.uploadPhotoAfterBtn) {
-            String path = getPath(filePathAfter);
+            if(filePathAfter == null) {
+                Toast.makeText(getContext(), "Silahkan pilih foto setelah program", Toast.LENGTH_LONG);
+            } else {
+                String path = getPath(filePathAfter);
 
-            try {
-                String uploadId = UUID.randomUUID().toString();
+                try {
+                    String uploadId = UUID.randomUUID().toString();
 
-                JSONObject account = new JSONObject(GlobalVar.getInstance().getAccount());
+                    JSONObject account = new JSONObject(GlobalVar.getInstance().getAccount());
 
-                new MultipartUploadRequest(getContext(), uploadId, UPLOAD_URL)
-                        .addHeader("Authorization", "Bearer " + GlobalVar.getInstance().getIdToken())
-                        .addFileToUpload(path, "file")
-                        .addParameter("login", account.getString("login")) //username ketika login
-                        .addParameter("programId", ""+program.getId())  //programId
-                        .addParameter("uploadType", "PHOTO_AFTER") //PHOTO_BEFORE|PHOTO_AFTER|VIDEO
-                        .setNotificationConfig(new UploadNotificationConfig())
-                        .setMaxRetries(2)
-                        .startUpload(); //Starting the upload
-            } catch (Exception exc) {
-                Toast.makeText(getContext(), exc.getMessage(), Toast.LENGTH_SHORT).show();
+                    new MultipartUploadRequest(getContext(), uploadId, UPLOAD_URL)
+                            .addHeader("Authorization", "Bearer " + GlobalVar.getInstance().getIdToken())
+                            .addFileToUpload(path, "file")
+                            .addParameter("login", account.getString("login")) //username ketika login
+                            .addParameter("programId", ""+program.getId())  //programId
+                            .addParameter("uploadType", "PHOTO_AFTER") //PHOTO_BEFORE|PHOTO_AFTER|VIDEO
+                            .setNotificationConfig(new UploadNotificationConfig())
+                            .setMaxRetries(2)
+                            .startUpload(); //Starting the upload
+                } catch (Exception exc) {
+                    Toast.makeText(getContext(), exc.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+                Toast.makeText(getContext(), "Foto sesudah program berhasil disimpan", Toast.LENGTH_LONG);
             }
-            Toast.makeText(getContext(), "Foto sesudah program berhasil disimpan", Toast.LENGTH_LONG);
         } else if(v.getId() == R.id.uploadVideoBtn) {
-            String path = getPath(filePathVideo);
+            if(filePathVideo == null) {
+                Toast.makeText(getContext(), "Silahkan pilih video program", Toast.LENGTH_LONG);
+            } else {
+                String path = getPath(filePathVideo);
 
-            try {
-                String uploadId = UUID.randomUUID().toString();
+                try {
+                    String uploadId = UUID.randomUUID().toString();
 
-                JSONObject account = new JSONObject(GlobalVar.getInstance().getAccount());
+                    JSONObject account = new JSONObject(GlobalVar.getInstance().getAccount());
 
-                new MultipartUploadRequest(getContext(), uploadId, UPLOAD_URL)
-                        .addHeader("Authorization", "Bearer " + GlobalVar.getInstance().getIdToken())
-                        .addFileToUpload(path, "file")
-                        .addParameter("login", account.getString("login")) //username ketika login
-                        .addParameter("programId", ""+program.getId())  //programId
-                        .addParameter("uploadType", "VIDEO") //PHOTO_BEFORE|PHOTO_AFTER|VIDEO
-                        .setNotificationConfig(new UploadNotificationConfig())
-                        .setMaxRetries(2)
-                        .startUpload(); //Starting the upload
-            } catch (Exception exc) {
-                Toast.makeText(getContext(), exc.getMessage(), Toast.LENGTH_SHORT).show();
+                    new MultipartUploadRequest(getContext(), uploadId, UPLOAD_URL)
+                            .addHeader("Authorization", "Bearer " + GlobalVar.getInstance().getIdToken())
+                            .addFileToUpload(path, "file")
+                            .addParameter("login", account.getString("login")) //username ketika login
+                            .addParameter("programId", ""+program.getId())  //programId
+                            .addParameter("uploadType", "VIDEO") //PHOTO_BEFORE|PHOTO_AFTER|VIDEO
+                            .setNotificationConfig(new UploadNotificationConfig())
+                            .setMaxRetries(2)
+                            .startUpload(); //Starting the upload
+                } catch (Exception exc) {
+                    Toast.makeText(getContext(), exc.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+                Toast.makeText(getContext(), "Video berhasil disimpan", Toast.LENGTH_LONG);
             }
-            Toast.makeText(getContext(), "Video berhasil disimpan", Toast.LENGTH_LONG);
         } else if(v.getId() == R.id.nextBtn) {
-
+            getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            Toast.makeText(getContext(), "Data berhasil disimpan", Toast.LENGTH_LONG);
         } else if(v.getId() == R.id.fotoBefore) {
             choice = "fotoBefore";
             showFileChooser();
@@ -305,26 +318,26 @@ public class AddProgram2Fragment extends Fragment implements View.OnClickListene
         }
     }
 
-    private MediaSource buildMediaSource(Uri uri, String overrideExtension) {
-        int type = TextUtils.isEmpty(overrideExtension) ? Util.inferContentType(uri)
-                : Util.inferContentType("." + overrideExtension);
-        switch (type) {
-            case C.TYPE_SS:
-                return new SsMediaSource(uri, buildDataSourceFactory(false),
-                        new DefaultSsChunkSource.Factory(mediaDataSourceFactory), mainHandler, null);
-            case C.TYPE_DASH:
-                return new DashMediaSource(uri, buildDataSourceFactory(false),
-                        new DefaultDashChunkSource.Factory(mediaDataSourceFactory), mainHandler, null);
-            case C.TYPE_HLS:
-                return new HlsMediaSource(uri, mediaDataSourceFactory, mainHandler, null);
-            case C.TYPE_OTHER:
-                return new ExtractorMediaSource(uri, mediaDataSourceFactory, new DefaultExtractorsFactory(),
-                        mainHandler, null);
-            default: {
-                throw new IllegalStateException("Unsupported type: " + type);
-            }
-        }
-    }
+//    private MediaSource buildMediaSource(Uri uri, String overrideExtension) {
+//        int type = TextUtils.isEmpty(overrideExtension) ? Util.inferContentType(uri)
+//                : Util.inferContentType("." + overrideExtension);
+//        switch (type) {
+//            case C.TYPE_SS:
+//                return new SsMediaSource(uri, buildDataSourceFactory(false),
+//                        new DefaultSsChunkSource.Factory(mediaDataSourceFactory), mainHandler, null);
+//            case C.TYPE_DASH:
+//                return new DashMediaSource(uri, buildDataSourceFactory(false),
+//                        new DefaultDashChunkSource.Factory(mediaDataSourceFactory), mainHandler, null);
+//            case C.TYPE_HLS:
+//                return new HlsMediaSource(uri, mediaDataSourceFactory, mainHandler, null);
+//            case C.TYPE_OTHER:
+//                return new ExtractorMediaSource(uri, mediaDataSourceFactory, new DefaultExtractorsFactory(),
+//                        mainHandler, null);
+//            default: {
+//                throw new IllegalStateException("Unsupported type: " + type);
+//            }
+//        }
+//    }
 
     private DataSource.Factory buildDataSourceFactory(boolean useBandwidthMeter) {
         return buildDataSourceFactory(useBandwidthMeter ? BANDWIDTH_METER : null);

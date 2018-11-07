@@ -216,7 +216,6 @@ public class MyTeamFragment extends Fragment implements View.OnClickListener{
                         groupTeam = new GroupTeam(group.getInt("id"),
                                 group.getString("desc"),
                                 group.getString("mentorName"));
-
                     } catch (JSONException e2) {
                         e2.printStackTrace();
                     }

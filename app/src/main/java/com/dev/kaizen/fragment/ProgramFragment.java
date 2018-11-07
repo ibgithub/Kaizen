@@ -8,6 +8,7 @@
 
 package com.dev.kaizen.fragment;
 
+import android.app.Dialog;
 import android.content.Context;
 
 import android.graphics.Color;
@@ -19,6 +20,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,6 +31,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -53,12 +56,17 @@ import com.dev.kaizen.util.FontUtils;
 import com.dev.kaizen.util.GlobalVar;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.LoadControl;
+import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.source.dash.DashMediaSource;
 import com.google.android.exoplayer2.source.dash.DefaultDashChunkSource;
 import com.google.android.exoplayer2.source.hls.HlsMediaSource;
@@ -67,7 +75,9 @@ import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.ui.PlaybackControlView;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DataSource;
@@ -371,11 +381,9 @@ public class ProgramFragment extends Fragment implements View.OnClickListener {
         private List<Program> programList;
         private Context context1;
 
-        private SimpleExoPlayer player;
-
         private final DefaultBandwidthMeter BANDWIDTH_METER = new DefaultBandwidthMeter();
         private DataSource.Factory mediaDataSourceFactory;
-        private Handler mainHandler;
+//        private Handler mainHandler;
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
             public LinearLayout fotoLayout;
@@ -383,6 +391,12 @@ public class ProgramFragment extends Fragment implements View.OnClickListener {
             public TextView title;
 
             private SimpleExoPlayerView exoPlayerView;
+            private ImageView mFullScreenIcon;
+            private FrameLayout mFullScreenButton;
+            private boolean mExoPlayerFullscreen = false;
+            private Dialog mFullScreenDialog;
+
+            private SimpleExoPlayer player;
 
             private Button detailBtn;
 
@@ -404,7 +418,7 @@ public class ProgramFragment extends Fragment implements View.OnClickListener {
 
                 mediaDataSourceFactory = buildDataSourceFactory(true);
 
-                mainHandler = new Handler();
+//                mainHandler = new Handler();
                 BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
                 TrackSelection.Factory videoTrackSelectionFactory =
                         new AdaptiveTrackSelection.Factory(bandwidthMeter);
@@ -421,6 +435,10 @@ public class ProgramFragment extends Fragment implements View.OnClickListener {
                 player.setPlayWhenReady(false);
 
                 detailBtn = (Button) view.findViewById(R.id.detailBtn);
+
+                PlaybackControlView controlView = exoPlayerView.findViewById(R.id.exo_controller);
+                mFullScreenIcon = controlView.findViewById(R.id.exo_fullscreen_icon);
+                mFullScreenButton = controlView.findViewById(R.id.exo_fullscreen_button);
             }
         }
 
@@ -438,19 +456,20 @@ public class ProgramFragment extends Fragment implements View.OnClickListener {
         }
 
         @Override
-        public void onBindViewHolder(ProgramAdapter.MyViewHolder holder, int position) {
+        public void onBindViewHolder(final MyViewHolder holder, int position) {
             Program quotes = programList.get(position);
 
             if(!quotes.getUrlVideo().equals("null")) {
                 DefaultExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
                 MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(Constant.BASE_PICT + "fileUpload" + quotes.getUrlVideo()),
                         mediaDataSourceFactory, extractorsFactory, null, null);
-                player.prepare(mediaSource);
+                holder.player.prepare(mediaSource);
             } else {
                 holder.exoPlayerView.setVisibility(SimpleExoPlayerView.GONE);
             }
 
             if(!quotes.getUrlPhotoBefore().equals("null")) {
+                Log.d("getUrlPhotoBefore",Constant.BASE_PICT + "fileUpload" + quotes.getUrlPhotoBefore());
                 Glide.with(context1)
                         .load(Constant.BASE_PICT + "fileUpload" + quotes.getUrlPhotoBefore())
                         //.placeholder(R.drawable.ic_cloud_off_red)
@@ -475,6 +494,83 @@ public class ProgramFragment extends Fragment implements View.OnClickListener {
 
             holder.detailBtn.setOnClickListener(this);
             holder.detailBtn.setTag(position);
+
+            holder.mFullScreenDialog = new Dialog(context, android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
+                public void onBackPressed() {
+                    holder.player.setPlayWhenReady(false);
+                    if (holder.mExoPlayerFullscreen) {
+                        closeFullscreenDialog(holder);
+                    }
+                    super.onBackPressed();
+                }
+            };
+
+            holder.mFullScreenButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!holder.mExoPlayerFullscreen)
+                        openFullscreenDialog(holder);
+                    else {
+//                        closeFullscreenDialog(holder);
+                        holder.mFullScreenDialog.onBackPressed();
+                    }
+                }
+            });
+
+            holder.player.addListener(new ExoPlayer.EventListener() {
+                @Override
+                public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
+
+                }
+
+                @Override
+                public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+
+                }
+
+                @Override
+                public void onLoadingChanged(boolean isLoading) {
+
+                }
+
+                @Override
+                public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+                    if (playWhenReady && !holder.mExoPlayerFullscreen) {
+                        holder.mExoPlayerFullscreen = true;
+                        openFullscreenDialog(holder);
+                    }
+                }
+
+                @Override
+                public void onRepeatModeChanged(int repeatMode) {
+
+                }
+
+                @Override
+                public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
+
+                }
+
+                @Override
+                public void onPlayerError(ExoPlaybackException error) {
+
+                }
+
+                @Override
+                public void onPositionDiscontinuity(int reason) {
+
+                }
+
+                @Override
+                public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
+
+                }
+
+                @Override
+                public void onSeekProcessed() {
+
+                }
+            });
         }
 
         @Override
@@ -486,26 +582,26 @@ public class ProgramFragment extends Fragment implements View.OnClickListener {
             return programList.get(position);
         }
 
-        private MediaSource buildMediaSource(Uri uri, String overrideExtension) {
-            int type = TextUtils.isEmpty(overrideExtension) ? Util.inferContentType(uri)
-                    : Util.inferContentType("." + overrideExtension);
-            switch (type) {
-                case C.TYPE_SS:
-                    return new SsMediaSource(uri, buildDataSourceFactory(false),
-                            new DefaultSsChunkSource.Factory(mediaDataSourceFactory), mainHandler, null);
-                case C.TYPE_DASH:
-                    return new DashMediaSource(uri, buildDataSourceFactory(false),
-                            new DefaultDashChunkSource.Factory(mediaDataSourceFactory), mainHandler, null);
-                case C.TYPE_HLS:
-                    return new HlsMediaSource(uri, mediaDataSourceFactory, mainHandler, null);
-                case C.TYPE_OTHER:
-                    return new ExtractorMediaSource(uri, mediaDataSourceFactory, new DefaultExtractorsFactory(),
-                            mainHandler, null);
-                default: {
-                    throw new IllegalStateException("Unsupported type: " + type);
-                }
-            }
-        }
+//        private MediaSource buildMediaSource(Uri uri, String overrideExtension) {
+//            int type = TextUtils.isEmpty(overrideExtension) ? Util.inferContentType(uri)
+//                    : Util.inferContentType("." + overrideExtension);
+//            switch (type) {
+//                case C.TYPE_SS:
+//                    return new SsMediaSource(uri, buildDataSourceFactory(false),
+//                            new DefaultSsChunkSource.Factory(mediaDataSourceFactory), mainHandler, null);
+//                case C.TYPE_DASH:
+//                    return new DashMediaSource(uri, buildDataSourceFactory(false),
+//                            new DefaultDashChunkSource.Factory(mediaDataSourceFactory), mainHandler, null);
+//                case C.TYPE_HLS:
+//                    return new HlsMediaSource(uri, mediaDataSourceFactory, mainHandler, null);
+//                case C.TYPE_OTHER:
+//                    return new ExtractorMediaSource(uri, mediaDataSourceFactory, new DefaultExtractorsFactory(),
+//                            mainHandler, null);
+//                default: {
+//                    throw new IllegalStateException("Unsupported type: " + type);
+//                }
+//            }
+//        }
 
         private DataSource.Factory buildDataSourceFactory(boolean useBandwidthMeter) {
             return buildDataSourceFactory(useBandwidthMeter ? BANDWIDTH_METER : null);
@@ -536,15 +632,31 @@ public class ProgramFragment extends Fragment implements View.OnClickListener {
             fragmentTransaction.addToBackStack("program");
             fragmentTransaction.commit();
         }
-    }
 
-    @Override
-    public void onStop() {
-        super.onStop();
+        private void openFullscreenDialog(final MyViewHolder holder) {
+            ((ViewGroup) holder.exoPlayerView.getParent()).removeView(holder.exoPlayerView);
+            holder.mFullScreenDialog.addContentView(holder.exoPlayerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            holder.mFullScreenIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_fullscreen_skrink));
+            holder.mExoPlayerFullscreen = true;
+            holder.mFullScreenDialog.show();
+        }
 
-        if(mAdapter.player != null) {
-            mAdapter.player.stop();
-            mAdapter.player.seekTo(0);
+        private void closeFullscreenDialog(final MyViewHolder holder) {
+            ((ViewGroup) holder.exoPlayerView.getParent()).removeView(holder.exoPlayerView);
+            ((FrameLayout) getView().findViewById(R.id.main_media_frame)).addView(holder.exoPlayerView);//.addView(holder.exoPlayerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 250));
+            holder.mExoPlayerFullscreen = false;
+            holder.mFullScreenDialog.dismiss();
+            holder.mFullScreenIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_fullscreen_expand));
         }
     }
+
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//
+//        if(mAdapter.player != null) {
+//            mAdapter.player.stop();
+//            mAdapter.player.seekTo(0);
+//        }
+//    }
 }

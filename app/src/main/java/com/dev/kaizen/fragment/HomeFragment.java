@@ -151,12 +151,17 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
             fragmentTransaction.addToBackStack("home");
             fragmentTransaction.commit();
         } else if(v.getId() == R.id.cornerBtn) {
-            final CustomDialogClass2 cd = new CustomDialogClass2(getActivity());
-            cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            cd.show();
-            cd.setCanceledOnTouchOutside(false);
-            cd.header.setText("Pesan");
-            cd.isi.setText("Menu belum tersedia");
+            Bundle bundle = new Bundle();
+            bundle.putString("menu", "corner");
+
+            QuotesFragment fragment2 = new QuotesFragment();
+            fragment2.setArguments(bundle);
+
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.content, fragment2);
+            fragmentTransaction.addToBackStack("home");
+            fragmentTransaction.commit();
         } else if(v.getId() == R.id.quotesBtn) {
             Bundle bundle = new Bundle();
             bundle.putString("menu", "quotes");
@@ -170,12 +175,17 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
             fragmentTransaction.addToBackStack("home");
             fragmentTransaction.commit();
         } else if(v.getId() == R.id.toolsBtn) {
-            final CustomDialogClass2 cd = new CustomDialogClass2(getActivity());
-            cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            cd.show();
-            cd.setCanceledOnTouchOutside(false);
-            cd.header.setText("Pesan");
-            cd.isi.setText("Menu belum tersedia");
+            Bundle bundle = new Bundle();
+            bundle.putString("menu", "tools");
+
+            QuotesFragment fragment2 = new QuotesFragment();
+            fragment2.setArguments(bundle);
+
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.content, fragment2);
+            fragmentTransaction.addToBackStack("home");
+            fragmentTransaction.commit();
         } else if(v.getId() == R.id.tutorialBtn) {
             Bundle bundle = new Bundle();
             bundle.putString("menu", "tutorial");
@@ -189,12 +199,17 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
             fragmentTransaction.addToBackStack("home");
             fragmentTransaction.commit();
         } else if(v.getId() == R.id.testimonialBtn) {
-            final CustomDialogClass2 cd = new CustomDialogClass2(getActivity());
-            cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            cd.show();
-            cd.setCanceledOnTouchOutside(false);
-            cd.header.setText("Pesan");
-            cd.isi.setText("Menu belum tersedia");
+            Bundle bundle = new Bundle();
+            bundle.putString("menu", "testimonial");
+
+            QuotesFragment fragment2 = new QuotesFragment();
+            fragment2.setArguments(bundle);
+
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.content, fragment2);
+            fragmentTransaction.addToBackStack("home");
+            fragmentTransaction.commit();
         }
     }
 
@@ -204,10 +219,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
                 JSONObject obj = new JSONObject(GlobalVar.getInstance().getProfile());
                 welcomeText.setText("Welcome, " + obj.getString("fullName"));
             }
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     private void getAccount() {
