@@ -32,6 +32,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -41,6 +42,7 @@ import com.android.volley.Response;
 import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.dev.kaizen.LoginActivity;
@@ -53,6 +55,7 @@ import com.dev.kaizen.util.Constant;
 import com.dev.kaizen.util.FontUtils;
 import com.dev.kaizen.util.GlobalVar;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -152,6 +155,7 @@ public class AddProgramFragment extends Fragment implements View.OnClickListener
 
         if(getArguments() != null) {
             setValue(v);
+            headertext.setText("Edit Program");
         }
 
         return v;
@@ -169,28 +173,32 @@ public class AddProgramFragment extends Fragment implements View.OnClickListener
         biaya.setText((program.getTotalBudget().equals("null"))? "":program.getTotalBudget());
 
         if(!program.getProblemList().equals("null")) {
-            String[] listMasalah = program.getProblemList().split("|");
+            masalahList.clear();
+            String[] listMasalah = program.getProblemList().split("\\|");
             for(int i=0; i<listMasalah.length; i++) {
-                masalahList.add("- " + listMasalah[i]);
+                masalahList.add(listMasalah[i]);
             }
             masalahAdapter.notifyDataSetChanged();
         }
 
         if(!program.getTaskList().equals("null")) {
-            String[] listTugas = program.getTaskList().split("|");
+            tugasList.clear();
+            String[] listTugas = program.getTaskList().split("\\|");
             for(int i=0; i<listTugas.length; i++) {
-                tugasList.add("- " + listTugas[i]);
+                tugasList.add(listTugas[i]);
             }
             tugasAdapter.notifyDataSetChanged();
         }
 
         if(!program.getResultList().equals("null")) {
-            String[] listHasil = program.getResultList().split("|");
+            hasilList.clear();
+            String[] listHasil = program.getResultList().split("\\|");
             for(int i=0; i<listHasil.length; i++) {
-                hasilList.add("- " + listHasil[i]);
+                hasilList.add(listHasil[i]);
             }
             hasilAdapter.notifyDataSetChanged();
         }
+
     }
 
     @Override
@@ -247,7 +255,21 @@ public class AddProgramFragment extends Fragment implements View.OnClickListener
 
                     if(program != null) {
                         json.put("id", program.getId());
+                        json.put("urlPhotoBefore", program.getUrlPhotoBefore());
+                        json.put("urlPhotoAfter", program.getUrlPhotoAfter());
+                        json.put("urlVideo", program.getUrlVideo());
                     }
+
+                    String sgroup = GlobalVar.getInstance().getGrup();
+                    Log.i("sgroup=", sgroup);
+                    if (sgroup != null) {
+                        JSONObject group = new JSONObject(sgroup);
+                        json.put("participantGroup", group);
+                    } else {
+                        Toast.makeText(getContext(), "Belum memiliki Tim, silahkan buat Tim terlebih dulu", Toast.LENGTH_LONG).show();
+
+                    }
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -261,6 +283,7 @@ public class AddProgramFragment extends Fragment implements View.OnClickListener
 
                                 Bundle bundle = new Bundle();
                                 bundle.putString("response", response.toString());
+                                bundle.putParcelable("item", program);  //yg dicek di halaman selanjutnya hanya foto dan video
 
                                 AddProgram2Fragment fragment2 = new AddProgram2Fragment();
                                 fragment2.setArguments(bundle);

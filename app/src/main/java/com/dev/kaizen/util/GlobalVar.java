@@ -1,6 +1,7 @@
 package com.dev.kaizen.util;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class GlobalVar implements Serializable {
 	private static final long serialVersionUID = 4209785791151665560L;
@@ -12,9 +13,10 @@ public class GlobalVar implements Serializable {
 	private String program;
 	private String profile;
 	private String grup;
-	private String provincies;
-	private String cities;
-	private String schools;
+//	private String provincies;
+//	private String cities;
+//	private String schools;
+	private List<String> teamMembers;
 
 	static {
 		instance = new GlobalVar();
@@ -66,27 +68,35 @@ public class GlobalVar implements Serializable {
 		this.grup = grup;
 	}
 
-	public String getProvincies() {
-		return provincies;
+//	public String getProvincies() {
+//		return provincies;
+//	}
+//
+//	public void setProvincies(String provincies) {
+//		this.provincies = provincies;
+//	}
+//
+//	public String getCities() {
+//		return cities;
+//	}
+//
+//	public void setCities(String cities) {
+//		this.cities = cities;
+//	}
+//
+//	public String getSchools() {
+//		return schools;
+//	}
+//
+//	public void setSchools(String schools) {
+//		this.schools = schools;
+//	}
+
+	public List<String> getTeamMembers() {
+		return teamMembers;
 	}
 
-	public void setProvincies(String provincies) {
-		this.provincies = provincies;
-	}
-
-	public String getCities() {
-		return cities;
-	}
-
-	public void setCities(String cities) {
-		this.cities = cities;
-	}
-
-	public String getSchools() {
-		return schools;
-	}
-
-	public void setSchools(String schools) {
-		this.schools = schools;
+	public void setTeamMembers(List<String> teamMembers) {
+		this.teamMembers = teamMembers;
 	}
 }

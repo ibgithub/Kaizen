@@ -15,7 +15,7 @@
             android:orientation="vertical">
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_190sdp"
+                android:layout_height="@dimen/_175sdp"
                 android:background="@drawable/ic_bgprofil"
                 android:orientation="vertical">
                 <Button
@@ -87,7 +87,7 @@
                             android:id="@+id/emailText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Program Lapangan Bersih"
+                            android:text=""
                             android:textColor="@color/darkgray"
                             android:gravity="left|center"
                             android:textSize="14sp"
@@ -118,7 +118,7 @@
                             android:id="@+id/addressText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Program Lapangan Bersih"
+                            android:text=""
                             android:textColor="@color/darkgray"
                             android:gravity="left|center"
                             android:textSize="14sp"
@@ -149,7 +149,7 @@
                             android:id="@+id/schoolText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Program Lapangan Bersih"
+                            android:text=""
                             android:textColor="@color/darkgray"
                             android:gravity="left|center"
                             android:textSize="14sp"
@@ -180,7 +180,7 @@
                             android:id="@+id/classText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Program Lapangan Bersih"
+                            android:text=""
                             android:textColor="@color/darkgray"
                             android:gravity="left|center"
                             android:textSize="14sp"

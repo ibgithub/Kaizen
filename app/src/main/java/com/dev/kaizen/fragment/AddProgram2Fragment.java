@@ -46,6 +46,7 @@ import com.asura.library.posters.RemoteVideo;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.dev.kaizen.BuildConfig;
 import com.dev.kaizen.R;
 import com.dev.kaizen.adapter.Program;
 import com.dev.kaizen.util.Constant;
@@ -79,6 +80,7 @@ import com.google.android.exoplayer2.util.Util;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.UploadNotificationConfig;
+import net.gotev.uploadservice.UploadService;
 
 import org.json.JSONObject;
 
@@ -102,6 +104,8 @@ public class AddProgram2Fragment extends Fragment implements View.OnClickListene
 
 //    public Uri filePathBefore;
     private ImageView fotoBefore, fotoAfter, videoView;
+
+    private Button uploadPhotoBeforeBtn, uploadPhotoAfterBtn, uploadVideoBtn;
 
     private int PICK_IMAGE_REQUEST = 1;
     private int PICK_VIDEO_REQUEST = 2;
@@ -127,6 +131,8 @@ public class AddProgram2Fragment extends Fragment implements View.OnClickListene
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = getActivity();
+
+        UploadService.NAMESPACE = BuildConfig.APPLICATION_ID;
     }
 
     @Nullable
@@ -145,9 +151,6 @@ public class AddProgram2Fragment extends Fragment implements View.OnClickListene
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
         toolbar.setVisibility(Toolbar.VISIBLE);
 
-        Button btn = (Button) v.findViewById(R.id.nextBtn);
-        btn.setOnClickListener(this);
-
         fotoBefore = (ImageView) v.findViewById(R.id.fotoBefore);
         fotoBefore.setOnClickListener(this);
 
@@ -156,6 +159,15 @@ public class AddProgram2Fragment extends Fragment implements View.OnClickListene
 
         videoView = (ImageView) v.findViewById(R.id.videoView);
         videoView.setOnClickListener(this);
+
+        uploadPhotoBeforeBtn = (Button) v.findViewById(R.id.uploadPhotoBeforeBtn);
+        uploadPhotoBeforeBtn.setOnClickListener(this);
+
+        uploadPhotoAfterBtn = (Button) v.findViewById(R.id.uploadPhotoAfterBtn);
+        uploadPhotoAfterBtn.setOnClickListener(this);
+
+        uploadVideoBtn = (Button) v.findViewById(R.id.uploadVideoBtn);
+        uploadVideoBtn.setOnClickListener(this);
 
         mediaDataSourceFactory = buildDataSourceFactory(true);
 
@@ -212,19 +224,17 @@ public class AddProgram2Fragment extends Fragment implements View.OnClickListene
     public void onClick(View v) {
         if(v.getId() == R.id.backBtn) {
             getFragmentManager().popBackStackImmediate();
-        } else if(v.getId() == R.id.nextBtn) {
-            if(filePathBefore != null) {
-                //getting the actual path of the image
+        } else if(v.getId() == R.id.uploadPhotoBeforeBtn) {
+            if(filePathBefore == null) {
+                Toast.makeText(getContext(), "Silahkan pilih foto sebelum program", Toast.LENGTH_LONG);
+            } else {
                 String path = getPath(filePathBefore);
 
-                //Uploading code
                 try {
                     String uploadId = UUID.randomUUID().toString();
 
                     JSONObject account = new JSONObject(GlobalVar.getInstance().getAccount());
-//                    JSONObject program = new JSONObject(getArguments().getString("response"));
 
-                    //Creating a multi part request
                     new MultipartUploadRequest(getContext(), uploadId, UPLOAD_URL)
                             .addHeader("Authorization", "Bearer " + GlobalVar.getInstance().getIdToken())
                             .addFileToUpload(path, "file")
@@ -237,20 +247,20 @@ public class AddProgram2Fragment extends Fragment implements View.OnClickListene
                 } catch (Exception exc) {
                     Toast.makeText(getContext(), exc.getMessage(), Toast.LENGTH_SHORT).show();
                 }
+                //getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                Toast.makeText(getContext(), "Foto sebelum program berhasil disimpan", Toast.LENGTH_LONG);
             }
-
-            if(filePathAfter != null) {
-                //getting the actual path of the image
+        } else if(v.getId() == R.id.uploadPhotoAfterBtn) {
+            if(filePathAfter == null) {
+                Toast.makeText(getContext(), "Silahkan pilih foto setelah program", Toast.LENGTH_LONG);
+            } else {
                 String path = getPath(filePathAfter);
 
-                //Uploading code
                 try {
                     String uploadId = UUID.randomUUID().toString();
 
                     JSONObject account = new JSONObject(GlobalVar.getInstance().getAccount());
-//                    JSONObject program = new JSONObject(getArguments().getString("response"));
 
-                    //Creating a multi part request
                     new MultipartUploadRequest(getContext(), uploadId, UPLOAD_URL)
                             .addHeader("Authorization", "Bearer " + GlobalVar.getInstance().getIdToken())
                             .addFileToUpload(path, "file")
@@ -263,20 +273,19 @@ public class AddProgram2Fragment extends Fragment implements View.OnClickListene
                 } catch (Exception exc) {
                     Toast.makeText(getContext(), exc.getMessage(), Toast.LENGTH_SHORT).show();
                 }
+                Toast.makeText(getContext(), "Foto sesudah program berhasil disimpan", Toast.LENGTH_LONG);
             }
-
-            if(filePathVideo != null) {
-                //getting the actual path of the image
+        } else if(v.getId() == R.id.uploadVideoBtn) {
+            if(filePathVideo == null) {
+                Toast.makeText(getContext(), "Silahkan pilih video program", Toast.LENGTH_LONG);
+            } else {
                 String path = getPath(filePathVideo);
 
-                //Uploading code
                 try {
                     String uploadId = UUID.randomUUID().toString();
 
                     JSONObject account = new JSONObject(GlobalVar.getInstance().getAccount());
-//                    JSONObject program = new JSONObject(getArguments().getString("response"));
 
-                    //Creating a multi part request
                     new MultipartUploadRequest(getContext(), uploadId, UPLOAD_URL)
                             .addHeader("Authorization", "Bearer " + GlobalVar.getInstance().getIdToken())
                             .addFileToUpload(path, "file")
@@ -289,82 +298,46 @@ public class AddProgram2Fragment extends Fragment implements View.OnClickListene
                 } catch (Exception exc) {
                     Toast.makeText(getContext(), exc.getMessage(), Toast.LENGTH_SHORT).show();
                 }
+                Toast.makeText(getContext(), "Video berhasil disimpan", Toast.LENGTH_LONG);
             }
-
+        } else if(v.getId() == R.id.nextBtn) {
             getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             Toast.makeText(getContext(), "Data berhasil disimpan", Toast.LENGTH_LONG);
         } else if(v.getId() == R.id.fotoBefore) {
             choice = "fotoBefore";
             showFileChooser();
 
-//            Bundle bundle = new Bundle();
-//            bundle.putString("response", getArguments().getString("response"));
-//            bundle.putString("uploadType", "PHOTO_BEFORE");
-//
-//            UploadFotoFragment fragment2 = new UploadFotoFragment();
-//            fragment2.setArguments(bundle);
-//            fragment2.setTargetFragment(AddProgram2Fragment.this, 1);
-//
-//            FragmentManager fragmentManager = getFragmentManager();
-//            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//            fragmentTransaction.replace(R.id.content, fragment2);
-//            fragmentTransaction.addToBackStack("add");
-//            fragmentTransaction.commit();
         } else if(v.getId() == R.id.fotoAfter) {
             choice = "fotoAfter";
             showFileChooser();
 
-//            Bundle bundle = new Bundle();
-//            bundle.putString("response", getArguments().getString("response"));
-//            bundle.putString("uploadType", "PHOTO_AFTER");
-//
-//            UploadFotoFragment fragment2 = new UploadFotoFragment();
-//            fragment2.setArguments(bundle);
-//
-//            FragmentManager fragmentManager = getFragmentManager();
-//            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//            fragmentTransaction.replace(R.id.content, fragment2);
-//            fragmentTransaction.addToBackStack("add");
-//            fragmentTransaction.commit();
         } else if(v.getId() == R.id.videoView) {
             choice = "video";
             showFileChooser();
 
-//            Bundle bundle = new Bundle();
-//            bundle.putString("response", getArguments().getString("response"));
-//            bundle.putString("uploadType", "VIDEO");
-//
-//            UploadFotoFragment fragment2 = new UploadFotoFragment();
-//            fragment2.setArguments(bundle);
-//
-//            FragmentManager fragmentManager = getFragmentManager();
-//            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//            fragmentTransaction.replace(R.id.content, fragment2);
-//            fragmentTransaction.addToBackStack("add");
-//            fragmentTransaction.commit();
         }
     }
 
-    private MediaSource buildMediaSource(Uri uri, String overrideExtension) {
-        int type = TextUtils.isEmpty(overrideExtension) ? Util.inferContentType(uri)
-                : Util.inferContentType("." + overrideExtension);
-        switch (type) {
-            case C.TYPE_SS:
-                return new SsMediaSource(uri, buildDataSourceFactory(false),
-                        new DefaultSsChunkSource.Factory(mediaDataSourceFactory), mainHandler, null);
-            case C.TYPE_DASH:
-                return new DashMediaSource(uri, buildDataSourceFactory(false),
-                        new DefaultDashChunkSource.Factory(mediaDataSourceFactory), mainHandler, null);
-            case C.TYPE_HLS:
-                return new HlsMediaSource(uri, mediaDataSourceFactory, mainHandler, null);
-            case C.TYPE_OTHER:
-                return new ExtractorMediaSource(uri, mediaDataSourceFactory, new DefaultExtractorsFactory(),
-                        mainHandler, null);
-            default: {
-                throw new IllegalStateException("Unsupported type: " + type);
-            }
-        }
-    }
+//    private MediaSource buildMediaSource(Uri uri, String overrideExtension) {
+//        int type = TextUtils.isEmpty(overrideExtension) ? Util.inferContentType(uri)
+//                : Util.inferContentType("." + overrideExtension);
+//        switch (type) {
+//            case C.TYPE_SS:
+//                return new SsMediaSource(uri, buildDataSourceFactory(false),
+//                        new DefaultSsChunkSource.Factory(mediaDataSourceFactory), mainHandler, null);
+//            case C.TYPE_DASH:
+//                return new DashMediaSource(uri, buildDataSourceFactory(false),
+//                        new DefaultDashChunkSource.Factory(mediaDataSourceFactory), mainHandler, null);
+//            case C.TYPE_HLS:
+//                return new HlsMediaSource(uri, mediaDataSourceFactory, mainHandler, null);
+//            case C.TYPE_OTHER:
+//                return new ExtractorMediaSource(uri, mediaDataSourceFactory, new DefaultExtractorsFactory(),
+//                        mainHandler, null);
+//            default: {
+//                throw new IllegalStateException("Unsupported type: " + type);
+//            }
+//        }
+//    }
 
     private DataSource.Factory buildDataSourceFactory(boolean useBandwidthMeter) {
         return buildDataSourceFactory(useBandwidthMeter ? BANDWIDTH_METER : null);
@@ -388,73 +361,6 @@ public class AddProgram2Fragment extends Fragment implements View.OnClickListene
             player.seekTo(0);
         }
     }
-
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, final Intent data) {
-//        if (requestCode==1 && resultCode== Activity.RESULT_OK) {
-//            final Bitmap[] bitmap = {null};
-//            Glide.with(this)
-//                    .asBitmap()
-//                    .load(Uri.parse(data.getExtras().getString("filePath")))
-//                    .into(new SimpleTarget<Bitmap>() {
-//                        @Override
-//                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-//                            bitmap[0] = resource;
-//                        }
-//                    });
-
-//            Bitmap bitmap = Bitmap.createScaledBitmap((Bitmap) data.getExtras().get("filePath"), 120, 120, false);
-//            if(bitmap == null) {
-//                Log.d("bitmao", "null null bitmao");
-//            }
-//
-//            ImageView fotoBefore = (ImageView) v.findViewById(R.id.fotoBefore);
-//            fotoBefore.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_album));
-
-//            final ImageView thumb = (ImageView) v.findViewById(R.id.fotoBefore);
-//            thumb.post(new Runnable() {
-//                @Override
-//                public void run()
-//                {
-//                    Bitmap bmp = Bitmap.createScaledBitmap((Bitmap) data.getExtras().get("filePath"), 120, 120, false);
-//            if(bmp == null) {
-//                Log.d("bitmao", "null null bitmao");
-//            } //BitmapFactory.decodeFile(image_path);
-//                    thumb.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_album));
-//            thumb.invalidate();
-//                    Toast.makeText(getActivity(), "Image Saved", Toast.LENGTH_SHORT).show();
-//                }
-//            });
-
-//            new Thread(new Runnable() {
-//                public void run() {
-//                    ImageView image = (ImageView) v.findViewById(R.id.fotoBefore);
-//                    image.setImageResource(R.drawable.ic_contacts);
-//                    image.invalidate();
-//                    image.postInvalidate();
-//                    Toast.makeText(getActivity(), "Image Saved", Toast.LENGTH_SHORT).show();
-//                }
-//                }
-//            }).start();
-
-//            fotoBefore.invalidate();
-
-
-//            Bitmap bitmap = null;
-//            try {
-//                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), (Uri) data.getExtras().get("filePath"));
-
-////                bitmap = (Bitmap) data.getExtras().get("filePath");
-//                Glide.with(getActivity()).asBitmap()
-//                    .load(Uri.fromFile(new File(data.getExtras().getString("filePath"))))
-                    //.placeholder(R.drawable.ic_cloud_off_red)
-//                    .into(fotoBefore);
-//                Log.d("data", "Data foto " + data.getExtras().get("filePath"));
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
 
     private void showFileChooser() {
         if(choice.equals("video")) {

@@ -8,6 +8,7 @@
 
 package com.dev.kaizen.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -43,6 +44,7 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.dev.kaizen.LoginActivity;
 import com.dev.kaizen.R;
 import com.dev.kaizen.base.CustomDialogClass2;
 import com.dev.kaizen.util.Constant;
@@ -56,12 +58,14 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
 public class ProfileEditFragment extends Fragment implements View.OnClickListener{
     private Context context;
     private RequestQueue queue;
+
     private Spinner provinceSpinner;
     private Spinner citySpinner;
     private Spinner schoolSpinner;
@@ -77,7 +81,12 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
     private Button tambahButton;
     private boolean isTambah;
 
+    private JSONArray arrProv, arrKota, arrSekolah;
     private JSONObject selectedProv, selectedKota, selectedSekolah;
+    private ArrayList<String> provList = new ArrayList<String>();
+    private ArrayList<String> kotaList = new ArrayList<String>();
+    private ArrayList<String> sekolahList = new ArrayList<String>();
+    private ArrayAdapter<String> provAdapter, kotaAdapter, sekolahAdapter;
 
     public static ProfileEditFragment newInstance() {
         ProfileEditFragment fragment = new ProfileEditFragment();
@@ -131,8 +140,12 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
         try {
             if (GlobalVar.getInstance().getAccount() != null) {
                 JSONObject account = new JSONObject(GlobalVar.getInstance().getAccount());
-                firstNameEdit.setText(account.getString("firstName"));
-                lastNameEdit.setText(account.getString("lastName"));
+                if (account.getString("firstName") != null && !account.getString("firstName").equals("null")) {
+                    firstNameEdit.setText(account.getString("firstName"));
+                }
+                if (account.getString("lastName") != null && !account.getString("lastName").equals("null")) {
+                    lastNameEdit.setText(account.getString("lastName"));
+                }
                 emailEdit.setText(account.getString("email"));
             }
 
@@ -148,185 +161,242 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
 
         }
 
-        provinceSpinner = (Spinner) v.findViewById(R.id.provinceSpinner);
-        provinceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (GlobalVar.getInstance().getProvincies() == null) {
-                    getData("provinces", 0);
-                } else {
-                    try {
-                        JSONArray arr = new JSONArray(GlobalVar.getInstance().getProvincies());
-                        getData("citiesByProvinceId", Integer.valueOf(arr.getJSONObject(i).getString("id")));
+//        provinceSpinner = (Spinner) v.findViewById(R.id.provinceSpinner);
+//        provinceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                if (GlobalVar.getInstance().getProvincies() == null) {
+//                    getData("provinces", 0);
+//                } else {
+//                    try {
+//                        JSONArray arr = new JSONArray(GlobalVar.getInstance().getProvincies());
+//                        getData("citiesByProvinceId", Integer.valueOf(arr.getJSONObject(i).getString("id")));
+//
+//                        selectedProv = arr.getJSONObject(i);
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//            }
+//        });
 
-                        selectedProv = arr.getJSONObject(i);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
+//        citySpinner = (Spinner) v.findViewById(R.id.citySpinner);
+//        citySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                if (GlobalVar.getInstance().getProvincies() == null) {
+//                    getData("provinces", 0);
+//                } else {
+//                    try {
+//                        JSONArray arr = new JSONArray(GlobalVar.getInstance().getCities());
+//                        selectedKota = arr.getJSONObject(i);
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//            }
+//        });
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        citySpinner = (Spinner) v.findViewById(R.id.citySpinner);
-        citySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (GlobalVar.getInstance().getProvincies() == null) {
-                    getData("provinces", 0);
-                } else {
-                    try {
-                        JSONArray arr = new JSONArray(GlobalVar.getInstance().getCities());
-                        selectedKota = arr.getJSONObject(i);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        schoolSpinner = (Spinner) v.findViewById(R.id.schoolSpinner);
-        schoolSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (GlobalVar.getInstance().getSchools() == null) {
-                    getData("schools", 0);
-                } else {
-                    try {
-                        JSONArray arr = new JSONArray(GlobalVar.getInstance().getSchools());
-                        selectedSekolah = arr.getJSONObject(i);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
+//        schoolSpinner = (Spinner) v.findViewById(R.id.schoolSpinner);
+//        schoolSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                if (GlobalVar.getInstance().getSchools() == null) {
+//                    getData("schools", 0);
+//                } else {
+//                    try {
+//                        JSONArray arr = new JSONArray(GlobalVar.getInstance().getSchools());
+//                        selectedSekolah = arr.getJSONObject(i);
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//            }
+//        });
 
         Button saveBtn = (Button) v.findViewById(R.id.saveBtn);
         saveBtn.setOnClickListener(this);
 
-        getData("schools", 0);
+//        getData("schools", 0);
 
 //        if (GlobalVar.getInstance().getProvincies() == null) {
 
 //        }
 
+        getProv();
+        provinceSpinner = (Spinner) v.findViewById(R.id.provinceSpinner);
+        provAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, provList);
+        provinceSpinner.setAdapter(provAdapter);
+        provinceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
+                try {
+                    selectedProv = arrProv.getJSONObject(position);
+                    getKota(selectedProv.getInt("id"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
+        });
+
+        citySpinner = (Spinner) v.findViewById(R.id.citySpinner);
+        kotaAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, kotaList);
+        citySpinner.setAdapter(kotaAdapter);
+        citySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
+                try {
+                    selectedKota = arrKota.getJSONObject(position);
+                    getSekolah(selectedKota.getInt("id"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
+        });
+
+        schoolSpinner = (Spinner) v.findViewById(R.id.schoolSpinner);
+        sekolahAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, sekolahList);
+        schoolSpinner.setAdapter(sekolahAdapter);
+        schoolSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
+                try {
+                    selectedSekolah = arrSekolah.getJSONObject(position);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
+        });
+
         return v;
     }
 
-    private void spinnerData (final String type) {
-        String str = "";
-        if (type.equals("provinces")) {
-            str = GlobalVar.getInstance().getProvincies();
-        } else if (type.equals("citiesByProvinceId")) {
-            str = GlobalVar.getInstance().getCities();
-        } else {
-            str = GlobalVar.getInstance().getSchools();
-        }
-        try {
-            JSONArray responseArr = new JSONArray(str);
-
-            ArrayList<String> sort = new ArrayList<String>();
-
-            for (int i = 0; i < responseArr.length(); i++) {
-                JSONObject jsonobject = responseArr.getJSONObject(i);
-
-                if (type.equals("provinces")) {
-                    sort.add(jsonobject.getString("provinceName"));
-                } else if (type.equals("citiesByProvinceId")) {
-                    sort.add(jsonobject.getString("cityName"));
-                } else {
-                    sort.add(jsonobject.getString("schoolName"));
-                }
-
-            }
-            ArrayAdapter<String> sd = new ArrayAdapter<String>(getView().getContext(),
-                    android.R.layout.simple_list_item_1,
-                    sort);
-            if (type.equals("provinces")) {
-                provinceSpinner.setAdapter(sd);
-            } else if (type.equals("citiesByProvinceId")) {
-                citySpinner.setAdapter(sd);
-            } else {
-                schoolSpinner.setAdapter(sd);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void getData (final String type, int province) {
-        final String url = Constant.BASE_URL + type + ((type.equals("citiesByProvinceId"))? "/"+province:"");
-
-        JsonArrayRequest getRequest = new JsonArrayRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONArray>()
-                {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        Log.d("Response type", response.toString());
-                        if (type.equals("provinces")) {
-                            GlobalVar.getInstance().setProvincies(response.toString());
-                            try {
-                                JSONArray responseArr = new JSONArray(GlobalVar.getInstance().getProvincies());
-//                                if (GlobalVar.getInstance().getCities() == null)
-                                    getData("citiesByProvinceId", Integer.valueOf(responseArr.getJSONObject(0).getString("id")));
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        } else if (type.equals("citiesByProvinceId")) {
-                            GlobalVar.getInstance().setCities(response.toString());
-                        } else {
-                            GlobalVar.getInstance().setSchools(response.toString());
-                            getData("provinces", 0);
-                        }
-                        spinnerData(type);
-                    }
-                },
-                new Response.ErrorListener()
-                {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        NetworkResponse response = error.networkResponse;
-                        if (error instanceof ServerError && response != null) {
-                            try {
-                                String res = new String(response.data,
-                                        HttpHeaderParser.parseCharset(response.headers, "utf-8"));
-                                JSONObject obj = new JSONObject(res);
-                                Log.d("obj", "" + obj);
-                            } catch (UnsupportedEncodingException e1) {
-                                e1.printStackTrace();
-                            } catch (JSONException e2) {
-                                e2.printStackTrace();
-                            }
-                        }
-                    }
-                }
-        ){
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> map = new HashMap<String, String>();
-                map.put("Authorization", "Bearer " + GlobalVar.getInstance().getIdToken());
-                return map;
-            }
-        };
-
-// add it to the RequestQueue
-        queue.add(getRequest);
-    }
+//    private void spinnerData (final String type) {
+//        String str = "";
+//        if (type.equals("provinces")) {
+//            str = GlobalVar.getInstance().getProvincies();
+//        } else if (type.equals("citiesByProvinceId")) {
+//            str = GlobalVar.getInstance().getCities();
+//        } else {
+//            str = GlobalVar.getInstance().getSchools();
+//        }
+//        try {
+//            JSONArray responseArr = new JSONArray(str);
+//
+//            ArrayList<String> sort = new ArrayList<String>();
+//
+//            for (int i = 0; i < responseArr.length(); i++) {
+//                JSONObject jsonobject = responseArr.getJSONObject(i);
+//
+//                if (type.equals("provinces")) {
+//                    sort.add(jsonobject.getString("provinceName"));
+//                } else if (type.equals("citiesByProvinceId")) {
+//                    sort.add(jsonobject.getString("cityName"));
+//                } else {
+//                    sort.add(jsonobject.getString("schoolName"));
+//                }
+//
+//            }
+//            ArrayAdapter<String> sd = new ArrayAdapter<String>(getView().getContext(),
+//                    android.R.layout.simple_list_item_1,
+//                    sort);
+//            if (type.equals("provinces")) {
+//                provinceSpinner.setAdapter(sd);
+//            } else if (type.equals("citiesByProvinceId")) {
+//                citySpinner.setAdapter(sd);
+//            } else {
+//                schoolSpinner.setAdapter(sd);
+//            }
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    private void getData (final String type, int province) {
+//        final String url = Constant.BASE_URL + type + ((type.equals("citiesByProvinceId"))? "/"+province:"");
+//
+//        JsonArrayRequest getRequest = new JsonArrayRequest(Request.Method.GET, url, null,
+//                new Response.Listener<JSONArray>()
+//                {
+//                    @Override
+//                    public void onResponse(JSONArray response) {
+//                        Log.d("Response type", response.toString());
+//                        if (type.equals("provinces")) {
+//                            GlobalVar.getInstance().setProvincies(response.toString());
+//                            try {
+//                                JSONArray responseArr = new JSONArray(GlobalVar.getInstance().getProvincies());
+////                                if (GlobalVar.getInstance().getCities() == null)
+//                                    getData("citiesByProvinceId", Integer.valueOf(responseArr.getJSONObject(0).getString("id")));
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                            }
+//                        } else if (type.equals("citiesByProvinceId")) {
+//                            GlobalVar.getInstance().setCities(response.toString());
+//                        } else {
+//                            GlobalVar.getInstance().setSchools(response.toString());
+//                            getData("provinces", 0);
+//                        }
+//                        spinnerData(type);
+//                    }
+//                },
+//                new Response.ErrorListener()
+//                {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        NetworkResponse response = error.networkResponse;
+//                        if (error instanceof ServerError && response != null) {
+//                            try {
+//                                String res = new String(response.data,
+//                                        HttpHeaderParser.parseCharset(response.headers, "utf-8"));
+//                                JSONObject obj = new JSONObject(res);
+//                                Log.d("obj", "" + obj);
+//                            } catch (UnsupportedEncodingException e1) {
+//                                e1.printStackTrace();
+//                            } catch (JSONException e2) {
+//                                e2.printStackTrace();
+//                            }
+//                        }
+//                    }
+//                }
+//        ){
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put("Authorization", "Bearer " + GlobalVar.getInstance().getIdToken());
+//                return map;
+//            }
+//        };
+//
+//// add it to the RequestQueue
+//        queue.add(getRequest);
+//    }
 
     @Override
     public void onClick(View v) {
@@ -396,18 +466,27 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
 
         // prepare the Request
         try {
-            JSONObject json = new JSONObject(GlobalVar.getInstance().getProfile());
+            JSONObject json = new JSONObject();
+            JSONObject userJson = new JSONObject();
 
-            JSONObject userJson = json.getJSONObject("user");
-            userJson.put("firstName", firstNameEdit.getText().toString().trim());
-            userJson.put("lastName", lastNameEdit.getText().toString().trim());
-            userJson.put("email", emailEdit.getText().toString().trim());
+            if ( GlobalVar.getInstance().getAccount() != null ) {
+                userJson = new JSONObject(GlobalVar.getInstance().getAccount());
+            }
+            if ( GlobalVar.getInstance().getProfile() != null ) {
+                json = new JSONObject(GlobalVar.getInstance().getProfile());
+
+                userJson = json.getJSONObject("user");
+            }
 
             json.put("fullName", firstNameEdit.getText().toString().trim() + " " + lastNameEdit.getText().toString().trim());
             json.put("schoolClass", classEdit.getText().toString().trim());
             json.put("address", addressEdit.getText().toString().trim());
 
-//            json.remove("school");
+            userJson.put("firstName", firstNameEdit.getText().toString().trim());
+            userJson.put("lastName", lastNameEdit.getText().toString().trim());
+            userJson.put("email", emailEdit.getText().toString().trim());
+
+            json.put("user", userJson);
 
             JSONObject schoolObj = new JSONObject();
             if(!isTambah) {
@@ -415,7 +494,7 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
                 schoolObj.put("id", selectedSekolah.getInt("id"));
             } else {
                 schoolObj.put("desc", "NEW");
-                schoolObj.put("schoolName", selectedSekolah.getString("schoolName"));
+                schoolObj.put("schoolName", schoolEdit.getText().toString().trim());
 
                 JSONObject kotaObj = new JSONObject();
                 kotaObj.put("id", selectedKota.getInt("id"));
@@ -423,7 +502,6 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
             }
             json.put("school", schoolObj);
 
-            Log.d("getprofile", GlobalVar.getInstance().getProfile());
             Log.d("json", json.toString());
 
             JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.PUT, url, json,
@@ -433,6 +511,7 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
                         public void onResponse(JSONObject response) {
                             Log.d("response put user", response.toString());
                             GlobalVar.getInstance().setProfile(response.toString());
+
                             Toast.makeText(getContext(), "Data berhasil disimpan", Toast.LENGTH_LONG).show();
                             getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                         }
@@ -489,5 +568,213 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private void getProv() {
+        final ProgressDialog dialog = new ProgressDialog(getContext());
+        dialog.setMessage("Mengambil data...");
+        dialog.show();
+
+        final String url = Constant.BASE_URL + "provinces";
+
+        JsonArrayRequest getRequest = new JsonArrayRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        Log.d("Response type", response.toString());
+
+                        try {
+                            JSONObject objProfile = new JSONObject(GlobalVar.getInstance().getProfile());
+                            JSONObject objSchool = objProfile.getJSONObject("school");
+                            JSONObject objCity = objSchool.getJSONObject("city");
+                            JSONObject objProv = objCity.getJSONObject("province");
+
+                            arrProv = new JSONArray(response.toString());
+                            for(int i=0; i<arrProv.length(); i++) {
+                                provList.add(arrProv.getJSONObject(i).getString("provinceName"));
+                                if(arrProv.getJSONObject(i).getInt("id") == objProv.getInt("id")) {
+                                    provinceSpinner.setSelection(i);
+                                }
+                            }
+                            provAdapter.notifyDataSetChanged();
+
+//                            getKota(objProv.getInt("id"), objCity.getInt("id"));
+//                            getSekolah(objCity.getInt("id"), objSchool.getInt("id"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        NetworkResponse response = error.networkResponse;
+                        if (error instanceof ServerError && response != null) {
+                            try {
+                                String res = new String(response.data,
+                                        HttpHeaderParser.parseCharset(response.headers, "utf-8"));
+                                JSONObject obj = new JSONObject(res);
+                                Log.d("obj", "" + obj);
+                            } catch (UnsupportedEncodingException e1) {
+                                e1.printStackTrace();
+                            } catch (JSONException e2) {
+                                e2.printStackTrace();
+                            }
+                        }
+                    }
+                }
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("Authorization", "Bearer " + GlobalVar.getInstance().getIdToken());
+                return map;
+            }
+        };
+        queue.add(getRequest);
+        queue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<String>() {
+            @Override
+            public void onRequestFinished(Request<String> request) {
+                if (dialog !=  null && dialog.isShowing())
+                    dialog.dismiss();
+            }
+        });
+    }
+
+    private void getKota(int idProv) {
+        final ProgressDialog dialog = new ProgressDialog(getContext());
+        dialog.setMessage("Mengambil data...");
+        dialog.show();
+
+        final String url = Constant.BASE_URL + "citiesByProvinceId/" + idProv;
+
+        JsonArrayRequest getRequest = new JsonArrayRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        Log.d("Response type", response.toString());
+
+                        try {
+                            kotaList.clear();
+
+                            JSONObject objProfile = new JSONObject(GlobalVar.getInstance().getProfile());
+                            JSONObject objSchool = objProfile.getJSONObject("school");
+                            JSONObject objCity = objSchool.getJSONObject("city");
+
+                            arrKota = new JSONArray(response.toString());
+                            for(int i=0; i<arrKota.length(); i++) {
+                                kotaList.add(arrKota.getJSONObject(i).getString("cityName"));
+                                if(arrKota.getJSONObject(i).getInt("id") == objCity.getInt("id")) {
+                                    citySpinner.setSelection(i);
+                                }
+                            }
+                            kotaAdapter.notifyDataSetChanged();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        NetworkResponse response = error.networkResponse;
+                        if (error instanceof ServerError && response != null) {
+                            try {
+                                String res = new String(response.data,
+                                        HttpHeaderParser.parseCharset(response.headers, "utf-8"));
+                                JSONObject obj = new JSONObject(res);
+                                Log.d("obj", "" + obj);
+                            } catch (UnsupportedEncodingException e1) {
+                                e1.printStackTrace();
+                            } catch (JSONException e2) {
+                                e2.printStackTrace();
+                            }
+                        }
+                    }
+                }
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("Authorization", "Bearer " + GlobalVar.getInstance().getIdToken());
+                return map;
+            }
+        };
+        queue.add(getRequest);
+        queue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<String>() {
+            @Override
+            public void onRequestFinished(Request<String> request) {
+                if (dialog !=  null && dialog.isShowing())
+                    dialog.dismiss();
+            }
+        });
+    }
+
+    private void getSekolah(int idKota) {
+        final ProgressDialog dialog = new ProgressDialog(getContext());
+        dialog.setMessage("Mengambil data...");
+        dialog.show();
+
+        final String url = Constant.BASE_URL + "schoolsByCityId/" + idKota;
+
+        JsonArrayRequest getRequest = new JsonArrayRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        Log.d("Response type", response.toString());
+
+                        try {
+                            sekolahList.clear();
+
+                            JSONObject objProfile = new JSONObject(GlobalVar.getInstance().getProfile());
+                            JSONObject objSchool = objProfile.getJSONObject("school");
+
+                            arrSekolah = new JSONArray(response.toString());
+                            for(int i=0; i<arrSekolah.length(); i++) {
+                                sekolahList.add(arrSekolah.getJSONObject(i).getString("schoolName"));
+                                if(arrSekolah.getJSONObject(i).getInt("id") == objSchool.getInt("id")) {
+                                    schoolSpinner.setSelection(i);
+                                }
+                            }
+                            sekolahAdapter.notifyDataSetChanged();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        NetworkResponse response = error.networkResponse;
+                        if (error instanceof ServerError && response != null) {
+                            try {
+                                String res = new String(response.data,
+                                        HttpHeaderParser.parseCharset(response.headers, "utf-8"));
+                                JSONObject obj = new JSONObject(res);
+                                Log.d("obj", "" + obj);
+                            } catch (UnsupportedEncodingException e1) {
+                                e1.printStackTrace();
+                            } catch (JSONException e2) {
+                                e2.printStackTrace();
+                            }
+                        }
+                    }
+                }
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("Authorization", "Bearer " + GlobalVar.getInstance().getIdToken());
+                return map;
+            }
+        };
+        queue.add(getRequest);
+        queue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<String>() {
+            @Override
+            public void onRequestFinished(Request<String> request) {
+                if (dialog !=  null && dialog.isShowing())
+                    dialog.dismiss();
+            }
+        });
     }
 }

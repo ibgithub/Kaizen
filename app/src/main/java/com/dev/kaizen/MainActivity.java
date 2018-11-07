@@ -81,34 +81,25 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             intent.putExtra("menu", "sample");
             startActivityForResult(intent, 1);
         } else if(v.getId() == R.id.cornerBtn) {
-            final CustomDialogClass2 cd = new CustomDialogClass2(MainActivity.this);
-            cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            cd.show();
-            cd.setCanceledOnTouchOutside(false);
-            cd.header.setText("Pesan");
-            cd.isi.setText("Menu belum tersedia");
+            Intent intent = new Intent(MainActivity.this, QuotesListActivity.class);
+            intent.putExtra("menu", "corner");
+            startActivityForResult(intent, 1);
         } else if(v.getId() == R.id.quotesBtn) {
             Intent intent = new Intent(MainActivity.this, QuotesListActivity.class);
             intent.putExtra("menu", "quotes");
             startActivityForResult(intent, 1);
         } else if(v.getId() == R.id.toolsBtn) {
-            final CustomDialogClass2 cd = new CustomDialogClass2(MainActivity.this);
-            cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            cd.show();
-            cd.setCanceledOnTouchOutside(false);
-            cd.header.setText("Pesan");
-            cd.isi.setText("Menu belum tersedia");
+            Intent intent = new Intent(MainActivity.this, QuotesListActivity.class);
+            intent.putExtra("menu", "tools");
+            startActivityForResult(intent, 1);
         } else if(v.getId() == R.id.tutorialBtn) {
             Intent intent = new Intent(MainActivity.this, QuotesListActivity.class);
             intent.putExtra("menu", "tutorial");
             startActivityForResult(intent, 1);
         } else if(v.getId() == R.id.testimonialBtn) {
-            final CustomDialogClass2 cd = new CustomDialogClass2(MainActivity.this);
-            cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            cd.show();
-            cd.setCanceledOnTouchOutside(false);
-            cd.header.setText("Pesan");
-            cd.isi.setText("Menu belum tersedia");
+            Intent intent = new Intent(MainActivity.this, QuotesListActivity.class);
+            intent.putExtra("menu", "testimonial");
+            startActivityForResult(intent, 1);
         } else if(v.getId() == R.id.youtubeBtn) {
             final CustomDialogClass2 cd = new CustomDialogClass2(MainActivity.this);
             cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

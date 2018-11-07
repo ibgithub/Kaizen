@@ -48,13 +48,17 @@ import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.dev.kaizen.ForgotPasswordActivity;
+import com.dev.kaizen.LoginActivity;
 import com.dev.kaizen.MainActivity;
 import com.dev.kaizen.R;
 import com.dev.kaizen.adapter.Team;
 import com.dev.kaizen.adapter.Quotes;
+import com.dev.kaizen.base.BaseMenuActivity;
 import com.dev.kaizen.base.CustomDialogClass2;
 import com.dev.kaizen.menu.QuotesListActivity;
 import com.dev.kaizen.util.Constant;
@@ -106,8 +110,13 @@ public class MyTeamFragment extends Fragment implements View.OnClickListener{
     private RecyclerView recyclerView;
     private TeamAdapter mAdapter;
     private List<Team> teamList = new ArrayList<>();
+    private boolean isNoTeam;
     
     private Button updateTeamBtn;
+    private Button leaveTeamBtn;
+    private Long userId;
+    private TextView descText;
+    private TextView teamMemberTxt;
 
     public static MyTeamFragment newInstance() {
         MyTeamFragment fragment = new MyTeamFragment();
@@ -137,6 +146,8 @@ public class MyTeamFragment extends Fragment implements View.OnClickListener{
         toolbar.setVisibility(Toolbar.VISIBLE);
 
         TextView schoolText = (TextView) v.findViewById(R.id.schoolText);
+        descText = (TextView) v.findViewById(R.id.descText);
+        teamMemberTxt = (TextView) v.findViewById(R.id.teamMemberTxt);
 
         recyclerView = (RecyclerView) v.findViewById(R.id.rvList);
 
@@ -148,6 +159,10 @@ public class MyTeamFragment extends Fragment implements View.OnClickListener{
         
         updateTeamBtn = (Button) v.findViewById(R.id.updateTeamBtn);
         updateTeamBtn.setOnClickListener(this);
+
+        leaveTeamBtn = (Button) v.findViewById(R.id.leaveTeamBtn);
+        leaveTeamBtn.setOnClickListener(this);
+
 
         queue = Volley.newRequestQueue(getActivity());
 
@@ -171,7 +186,8 @@ public class MyTeamFragment extends Fragment implements View.OnClickListener{
 
                 JSONObject account = new JSONObject(GlobalVar.getInstance().getAccount());
                 Log.d("userId", "" + account.getLong("id"));
-                getParticipants(account.getLong("id"));
+                userId = account.getLong("id");
+                getParticipants();
 
             } catch (JSONException ex) {
 
@@ -182,7 +198,59 @@ public class MyTeamFragment extends Fragment implements View.OnClickListener{
         return v;
     }
 
-    private void getParticipants (Long userId) {
+    private void getGroups() {
+        try {
+            JSONObject obj = new JSONObject(GlobalVar.getInstance().getAccount());
+            String url = Constant.BASE_URL + "groupsByUserId/" + obj.getString("id");
+            RequestQueue queue = Volley.newRequestQueue(context);
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Log.i("VOLLEY1", response);
+                    try {
+                        JSONObject team = new JSONObject(response);
+                        descText.setText((team.getString("desc").equals("null"))? "":team.getString("desc"));
+                    } catch (JSONException e2) {
+                        e2.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("VOLLEY2", error.toString());
+                    NetworkResponse response = error.networkResponse;
+                    if (error instanceof ServerError && response != null) {
+                        try {
+                            String res = new String(response.data,
+                                    HttpHeaderParser.parseCharset(response.headers, "utf-8"));
+                            JSONObject obj = new JSONObject(res);
+                            Log.d("obj", "" + obj);
+                            isNoTeam = true;
+
+                        } catch (UnsupportedEncodingException e1) {
+                            e1.printStackTrace();
+                        } catch (JSONException e2) {
+                            e2.printStackTrace();
+                        }
+                    }
+                }
+            })
+            {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> map = new HashMap<String, String>();
+                    map.put("Authorization", "Bearer " + GlobalVar.getInstance().getIdToken());
+                    Log.d("mapheader", map.toString());
+                    return map;
+                }
+            };
+            queue.add(stringRequest);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getParticipants () {
         final String url = Constant.BASE_URL + "groupNamesByUserId/" + userId ;
 
         JsonArrayRequest getRequest = new JsonArrayRequest(Request.Method.GET, url, null,
@@ -192,6 +260,7 @@ public class MyTeamFragment extends Fragment implements View.OnClickListener{
                     public void onResponse(JSONArray response) {
                         // display response
                         Log.d("Response", response.toString());
+                        isNoTeam = false;
 
                         try {
                             JSONArray responseArr = new JSONArray(response.toString());
@@ -208,6 +277,7 @@ public class MyTeamFragment extends Fragment implements View.OnClickListener{
                                 teamList.add(team);
                             }
                             mAdapter.notifyDataSetChanged();
+                            getGroups();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -232,7 +302,10 @@ public class MyTeamFragment extends Fragment implements View.OnClickListener{
                                 cd.header.setText(obj.getString("title"));
                                 cd.isi.setText("Anda belum memiliki Tim, silahkan membuat Tim Baru");
 
+                                isNoTeam = true;
                                 updateTeamBtn.setText("Create Team");
+                                leaveTeamBtn.setVisibility(View.INVISIBLE);
+                                teamMemberTxt.setVisibility(View.INVISIBLE);
                             } catch (UnsupportedEncodingException e1) {
                                 e1.printStackTrace();
                             } catch (JSONException e2) {
@@ -256,8 +329,14 @@ public class MyTeamFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
-        if(v.getId() == R.id.updateBtn) {
+        if (v.getId() == R.id.leaveTeamBtn) {
 
+        }else if (v.getId() == R.id.updateTeamBtn) {
+            if (isNoTeam) { //create team
+
+            } else {    //update team
+
+            }
         } else if(v.getId() == R.id.backBtn) {
             getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }

@@ -1,10 +1,12 @@
 package com.dev.kaizen.menu;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -43,6 +45,7 @@ import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.PlaybackParameters;
+import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
@@ -56,6 +59,7 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.ui.PlaybackControlView;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DataSource;
@@ -100,6 +104,12 @@ public class QuotesListActivity extends BasePageActivity {
             headertext.setText("Kaizen Sample");
         } else if(getIntent().getExtras().getString("menu").equals("tutorial")) {
             headertext.setText("Kaizen Tutorial");
+        } else if(getIntent().getExtras().getString("menu").equals("corner")) {
+            headertext.setText("Kaizen Corner");
+        } else if(getIntent().getExtras().getString("menu").equals("tools")) {
+            headertext.setText("Kaizen Tools");
+        } else if(getIntent().getExtras().getString("menu").equals("testimonial")) {
+            headertext.setText("Testimonial");
         }
 
         recyclerView = (RecyclerView) v.findViewById(R.id.rvList);
@@ -119,6 +129,12 @@ public class QuotesListActivity extends BasePageActivity {
             urlGet = "sample-gudang-ides";
         } else if(getIntent().getExtras().getString("menu").equals("tutorial")) {
             urlGet = "tutorials";
+        } else if(getIntent().getExtras().getString("menu").equals("corner")) {
+            urlGet = "inspiring-corners";
+        } else if(getIntent().getExtras().getString("menu").equals("tools")) {
+            urlGet = "tools";
+        } else if(getIntent().getExtras().getString("menu").equals("testimonial")) {
+            urlGet = "isi-outlines";
         }
 
         final String url = Constant.BASE_URL + urlGet;
@@ -147,6 +163,20 @@ public class QuotesListActivity extends BasePageActivity {
                                             (jsonobject.has("urlPhoto"))?jsonobject.getString("urlPhoto"):"",
                                             (jsonobject.has("description"))?jsonobject.getString("description"):"null",
                                             (jsonobject.has("desc"))?jsonobject.getString("desc"):"");
+                                } else if(getIntent().getExtras().getString("menu").equals("corner")) {
+                                    quotes = new Quotes(jsonobject.getInt("id"),
+                                            jsonobject.getString("name"),
+                                            jsonobject.getString("jobDesc"),
+                                            (jsonobject.has("avatar"))?jsonobject.getString("avatar"):"",
+                                            (jsonobject.has("comments"))?jsonobject.getString("comments"):"null",
+                                            "");
+                                } else if(getIntent().getExtras().getString("menu").equals("tools") || getIntent().getExtras().getString("menu").equals("testimonial")) {
+                                    quotes = new Quotes(jsonobject.getInt("id"),
+                                            jsonobject.getString("title"),
+                                            jsonobject.getString("tagline"),
+                                            "",
+                                            (jsonobject.has("desc"))?jsonobject.getString("desc"):"null",
+                                            (jsonobject.has("urlVideo"))?jsonobject.getString("urlVideo"):"");
                                 } else {
                                     quotes = new Quotes(jsonobject.getInt("id"),
                                             jsonobject.getString("title"),
@@ -170,7 +200,7 @@ public class QuotesListActivity extends BasePageActivity {
                 {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("Error.Response", error.getMessage());
+//                        Log.d("Error.Response", error.getMessage());
                     }
                 }
         );
@@ -179,21 +209,15 @@ public class QuotesListActivity extends BasePageActivity {
         queue.add(getRequest);
     }
 
-    
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
-
     class QuotesAdapter extends RecyclerView.Adapter<QuotesAdapter.MyViewHolder> {
         private List<Quotes> quotesList;
         private Context context;
 
-        private SimpleExoPlayer player;
-
         private final DefaultBandwidthMeter BANDWIDTH_METER = new DefaultBandwidthMeter();
         private DataSource.Factory mediaDataSourceFactory;
-        private Handler mainHandler;
+//        private Handler mainHandler;
+
+//        private MyViewHolder holderView;
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
             public ImageView img_quotes;
@@ -201,6 +225,14 @@ public class QuotesListActivity extends BasePageActivity {
 //            public VideoPlayView bigVideoView;
 
             private SimpleExoPlayerView exoPlayerView;
+            private ImageView mFullScreenIcon;
+            private FrameLayout mFullScreenButton;
+            private boolean mExoPlayerFullscreen = false;
+            private Dialog mFullScreenDialog;
+
+            private SimpleExoPlayer player;
+
+            private FrameLayout mediaFrame;
 
             public MyViewHolder(View view) {
                 super(view);
@@ -217,7 +249,7 @@ public class QuotesListActivity extends BasePageActivity {
 
                 mediaDataSourceFactory = buildDataSourceFactory(true);
 
-                mainHandler = new Handler();
+//                mainHandler = new Handler();
                 BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
                 TrackSelection.Factory videoTrackSelectionFactory =
                         new AdaptiveTrackSelection.Factory(bandwidthMeter);
@@ -232,6 +264,12 @@ public class QuotesListActivity extends BasePageActivity {
                 exoPlayerView.requestFocus();
 
                 player.setPlayWhenReady(false);
+
+                PlaybackControlView controlView = exoPlayerView.findViewById(R.id.exo_controller);
+                mFullScreenIcon = controlView.findViewById(R.id.exo_fullscreen_icon);
+                mFullScreenButton = controlView.findViewById(R.id.exo_fullscreen_button);
+
+                mediaFrame = (FrameLayout) view.findViewById(R.id.main_media_frame);
             }
         }
 
@@ -249,16 +287,16 @@ public class QuotesListActivity extends BasePageActivity {
         }
 
         @Override
-        public void onBindViewHolder(MyViewHolder holder, int position) {
+        public void onBindViewHolder(final MyViewHolder holder, int position) {
             Quotes quotes = quotesList.get(position);
 
             if(quotes.getUrlVideo().length() > 1) {
                 DefaultExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
                 MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(quotes.getUrlVideo()),
                         mediaDataSourceFactory, extractorsFactory, null, null);
-                player.prepare(mediaSource);
+                holder.player.prepare(mediaSource);
 
-                holder.exoPlayerView.setVisibility(SimpleExoPlayerView.VISIBLE);
+                holder.mediaFrame.setVisibility(SimpleExoPlayerView.VISIBLE);
 //                holder.bigVideoView.setVideoUrl(quotes.getUrlVideo());
 //                Glide.with(QuotesListActivity.this)
 //                        .load(R.drawable.loader)
@@ -267,7 +305,7 @@ public class QuotesListActivity extends BasePageActivity {
             }
 
             if(quotes.getUrlPhoto().length() > 1) {
-                holder.exoPlayerView.setVisibility(SimpleExoPlayerView.GONE);
+                holder.mediaFrame.setVisibility(SimpleExoPlayerView.GONE);
                 Glide.with(QuotesListActivity.this)
                         .load(quotes.getUrlPhoto())
                         //.placeholder(R.drawable.ic_cloud_off_red)
@@ -288,6 +326,85 @@ public class QuotesListActivity extends BasePageActivity {
             if(holder.description.getText().equals("null")) {
                 holder.description.setVisibility(TextView.GONE);
             }
+
+            holder.mFullScreenDialog = new Dialog(context, android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
+                public void onBackPressed() {
+                    holder.player.setPlayWhenReady(false);
+                    if (holder.mExoPlayerFullscreen) {
+                        closeFullscreenDialog(holder);
+                    }
+                    super.onBackPressed();
+                }
+            };
+
+            holder.mFullScreenButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!holder.mExoPlayerFullscreen)
+                        openFullscreenDialog(holder);
+                    else {
+//                        closeFullscreenDialog(holder);
+                        holder.mFullScreenDialog.onBackPressed();
+                    }
+                }
+            });
+
+//            holderView = holder;
+
+            holder.player.addListener(new ExoPlayer.EventListener() {
+                @Override
+                public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
+
+                }
+
+                @Override
+                public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+
+                }
+
+                @Override
+                public void onLoadingChanged(boolean isLoading) {
+
+                }
+
+                @Override
+                public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+                    if (playWhenReady && !holder.mExoPlayerFullscreen) {
+                        holder.mExoPlayerFullscreen = true;
+                        openFullscreenDialog(holder);
+                    }
+                }
+
+                @Override
+                public void onRepeatModeChanged(int repeatMode) {
+
+                }
+
+                @Override
+                public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
+
+                }
+
+                @Override
+                public void onPlayerError(ExoPlaybackException error) {
+
+                }
+
+                @Override
+                public void onPositionDiscontinuity(int reason) {
+
+                }
+
+                @Override
+                public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
+
+                }
+
+                @Override
+                public void onSeekProcessed() {
+
+                }
+            });
         }
 
         @Override
@@ -299,26 +416,26 @@ public class QuotesListActivity extends BasePageActivity {
             return quotesList.get(position);
         }
 
-        private MediaSource buildMediaSource(Uri uri, String overrideExtension) {
-            int type = TextUtils.isEmpty(overrideExtension) ? Util.inferContentType(uri)
-                    : Util.inferContentType("." + overrideExtension);
-            switch (type) {
-                case C.TYPE_SS:
-                    return new SsMediaSource(uri, buildDataSourceFactory(false),
-                            new DefaultSsChunkSource.Factory(mediaDataSourceFactory), mainHandler, null);
-                case C.TYPE_DASH:
-                    return new DashMediaSource(uri, buildDataSourceFactory(false),
-                            new DefaultDashChunkSource.Factory(mediaDataSourceFactory), mainHandler, null);
-                case C.TYPE_HLS:
-                    return new HlsMediaSource(uri, mediaDataSourceFactory, mainHandler, null);
-                case C.TYPE_OTHER:
-                    return new ExtractorMediaSource(uri, mediaDataSourceFactory, new DefaultExtractorsFactory(),
-                            mainHandler, null);
-                default: {
-                    throw new IllegalStateException("Unsupported type: " + type);
-                }
-            }
-        }
+//        private MediaSource buildMediaSource(Uri uri, String overrideExtension) {
+//            int type = TextUtils.isEmpty(overrideExtension) ? Util.inferContentType(uri)
+//                    : Util.inferContentType("." + overrideExtension);
+//            switch (type) {
+//                case C.TYPE_SS:
+//                    return new SsMediaSource(uri, buildDataSourceFactory(false),
+//                            new DefaultSsChunkSource.Factory(mediaDataSourceFactory), mainHandler, null);
+//                case C.TYPE_DASH:
+//                    return new DashMediaSource(uri, buildDataSourceFactory(false),
+//                            new DefaultDashChunkSource.Factory(mediaDataSourceFactory), mainHandler, null);
+//                case C.TYPE_HLS:
+//                    return new HlsMediaSource(uri, mediaDataSourceFactory, mainHandler, null);
+//                case C.TYPE_OTHER:
+//                    return new ExtractorMediaSource(uri, mediaDataSourceFactory, new DefaultExtractorsFactory(),
+//                            mainHandler, null);
+//                default: {
+//                    throw new IllegalStateException("Unsupported type: " + type);
+//                }
+//            }
+//        }
 
         private DataSource.Factory buildDataSourceFactory(boolean useBandwidthMeter) {
             return buildDataSourceFactory(useBandwidthMeter ? BANDWIDTH_METER : null);
@@ -332,15 +449,90 @@ public class QuotesListActivity extends BasePageActivity {
         public HttpDataSource.Factory buildHttpDataSourceFactory(DefaultBandwidthMeter bandwidthMeter) {
             return new DefaultHttpDataSourceFactory(Util.getUserAgent(context, "ExoPlayerDemo"), bandwidthMeter);
         }
-    }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        if(mAdapter.player != null) {
-            mAdapter.player.stop();
-            mAdapter.player.seekTo(0);
+        private void openFullscreenDialog(final MyViewHolder holder) {
+            ((ViewGroup) holder.exoPlayerView.getParent()).removeView(holder.exoPlayerView);
+            holder.mFullScreenDialog.addContentView(holder.exoPlayerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            holder.mFullScreenIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_fullscreen_skrink));
+            holder.mExoPlayerFullscreen = true;
+            holder.mFullScreenDialog.show();
         }
+
+        private void closeFullscreenDialog(final MyViewHolder holder) {
+            ((ViewGroup) holder.exoPlayerView.getParent()).removeView(holder.exoPlayerView);
+            ((FrameLayout) findViewById(R.id.main_media_frame)).addView(holder.exoPlayerView);//.addView(holder.exoPlayerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 250));
+            holder.mExoPlayerFullscreen = false;
+            holder.mFullScreenDialog.dismiss();
+            holder.mFullScreenIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_fullscreen_expand));
+        }
+
+//        private void closePlayer() {
+//            Log.d("close player", "close player sukses");
+//            if(player != null) {
+//                player.stop();
+//                player.seekTo(0);
+
+//                player.release();
+//            }
+
+//            if (holderView.exoPlayerView != null && holderView.exoPlayerView.getPlayer() != null) {
+//                mResumeWindow = mExoPlayerView.getPlayer().getCurrentWindowIndex();
+//                mResumePosition = Math.max(0, mExoPlayerView.getPlayer().getContentPosition());
+
+//                holderView.player.release();
+//                holderView.exoPlayerView.getPlayer().release();
+//
+//                holderView.exoPlayerView.getPlayer().setPlayWhenReady(false);
+//                holderView.player.setPlayWhenReady(false);
+
+//                holderView.exoPlayerView.getPlayer().release();
+//                holderView.exoPlayerView.getPlayer().seekTo(0);
+//                holderView.exoPlayerView.getPlayer().stop();
+
+//                holderView.exoPlayerView = null;
+//                holderView.player = null;
+//                mediaDataSourceFactory = null;
+//                mainHandler = null;
+//            }
+
+//            if (mFullScreenDialog != null)
+//                mFullScreenDialog.dismiss();
+//        }
     }
+
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//
+//        mAdapter.closePlayer();
+//    }
+
+//    @Override
+//    public void onBackPressed() {
+//        super.onBackPressed();
+
+//        mAdapter.closePlayer();
+
+//        if (mAdapter.holderView.exoPlayerView != null && mAdapter.holderView.exoPlayerView.getPlayer() != null) {
+//            Log.d("close player", "close player sukses");
+
+//                mResumeWindow = mExoPlayerView.getPlayer().getCurrentWindowIndex();
+//                mResumePosition = Math.max(0, mExoPlayerView.getPlayer().getContentPosition());
+
+//            mAdapter.holderView.player.release();
+//            mAdapter.holderView.exoPlayerView.getPlayer().release();
+//
+//            mAdapter.holderView.exoPlayerView.getPlayer().setPlayWhenReady(false);
+//            mAdapter.holderView.player.setPlayWhenReady(false);
+
+//                holderView.exoPlayerView.getPlayer().release();
+//                holderView.exoPlayerView.getPlayer().seekTo(0);
+//                holderView.exoPlayerView.getPlayer().stop();
+
+//            mAdapter.holderView.exoPlayerView = null;
+//            mAdapter.holderView.player = null;
+//            mAdapter.mediaDataSourceFactory = null;
+//            mAdapter.mainHandler = null;
+//        }
+//    }
 }

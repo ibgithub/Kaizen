@@ -158,9 +158,9 @@ public class BaseMenuActivity extends AppCompatActivity {
                 GlobalVar.getInstance().setGrup(null);
                 GlobalVar.getInstance().setProgram(null);
 
-                GlobalVar.getInstance().setProvincies(null);
-                GlobalVar.getInstance().setCities(null);
-                GlobalVar.getInstance().setSchools(null);
+//                GlobalVar.getInstance().setProvincies(null);
+//                GlobalVar.getInstance().setCities(null);
+//                GlobalVar.getInstance().setSchools(null);
 
                 Intent resultData = new Intent();
                 resultData.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

@@ -107,11 +107,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         try {
             if(GlobalVar.getInstance().getProfile() == null) {
                 getParticipant();
+                if(GlobalVar.getInstance().getAccount() != null) {
+                    JSONObject account = new JSONObject(GlobalVar.getInstance().getAccount());
+                    emailText.setText(account.getString("email"));
+                }
             } else {
-//                JSONObject account = new JSONObject(GlobalVar.getInstance().getAccount());
-//                nameText.setText(account.getString("firstName") + " " + account.getString("lastName"));
-//                emailText.setText(account.getString("email"));
-
                 JSONObject profile = new JSONObject(GlobalVar.getInstance().getProfile());
                 addressText.setText(profile.getString("address"));
                 classText.setText(profile.getString("schoolClass"));
