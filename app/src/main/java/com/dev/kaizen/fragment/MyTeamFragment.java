@@ -211,7 +211,7 @@ public class MyTeamFragment extends Fragment implements View.OnClickListener{
                     Log.i("VOLLEY1", response);
                     try {
                         JSONObject group = new JSONObject(response);
-                        descText.setText(group.getString("desc"));
+                        descText.setText((group.getString("desc").equals("null"))? "":group.getString("desc"));
 
                         groupTeam = new GroupTeam(group.getInt("id"),
                                 group.getString("desc"),
