@@ -38,6 +38,7 @@ import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.dev.kaizen.R;
 import com.dev.kaizen.adapter.GroupTeam;
@@ -236,10 +237,11 @@ public class MyTeamListFragment extends Fragment implements View.OnClickListener
         private Context context1;
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
-            public TextView teamNameText, memberNamesText;
+            public TextView groupIdText, teamNameText, memberNamesText;
 
             public MyViewHolder(View view) {
                 super(view);
+                groupIdText = (TextView) view.findViewById(R.id.groupIdText);
                 teamNameText = (TextView) view.findViewById(R.id.teamNameText);
                 memberNamesText = (TextView) view.findViewById(R.id.memberNamesText);
             }
@@ -254,13 +256,78 @@ public class MyTeamListFragment extends Fragment implements View.OnClickListener
         public GroupTeamAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.row_group, parent, false);
-//            itemView.setOnClickListener(this);
+
+            final TextView groupId = (TextView) itemView.findViewById(R.id.groupIdText);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //Toast.makeText( getActivity(), "I am Clicked! " + groupId.getText().toString(), Toast.LENGTH_SHORT).show();
+                    String url = Constant.BASE_URL + "groups/" + groupId.getText().toString();
+                    RequestQueue queue = Volley.newRequestQueue(context);
+                    StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.i("VOLLEY1", response);
+                            try {
+                                JSONObject group = new JSONObject(response);
+
+                                GroupTeam groupTeam = gson.fromJson(group.toString(), GroupTeam.class);
+
+                                Bundle bundle = new Bundle();
+                                bundle.putParcelable("item", groupTeam);
+
+                                MyTeamJoinFragment fragment2 = new MyTeamJoinFragment();
+                                fragment2.setArguments(bundle);
+
+                                FragmentManager fragmentManager = getFragmentManager();
+                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                fragmentTransaction.replace(R.id.content, fragment2);
+                                fragmentTransaction.addToBackStack("profile");  //diganti apa ya?
+                                fragmentTransaction.commit();
+                            } catch (JSONException e2) {
+                                e2.printStackTrace();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e("VOLLEY2", error.toString());
+                            NetworkResponse response = error.networkResponse;
+                            if (error instanceof ServerError && response != null) {
+                                try {
+                                    String res = new String(response.data,
+                                            HttpHeaderParser.parseCharset(response.headers, "utf-8"));
+                                    JSONObject obj = new JSONObject(res);
+                                    Log.d("obj", "" + obj);
+                                    isNoTeam = true;
+
+                                } catch (UnsupportedEncodingException e1) {
+                                    e1.printStackTrace();
+                                } catch (JSONException e2) {
+                                    e2.printStackTrace();
+                                }
+                            }
+                        }
+                    })
+                    {
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+                            Map<String, String> map = new HashMap<String, String>();
+                            map.put("Authorization", "Bearer " + GlobalVar.getInstance().getIdToken());
+                            Log.d("mapheader", map.toString());
+                            return map;
+                        }
+                    };
+                    queue.add(stringRequest);
+                }
+            });
             return new GroupTeamAdapter.MyViewHolder(itemView);
         }
 
         @Override
         public void onBindViewHolder(GroupTeamAdapter.MyViewHolder holder, int position) {
             GroupTeam group = groupList.get(position);
+            holder.groupIdText.setText(group.getId().toString());
             holder.teamNameText.setText(group.getDesc());
 
         }

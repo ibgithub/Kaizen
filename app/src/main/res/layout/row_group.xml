@@ -23,6 +23,18 @@
                 android:orientation="vertical"
                 android:layout_gravity="center">
                 <TextView
+                    android:id="@+id/groupIdText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="@color/darkgray"
+                    android:gravity="left"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:paddingLeft="@dimen/_20sdp"
+                    android:visibility="gone"
+                    />
+                <TextView
                     android:id="@+id/teamNameText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
