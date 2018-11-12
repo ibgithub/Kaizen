@@ -159,7 +159,6 @@ public class MyTeamEditFragment extends Fragment implements View.OnClickListener
                                 @Override
                                 public void onResponse(JSONObject response) {
                                     Log.d("response put team", response.toString());
-                                    GlobalVar.getInstance().setProfile(response.toString());
                                     Toast.makeText(getContext(), "Data berhasil disimpan", Toast.LENGTH_LONG).show();
 
                                     groupTeam = gson.fromJson(response.toString(), GroupTeam.class);

@@ -175,7 +175,6 @@ public class MyTeamFragment extends Fragment implements View.OnClickListener{
         leaveTeamBtn = (Button) v.findViewById(R.id.leaveTeamBtn);
         leaveTeamBtn.setOnClickListener(this);
 
-
         queue = Volley.newRequestQueue(getActivity());
 
         if(GlobalVar.getInstance().getProfile() == null) {
@@ -208,10 +207,10 @@ public class MyTeamFragment extends Fragment implements View.OnClickListener{
             try {
                 JSONObject profile = new JSONObject(GlobalVar.getInstance().getProfile());
                 JSONObject school = profile.getJSONObject("school");
+
                 schoolText.setText(school.getString("schoolName"));
 
                 JSONObject account = new JSONObject(GlobalVar.getInstance().getAccount());
-                Log.d("userId", "" + account.getLong("id"));
                 userId = account.getLong("id");
                 getParticipants();
 
