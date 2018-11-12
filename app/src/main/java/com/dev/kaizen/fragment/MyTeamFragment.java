@@ -90,6 +90,8 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.upstream.HttpDataSource;
 import com.google.android.exoplayer2.util.Util;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -119,6 +121,7 @@ public class MyTeamFragment extends Fragment implements View.OnClickListener{
     private TextView descText;
     private TextView teamMemberTxt;
     private GroupTeam groupTeam;
+    private Gson gson;
 
     public static MyTeamFragment newInstance() {
         MyTeamFragment fragment = new MyTeamFragment();
@@ -135,6 +138,13 @@ public class MyTeamFragment extends Fragment implements View.OnClickListener{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_team, container, false);
+
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.setDateFormat("M/d/yy hh:mm a");
+        gson = gsonBuilder.create();
+
+        groupTeam = getArguments().getParcelable("item");
+        Log.d("groupTeam:", "" + groupTeam);
 
         TextView headertext = (TextView) getActivity().findViewById(R.id.headertext);
         headertext.setText("My Team");
@@ -175,10 +185,24 @@ public class MyTeamFragment extends Fragment implements View.OnClickListener{
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
-                            Toast.makeText(getActivity(), "Yes", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Silahkan Update ", Toast.LENGTH_SHORT).show();
+
+                            Bundle bundle = new Bundle();
+                            if (!isNoTeam) { //update team
+                                bundle.putParcelable("item", groupTeam);
+                            }
+
+                            ProfileFragment fragment2 = new ProfileFragment();
+                            fragment2.setArguments(bundle);
+
+                            FragmentManager fragmentManager = getFragmentManager();
+                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                            fragmentTransaction.replace(R.id.content, fragment2);
+                            fragmentTransaction.addToBackStack("more");  //diganti apa ya?
+                            fragmentTransaction.commit();
                         }
                     })
-                    .setNegativeButton(android.R.string.no, null)
+                    //.setNegativeButton(android.R.string.no, null)
                     .show();
         } else {
             try {
@@ -213,9 +237,8 @@ public class MyTeamFragment extends Fragment implements View.OnClickListener{
                         JSONObject group = new JSONObject(response);
                         descText.setText((group.getString("desc").equals("null"))? "":group.getString("desc"));
 
-                        groupTeam = new GroupTeam(group.getInt("id"),
-                                group.getString("desc"),
-                                group.getString("mentorName"));
+                        groupTeam = gson.fromJson(group.toString(), GroupTeam.class);
+
                     } catch (JSONException e2) {
                         e2.printStackTrace();
                     }
@@ -283,7 +306,11 @@ public class MyTeamFragment extends Fragment implements View.OnClickListener{
                                 teamList.add(team);
                             }
                             mAdapter.notifyDataSetChanged();
-                            getGroups();
+                            if (groupTeam == null) {
+                                getGroups();
+                            } else {
+                                descText.setText(groupTeam.getDesc());
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -305,17 +332,18 @@ public class MyTeamFragment extends Fragment implements View.OnClickListener{
                                 cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                                 cd.show();
                                 cd.setCanceledOnTouchOutside(false);
-                                cd.header.setText(obj.getString("title"));
-                                cd.isi.setText("Anda belum memiliki Tim, silahkan membuat Tim Baru");
+                                cd.header.setText("Belum memiliki Tim");
+                                cd.isi.setText("Kamu belum memiliki Tim, silahkan memilih atau membuat Tim Baru untuk Sekolahmu");
                                 Bundle bundle = new Bundle();
                                 if (!isNoTeam) { //update team
                                     bundle.putParcelable("item", groupTeam);
                                 }
 
+                                isNoTeam = true;
+
                                 MyTeamListFragment fragment2 = new MyTeamListFragment();
                                 fragment2.setArguments(bundle);
 
-                                isNoTeam = true;
                                 FragmentManager fragmentManager = getFragmentManager();
                                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                 fragmentTransaction.replace(R.id.content, fragment2);

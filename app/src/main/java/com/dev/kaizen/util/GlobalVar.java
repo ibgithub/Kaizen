@@ -101,12 +101,4 @@ public class GlobalVar implements Serializable {
 	public void setTeamMembers(List<String> teamMembers) {
 		this.teamMembers = teamMembers;
 	}
-
-	public List<String> getTeamMembers() {
-		return teamMembers;
-	}
-
-	public void setTeamMembers(List<String> teamMembers) {
-		this.teamMembers = teamMembers;
-	}
 }

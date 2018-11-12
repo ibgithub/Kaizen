@@ -161,82 +161,8 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
 
         }
 
-//        provinceSpinner = (Spinner) v.findViewById(R.id.provinceSpinner);
-//        provinceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                if (GlobalVar.getInstance().getProvincies() == null) {
-//                    getData("provinces", 0);
-//                } else {
-//                    try {
-//                        JSONArray arr = new JSONArray(GlobalVar.getInstance().getProvincies());
-//                        getData("citiesByProvinceId", Integer.valueOf(arr.getJSONObject(i).getString("id")));
-//
-//                        selectedProv = arr.getJSONObject(i);
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//            }
-//        });
-
-//        citySpinner = (Spinner) v.findViewById(R.id.citySpinner);
-//        citySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                if (GlobalVar.getInstance().getProvincies() == null) {
-//                    getData("provinces", 0);
-//                } else {
-//                    try {
-//                        JSONArray arr = new JSONArray(GlobalVar.getInstance().getCities());
-//                        selectedKota = arr.getJSONObject(i);
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//            }
-//        });
-
-//        schoolSpinner = (Spinner) v.findViewById(R.id.schoolSpinner);
-//        schoolSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                if (GlobalVar.getInstance().getSchools() == null) {
-//                    getData("schools", 0);
-//                } else {
-//                    try {
-//                        JSONArray arr = new JSONArray(GlobalVar.getInstance().getSchools());
-//                        selectedSekolah = arr.getJSONObject(i);
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//            }
-//        });
-
         Button saveBtn = (Button) v.findViewById(R.id.saveBtn);
         saveBtn.setOnClickListener(this);
-
-//        getData("schools", 0);
-
-//        if (GlobalVar.getInstance().getProvincies() == null) {
-
-//        }
 
         getProv();
         provinceSpinner = (Spinner) v.findViewById(R.id.provinceSpinner);
@@ -582,24 +508,31 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
                     @Override
                     public void onResponse(JSONArray response) {
                         Log.d("Response type", response.toString());
-
                         try {
-                            JSONObject objProfile = new JSONObject(GlobalVar.getInstance().getProfile());
-                            JSONObject objSchool = objProfile.getJSONObject("school");
-                            JSONObject objCity = objSchool.getJSONObject("city");
-                            JSONObject objProv = objCity.getJSONObject("province");
-
                             arrProv = new JSONArray(response.toString());
+                            Long provId = null;
+                            if (GlobalVar.getInstance().getProfile() != null ) {
+                                JSONObject objProfile = new JSONObject(GlobalVar.getInstance().getProfile());
+                                JSONObject objSchool = objProfile.getJSONObject("school");
+                                JSONObject objCity = objSchool.getJSONObject("city");
+                                JSONObject objProv = objCity.getJSONObject("province");
+
+                                provId = objProv.getLong("id");
+//                            getKota(objProv.getInt("id"), objCity.getInt("id"));
+//                            getSekolah(objCity.getInt("id"), objSchool.getInt("id"));
+                            } else {
+                                provId = arrProv.getJSONObject(0).getLong("id");
+                            }
+
+                            Log.d("provId=", "" + provId);
                             for(int i=0; i<arrProv.length(); i++) {
                                 provList.add(arrProv.getJSONObject(i).getString("provinceName"));
-                                if(arrProv.getJSONObject(i).getInt("id") == objProv.getInt("id")) {
+                                if(arrProv.getJSONObject(i).getInt("id") == provId.intValue()) {
                                     provinceSpinner.setSelection(i);
                                 }
                             }
                             provAdapter.notifyDataSetChanged();
 
-//                            getKota(objProv.getInt("id"), objCity.getInt("id"));
-//                            getSekolah(objCity.getInt("id"), objSchool.getInt("id"));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -657,14 +590,24 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
                         try {
                             kotaList.clear();
 
-                            JSONObject objProfile = new JSONObject(GlobalVar.getInstance().getProfile());
-                            JSONObject objSchool = objProfile.getJSONObject("school");
-                            JSONObject objCity = objSchool.getJSONObject("city");
-
                             arrKota = new JSONArray(response.toString());
+                            Long kotaId = null;
+                            if (GlobalVar.getInstance().getProfile() != null ) {
+                                JSONObject objProfile = new JSONObject(GlobalVar.getInstance().getProfile());
+                                JSONObject objSchool = objProfile.getJSONObject("school");
+                                JSONObject objCity = objSchool.getJSONObject("city");
+
+                                kotaId = objCity.getLong("id");
+//                            getSekolah(objCity.getInt("id"), objSchool.getInt("id"));
+                            } else {
+                                kotaId = arrKota.getJSONObject(0).getLong("id");
+                            }
+
+                            Log.d("kotaId=", "" + kotaId);
+
                             for(int i=0; i<arrKota.length(); i++) {
                                 kotaList.add(arrKota.getJSONObject(i).getString("cityName"));
-                                if(arrKota.getJSONObject(i).getInt("id") == objCity.getInt("id")) {
+                                if(arrKota.getJSONObject(i).getInt("id") == kotaId.intValue()) {
                                     citySpinner.setSelection(i);
                                 }
                             }
@@ -726,13 +669,23 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
                         try {
                             sekolahList.clear();
 
-                            JSONObject objProfile = new JSONObject(GlobalVar.getInstance().getProfile());
-                            JSONObject objSchool = objProfile.getJSONObject("school");
-
                             arrSekolah = new JSONArray(response.toString());
+                            Long schoolId = null;
+                            if (GlobalVar.getInstance().getProfile() != null ) {
+                                JSONObject objProfile = new JSONObject(GlobalVar.getInstance().getProfile());
+                                JSONObject objSchool = objProfile.getJSONObject("school");
+
+                                schoolId = objSchool.getLong("id");
+//                            getSekolah(objCity.getInt("id"), objSchool.getInt("id"));
+                            } else {
+                                schoolId = arrSekolah.getJSONObject(0).getLong("id");
+                            }
+
+                            Log.d("schoolId=", "" + schoolId);
+
                             for(int i=0; i<arrSekolah.length(); i++) {
                                 sekolahList.add(arrSekolah.getJSONObject(i).getString("schoolName"));
-                                if(arrSekolah.getJSONObject(i).getInt("id") == objSchool.getInt("id")) {
+                                if(arrSekolah.getJSONObject(i).getInt("id") == schoolId.intValue()) {
                                     schoolSpinner.setSelection(i);
                                 }
                             }
