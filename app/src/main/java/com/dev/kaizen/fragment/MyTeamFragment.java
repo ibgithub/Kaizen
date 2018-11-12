@@ -376,7 +376,61 @@ public class MyTeamFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.leaveTeamBtn) {
+            final String url = Constant.BASE_URL + "groupsLeave/" + userId ;
 
+            JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // display response
+                        Log.d("Response", response.toString());
+
+                        groupTeam = gson.fromJson(response.toString(), GroupTeam.class);
+
+                        Bundle bundle = new Bundle();
+
+                        MyTeamFragment fragment2 = new MyTeamFragment();
+                        fragment2.setArguments(bundle);
+
+                        FragmentManager fragmentManager = getFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        fragmentTransaction.replace(R.id.content, fragment2);
+                        fragmentTransaction.addToBackStack("profile");  //diganti apa ya?
+                        fragmentTransaction.commit();
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        NetworkResponse response = error.networkResponse;
+                        if (error instanceof ServerError && response != null) {
+                            try {
+                                String res = new String(response.data,
+                                        HttpHeaderParser.parseCharset(response.headers, "utf-8"));
+                                JSONObject obj = new JSONObject(res);
+                                Log.d("obj", "" + obj);
+
+                            } catch (UnsupportedEncodingException e1) {
+                                e1.printStackTrace();
+                            } catch (JSONException e2) {
+                                e2.printStackTrace();
+                            }
+                        }
+                    }
+                }
+            ){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> map = new HashMap<String, String>();
+                    map.put("Authorization", "Bearer " + GlobalVar.getInstance().getIdToken());
+                    return map;
+                }
+            };
+
+// add it to the RequestQueue
+            queue.add(getRequest);
         }else if (v.getId() == R.id.updateTeamBtn) {
             Bundle bundle = new Bundle();
             if (!isNoTeam) { //update team
