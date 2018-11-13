@@ -188,7 +188,7 @@ public class MyTeamFragment extends Fragment implements View.OnClickListener{
 
                             Bundle bundle = new Bundle();
                             if (!isNoTeam) { //update team
-                                bundle.putParcelable("item", groupTeam);
+                               // bundle.putParcelable("item", groupTeam);
                             }
 
                             ProfileFragment fragment2 = new ProfileFragment();

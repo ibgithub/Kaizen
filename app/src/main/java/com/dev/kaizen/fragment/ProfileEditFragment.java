@@ -173,6 +173,7 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
             public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
                 try {
                     selectedProv = arrProv.getJSONObject(position);
+                    Log.d("selectedProv:", "" + selectedProv.getInt("id"));
                     getKota(selectedProv.getInt("id"));
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -192,8 +193,10 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
             public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
                 try {
                     selectedKota = arrKota.getJSONObject(position);
+                    Log.d("selectedKota:", "" + selectedKota.getInt("id"));
                     getSekolah(selectedKota.getInt("id"));
                 } catch (JSONException e) {
+                    Log.d("e=", e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -224,106 +227,6 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
         return v;
     }
 
-//    private void spinnerData (final String type) {
-//        String str = "";
-//        if (type.equals("provinces")) {
-//            str = GlobalVar.getInstance().getProvincies();
-//        } else if (type.equals("citiesByProvinceId")) {
-//            str = GlobalVar.getInstance().getCities();
-//        } else {
-//            str = GlobalVar.getInstance().getSchools();
-//        }
-//        try {
-//            JSONArray responseArr = new JSONArray(str);
-//
-//            ArrayList<String> sort = new ArrayList<String>();
-//
-//            for (int i = 0; i < responseArr.length(); i++) {
-//                JSONObject jsonobject = responseArr.getJSONObject(i);
-//
-//                if (type.equals("provinces")) {
-//                    sort.add(jsonobject.getString("provinceName"));
-//                } else if (type.equals("citiesByProvinceId")) {
-//                    sort.add(jsonobject.getString("cityName"));
-//                } else {
-//                    sort.add(jsonobject.getString("schoolName"));
-//                }
-//
-//            }
-//            ArrayAdapter<String> sd = new ArrayAdapter<String>(getView().getContext(),
-//                    android.R.layout.simple_list_item_1,
-//                    sort);
-//            if (type.equals("provinces")) {
-//                provinceSpinner.setAdapter(sd);
-//            } else if (type.equals("citiesByProvinceId")) {
-//                citySpinner.setAdapter(sd);
-//            } else {
-//                schoolSpinner.setAdapter(sd);
-//            }
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    private void getData (final String type, int province) {
-//        final String url = Constant.BASE_URL + type + ((type.equals("citiesByProvinceId"))? "/"+province:"");
-//
-//        JsonArrayRequest getRequest = new JsonArrayRequest(Request.Method.GET, url, null,
-//                new Response.Listener<JSONArray>()
-//                {
-//                    @Override
-//                    public void onResponse(JSONArray response) {
-//                        Log.d("Response type", response.toString());
-//                        if (type.equals("provinces")) {
-//                            GlobalVar.getInstance().setProvincies(response.toString());
-//                            try {
-//                                JSONArray responseArr = new JSONArray(GlobalVar.getInstance().getProvincies());
-////                                if (GlobalVar.getInstance().getCities() == null)
-//                                    getData("citiesByProvinceId", Integer.valueOf(responseArr.getJSONObject(0).getString("id")));
-//                            } catch (JSONException e) {
-//                                e.printStackTrace();
-//                            }
-//                        } else if (type.equals("citiesByProvinceId")) {
-//                            GlobalVar.getInstance().setCities(response.toString());
-//                        } else {
-//                            GlobalVar.getInstance().setSchools(response.toString());
-//                            getData("provinces", 0);
-//                        }
-//                        spinnerData(type);
-//                    }
-//                },
-//                new Response.ErrorListener()
-//                {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        NetworkResponse response = error.networkResponse;
-//                        if (error instanceof ServerError && response != null) {
-//                            try {
-//                                String res = new String(response.data,
-//                                        HttpHeaderParser.parseCharset(response.headers, "utf-8"));
-//                                JSONObject obj = new JSONObject(res);
-//                                Log.d("obj", "" + obj);
-//                            } catch (UnsupportedEncodingException e1) {
-//                                e1.printStackTrace();
-//                            } catch (JSONException e2) {
-//                                e2.printStackTrace();
-//                            }
-//                        }
-//                    }
-//                }
-//        ){
-//            @Override
-//            public Map<String, String> getHeaders() throws AuthFailureError {
-//                Map<String, String> map = new HashMap<String, String>();
-//                map.put("Authorization", "Bearer " + GlobalVar.getInstance().getIdToken());
-//                return map;
-//            }
-//        };
-//
-//// add it to the RequestQueue
-//        queue.add(getRequest);
-//    }
-
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.backBtn) {
@@ -347,18 +250,19 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
             } else if(classEdit.getText().toString().length() < 1) {
                 Toast.makeText(getContext(), "Kelas masih kosong", Toast.LENGTH_LONG).show();
                 classEdit.requestFocus();
+            } else if(isTambah && schoolEdit.getText().toString().length() < 1) {
+                Toast.makeText(getContext(), "Nama sekolah masih kosong", Toast.LENGTH_LONG).show();
+                schoolEdit.requestFocus();
+            } else if(!isTambah && schoolSpinner.getSelectedItem() == null) {
+                Toast.makeText(getContext(), "Nama sekolah masih kosong", Toast.LENGTH_LONG).show();
+                schoolSpinner.requestFocus();
             } else {
-                if(isTambah && schoolEdit.getText().toString().length() < 1) {
-                    Toast.makeText(getContext(), "Nama sekolah masih kosong", Toast.LENGTH_LONG).show();
-                    schoolEdit.requestFocus();
+                int kelas = Integer.valueOf(classEdit.getText().toString());
+                if(kelas < 10 || kelas > 12) {
+                    Toast.makeText(getContext(), "Kelas tidak valid", Toast.LENGTH_LONG).show();
+                    classEdit.requestFocus();
                 } else {
-                    int kelas = Integer.valueOf(classEdit.getText().toString());
-                    if(kelas < 10 || kelas > 12) {
-                        Toast.makeText(getContext(), "Kelas tidak valid", Toast.LENGTH_LONG).show();
-                        classEdit.requestFocus();
-                    } else {
-                        putProfile();
-                    }
+                    putProfile();
                 }
             }
         } else if(v.getId() == R.id.tambahButton) {
@@ -425,10 +329,11 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
                 JSONObject kotaObj = new JSONObject();
                 kotaObj.put("id", selectedKota.getInt("id"));
                 schoolObj.put("city", kotaObj);
+                Log.d("schoolObj 1", schoolObj.toString());
             }
 
             json.put("school", schoolObj);
-
+            Log.d("schoolObj 2", schoolObj.toString());
             Log.d("json", json.toString());
 
             JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.PUT, url, json,
@@ -440,7 +345,20 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
                         GlobalVar.getInstance().setProfile(response.toString());
 
                         Toast.makeText(getContext(), "Data berhasil disimpan", Toast.LENGTH_LONG).show();
-                        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        //getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+                        Bundle bundle = new Bundle();
+                        //bundle.putParcelable("item", groupTeam);
+
+                        ProfileFragment fragment2 = new ProfileFragment();
+                        fragment2.setArguments(bundle);
+
+                        FragmentManager fragmentManager = getFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        fragmentTransaction.replace(R.id.content, fragment2);
+                        fragmentTransaction.addToBackStack("profile");  //diganti apa ya?
+                        fragmentTransaction.commit();
+
                     }
                 },
                 new Response.ErrorListener()
@@ -507,7 +425,7 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        Log.d("Response type", response.toString());
+                        Log.d("Res provinces", response.toString());
                         try {
                             arrProv = new JSONArray(response.toString());
                             Long provId = null;
@@ -585,7 +503,7 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        Log.d("Response type", response.toString());
+                        Log.d("Res city", response.toString());
 
                         try {
                             kotaList.clear();
@@ -598,20 +516,23 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
                                 JSONObject objCity = objSchool.getJSONObject("city");
 
                                 kotaId = objCity.getLong("id");
-//                            getSekolah(objCity.getInt("id"), objSchool.getInt("id"));
                             } else {
                                 kotaId = arrKota.getJSONObject(0).getLong("id");
                             }
 
-                            Log.d("kotaId=", "" + kotaId);
+                            Log.d("kotaId res=", "" + kotaId);
 
                             for(int i=0; i<arrKota.length(); i++) {
                                 kotaList.add(arrKota.getJSONObject(i).getString("cityName"));
                                 if(arrKota.getJSONObject(i).getInt("id") == kotaId.intValue()) {
                                     citySpinner.setSelection(i);
+                                    selectedKota = arrKota.getJSONObject(i);
                                 }
                             }
                             kotaAdapter.notifyDataSetChanged();
+
+                            getSekolah(kotaId.intValue());
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -620,6 +541,7 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        Log.d("city Err=", error.getMessage());
                         NetworkResponse response = error.networkResponse;
                         if (error instanceof ServerError && response != null) {
                             try {
@@ -654,6 +576,7 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
     }
 
     private void getSekolah(int idKota) {
+        Log.d("idKota=", "" + idKota);
         final ProgressDialog dialog = new ProgressDialog(getContext());
         dialog.setMessage("Mengambil data...");
         dialog.show();
@@ -664,7 +587,7 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        Log.d("Response type", response.toString());
+                        Log.d("Res school", response.toString());
 
                         try {
                             sekolahList.clear();
@@ -698,6 +621,7 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        Log.d("school Err=", error.getMessage());
                         NetworkResponse response = error.networkResponse;
                         if (error instanceof ServerError && response != null) {
                             try {
